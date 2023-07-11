@@ -94,22 +94,6 @@ const Home = () => {
     await displayRawRizz(res);
   };
 
-  const recognition = SpeechRecognition();
-
-  useEffect(() => {
-    if (recognition.finalTranscript) {
-      setQuestion(recognition.finalTranscript);
-    }
-  }, [recognition.finalTranscript]);
-
-  const startListening = () => {
-    recognition.start();
-  };
-
-  const stopListening = () => {
-    recognition.stop();
-  };
-
   useEffect(() => {
     window.transcript = transcript.text;
   }, [transcript.text]);
@@ -117,6 +101,31 @@ const Home = () => {
   useEffect(() => {
     setLanguagePrompt(language);
   }, [language]);
+
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
+
+  if (!browserSupportsSpeechRecognition) {
+    return (
+      <div>
+        Speech recognition is not supported in this browser. Please use a different browser.
+      </div>
+    );
+  }
+
+  const startListening = () => {
+    resetTranscript();
+    startRecording();
+  };
+
+  const stopListening = () => {
+    stopRecording();
+    setQuestion(transcript);
+  };
 
   return (
     <>
@@ -138,7 +147,7 @@ const Home = () => {
               <Select.Option value="en">English</Select.Option>
             </Select>
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
-            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
+			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
@@ -146,15 +155,12 @@ const Home = () => {
             }}>
               Connect
             </Button>
-            <Button className="mb-2" onClick={startListening}>
-              Start listening
-            </Button>
-            <Button className="mb-2" onClick={stopListening}>
-              Stop listening
+            <Button className="mb-2" onClick={isRecording ? stopListening : startListening}>
+              {isRecording ? "Stop recording" : "Start recording"}
             </Button>
             <Button className="mb-2" onClick={fetchGpt}>Get response</Button>
           </div>
-          {transcript.text}
+          {transcript}
         </div>
       </main>
     </>
@@ -173,6 +179,11 @@ const Home = () => {
       // Right btn
       // onRecord();
     }
+  }
+
+  function onRecord() {
+    isRecording ? stopRecording() : startRecording();
+    setIsRecording(!isRecording);
   }
 
   function wrapText(inputText) {
