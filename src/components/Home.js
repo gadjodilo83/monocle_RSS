@@ -19,11 +19,11 @@ const Home = () => {
   const [connected, setConnected] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const { startRecording, stopRecording, transcript } = useWhisper({
-      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_TOKEN,
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_TOKEN,
     streaming: true,
     timeSlice: 500,
     whisperConfig: {
-      language: "en",
+    language: "de",
     },
   });
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
@@ -60,20 +60,26 @@ const fetchGpt = async () => {
     { "role": "user", "content": window.transcript },
   ];
 
-  const response = await fetch(`https://api.openai.com/v1/chat/completions`, { // Changed endpoint to /chat/completions
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: messages,
-      temperature: temperature,
-      max_tokens: 2000,
-      language: language,
-    }),
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-  });
+	const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
+	  body: JSON.stringify({
+		model: "gpt-3.5-turbo",
+		messages: messages,
+		temperature: temperature,
+		max_tokens: 2000,
+	  }),
+	  headers: {
+		Authorization: `Bearer ${apiKey}`,
+		"Content-Type": "application/json",
+	  },
+	  method: "POST",
+	});
+
+	if (!response.ok) {
+	  const message = await response.text();
+	  console.error('API request error:', response.status, message);
+	  throw new Error(`API request failed: ${message}`);
+	}
+
 
   const resJson = await response.json();
   const res = resJson?.choices?.[0]?.message?.content;
@@ -86,6 +92,11 @@ const fetchGpt = async () => {
     // Sync the window variable and the transcript
     window.transcript = transcript.text;
   }, [transcript.text]);
+
+	useEffect(() => {
+	  setLanguagePrompt(language);
+	}, [language]);
+
 
   return (
     <>
@@ -100,7 +111,7 @@ const fetchGpt = async () => {
           <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
           <div style={{ width: '50%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
-            <Input className="mb-2" style={{ height: '80px' }} value={systemPrompt} onChange={(e) => setSystemPrompt(e.target.value)} placeholder="Define the role of GPT-3" />
+			<Input className="mb-2" style={{ height: '80px' }} value={systemPrompt} readOnly placeholder="Define the role of GPT-3" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
             <Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => {setLanguage(value); setLanguagePrompt(value, setSystemPrompt)}}>
               <Select.Option value="de">Deutsch</Select.Option>
