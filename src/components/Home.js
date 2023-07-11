@@ -117,7 +117,7 @@ const fetchGpt = async () => {
               <Select.Option value="it">Italiano</Select.Option>
               <Select.Option value="en">English</Select.Option>
             </Select>
-            <Input.TextArea className="mb-2" style={{ height: '300px' }} value={systemPrompt} onChange={(e) => setSystemPrompt(e.target.value)} />
+            <Input.TextArea className="mb-2" style={{ height: '100px' }} readOnly value={response} />
 			<Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
