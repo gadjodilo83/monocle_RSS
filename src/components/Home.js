@@ -11,23 +11,6 @@ import { execMonocle } from "@/utils/comms";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const setLanguagePrompt = (language, setSystemPrompt) => {
-  let systemPrompt;
-  switch(language) {
-    case "de":
-      systemPrompt = "Du bist ein Sprachassistent und antortest in Deutsch.";
-      break;
-    case "it":
-      systemPrompt = "Sei un assistente linguistico e rispondi in italiano.";
-      break;
-    case "en":
-      systemPrompt = "You are a language assistant and answer in English.";
-      break;
-    default:
-      systemPrompt = "You are a language assistant.";
-  }
-  setSystemPrompt(systemPrompt);
-}
 
 
 
@@ -41,6 +24,25 @@ const Home = () => {
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState(''); // Neuer Zustand für systemPrompt
+
+  const setLanguagePrompt = (language) => {
+    let systemPrompt;
+    switch(language) {
+      case "de":
+        systemPrompt = "Du bist ein Sprachassistent und antortest in Deutsch.";
+        break;
+      case "it":
+        systemPrompt = "Sei un assistente linguistico e rispondi in italiano.";
+        break;
+      case "en":
+        systemPrompt = "You are a language assistant and answer in English.";
+        break;
+      default:
+        systemPrompt = "You are a language assistant.";
+    }
+    setSystemPrompt(systemPrompt);
+  }
+
 
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_TOKEN,
     streaming: true,
