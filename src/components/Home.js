@@ -178,6 +178,6 @@ const Home = () => {
       setConnected(true);
     }
   }
-};
+}
 
 export default Home;
