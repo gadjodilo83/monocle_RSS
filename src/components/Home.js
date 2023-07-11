@@ -16,6 +16,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
   // Bestehende Zustände
+
+  const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [connected, setConnected] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const { startRecording, stopRecording, transcript } = useWhisper({
@@ -26,7 +28,7 @@ const Home = () => {
       language: inputLanguage,
   },
 });
-  const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
+
   const [temperature, setTemperature] = useState(1.0);
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
@@ -67,7 +69,7 @@ const fetchGpt = async () => {
       max_tokens: 2000,
     }),
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`, // Verwenden Sie den apiKey-Zustand hier
       "Content-Type": "application/json",
     },
     method: "POST",
@@ -117,15 +119,10 @@ const fetchGpt = async () => {
           <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
           <div style={{ width: '50%' }}>
 
-            <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
 
 
-		<div>
-		  <label>
-			API Key:
-			<input type="text" value={apiKey.replace(/[<>]/g, '')} onChange={(e) => setApiKey(e.target.value)} />
-		  </label>
-		</div>
+			<Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
+
 
 
 			<InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
