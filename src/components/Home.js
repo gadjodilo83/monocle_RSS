@@ -8,6 +8,7 @@ import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
+import SpeechRecognition from "react-speech-recognition";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -93,6 +94,22 @@ const Home = () => {
     await displayRawRizz(res);
   };
 
+  const recognition = SpeechRecognition();
+
+  useEffect(() => {
+    if (recognition.finalTranscript) {
+      setQuestion(recognition.finalTranscript);
+    }
+  }, [recognition.finalTranscript]);
+
+  const startListening = () => {
+    recognition.start();
+  };
+
+  const stopListening = () => {
+    recognition.stop();
+  };
+
   useEffect(() => {
     window.transcript = transcript.text;
   }, [transcript.text]);
@@ -121,7 +138,7 @@ const Home = () => {
               <Select.Option value="en">English</Select.Option>
             </Select>
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
-			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
+            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
@@ -129,8 +146,11 @@ const Home = () => {
             }}>
               Connect
             </Button>
-            <Button className="mb-2" onClick={onRecord}>
-              {isRecording ? "Stop recording" : "Start recording"}
+            <Button className="mb-2" onClick={startListening}>
+              Start listening
+            </Button>
+            <Button className="mb-2" onClick={stopListening}>
+              Stop listening
             </Button>
             <Button className="mb-2" onClick={fetchGpt}>Get response</Button>
           </div>
@@ -153,11 +173,6 @@ const Home = () => {
       // Right btn
       // onRecord();
     }
-  }
-
-  function onRecord() {
-    isRecording ? stopRecording() : startRecording();
-    setIsRecording(!isRecording);
   }
 
   function wrapText(inputText) {
