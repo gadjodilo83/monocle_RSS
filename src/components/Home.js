@@ -8,7 +8,6 @@ import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
-import { useState, useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
