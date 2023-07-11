@@ -52,13 +52,10 @@ const Home = () => {
   }
 
 
-
-
-
 const fetchGpt = async () => {
   const messages = [
     { role: "system", content: systemPrompt },
-    { role: "user", content: question  },
+    { role: "user", content: question },
   ];
 
   const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
