@@ -90,32 +90,34 @@ const Home = () => {
       <main className={`${inter.className} ${styles.main}`}>
         <div className="flex w-screen h-screen flex-col items-center justify-center">
           <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
-          <Input className="mb-2" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
-          <Select className="mb-2" value={systemRole} onChange={(value) => setSystemRole(value)} style={{ width: '100%' }}>
-            <Select.Option value="system">System</Select.Option>
-            <Select.Option value="user">User</Select.Option>
-            <Select.Option value="assistant">Assistant</Select.Option>
-            <Select.Option value="function">Function</Select.Option>
-          </Select>
-          <InputNumber className="mb-2" min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} style={{ width: '100%' }} />
-          <Input className="mb-2" value={assistantRole} onChange={(e) => setAssistantRole(e.target.value)} placeholder="Assistant Role" />
-          <Select className="mb-2" value={language} onChange={(value) => setLanguage(value)} style={{ width: '100%' }}>
-            <Select.Option value="de">Deutsch</Select.Option>
-            <Select.Option value="it">Italiano</Select.Option>
-            <Select.Option value="en">English</Select.Option>
-          </Select>
-          <Input.TextArea className="mb-2" readOnly value={response} />
-          <Button className="mb-2" type="primary" onClick={async () => {
-            await ensureConnected(logger, relayCallback);
-            app.run(execMonocle);
-            await displayRawRizz();
-          }}>
-            Connect
-          </Button>
-          <Button className="mb-2" onClick={onRecord}>
-            {isRecording ? "Stop recording" : "Start recording"}
-          </Button>
-          <Button className="mb-2" onClick={fetchGpt}>Get response</Button>
+          <div style={{ width: '50%' }}>
+            <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
+            <Select className="mb-2" style={{ width: '100%', height: '40px' }} value={systemRole} onChange={(value) => setSystemRole(value)}>
+              <Select.Option value="system">System</Select.Option>
+              <Select.Option value="user">User</Select.Option>
+              <Select.Option value="assistant">Assistant</Select.Option>
+              <Select.Option value="function">Function</Select.Option>
+            </Select>
+            <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
+            <Input className="mb-2" style={{ height: '40px' }} value={assistantRole} onChange={(e) => setAssistantRole(e.target.value)} placeholder="Assistant Role" />
+            <Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => setLanguage(value)}>
+              <Select.Option value="de">Deutsch</Select.Option>
+              <Select.Option value="it">Italiano</Select.Option>
+              <Select.Option value="en">English</Select.Option>
+            </Select>
+            <Input.TextArea className="mb-2" style={{ height: '100px' }} readOnly value={response} />
+            <Button className="mb-2" type="primary" onClick={async () => {
+              await ensureConnected(logger, relayCallback);
+              app.run(execMonocle);
+              await displayRawRizz();
+            }}>
+              Connect
+            </Button>
+            <Button className="mb-2" onClick={onRecord}>
+              {isRecording ? "Stop recording" : "Start recording"}
+            </Button>
+            <Button className="mb-2" onClick={fetchGpt}>Get response</Button>
+          </div>
           {transcript.text}
         </div>
       </main>
