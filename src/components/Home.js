@@ -103,11 +103,10 @@ const Home = () => {
   }, [language]);
 
   const {
-    transcript,
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition,
-  } = useSpeechRecognition();
+  } = SpeechRecognition.useSpeechRecognition();
 
   if (!browserSupportsSpeechRecognition) {
     return (
@@ -124,7 +123,7 @@ const Home = () => {
 
   const stopListening = () => {
     stopRecording();
-    setQuestion(transcript);
+    setQuestion(transcript.text);
   };
 
   return (
@@ -147,7 +146,7 @@ const Home = () => {
               <Select.Option value="en">English</Select.Option>
             </Select>
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
-			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
+            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
@@ -160,7 +159,7 @@ const Home = () => {
             </Button>
             <Button className="mb-2" onClick={fetchGpt}>Get response</Button>
           </div>
-          {transcript}
+          {transcript.text}
         </div>
       </main>
     </>
@@ -179,11 +178,6 @@ const Home = () => {
       // Right btn
       // onRecord();
     }
-  }
-
-  function onRecord() {
-    isRecording ? stopRecording() : startRecording();
-    setIsRecording(!isRecording);
   }
 
   function wrapText(inputText) {
