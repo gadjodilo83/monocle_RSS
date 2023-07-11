@@ -99,7 +99,7 @@ const Home = () => {
               <Select.Option value="function">Function</Select.Option>
             </Select>
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
-            <Input className="mb-2" style={{ height: '40px' }} value={assistantRole} onChange={(e) => setAssistantRole(e.target.value)} placeholder="Assistant Role" />
+            <Input className="mb-2" style={{ height: '80px' }} value={assistantRole} onChange={(e) => setAssistantRole(e.target.value)} placeholder="Assistant Role" />
             <Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => setLanguage(value)}>
               <Select.Option value="de">Deutsch</Select.Option>
               <Select.Option value="it">Italiano</Select.Option>
