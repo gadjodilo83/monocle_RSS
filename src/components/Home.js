@@ -19,6 +19,13 @@ const Home = () => {
   const [connected, setConnected] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const { startRecording, stopRecording, transcript } = useWhisper({
+      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_TOKEN,
+    streaming: true,
+    timeSlice: 500,
+    whisperConfig: {
+      language: "en",
+    },
+  });
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [temperature, setTemperature] = useState(1.0);
   const [language, setLanguage] = useState("de");
@@ -44,13 +51,7 @@ const Home = () => {
   }
 
 
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_TOKEN,
-    streaming: true,
-    timeSlice: 500,
-    whisperConfig: {
-      language: "en",
-    },
-  });
+
 
 
 const fetchGpt = async () => {
