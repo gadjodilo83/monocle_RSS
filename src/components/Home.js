@@ -18,6 +18,7 @@ const Home = () => {
   // Bestehende Zustände
 
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
+  const [inputLanguage, setInputLanguage] = useState("de");
   const [connected, setConnected] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const { startRecording, stopRecording, transcript } = useWhisper({
@@ -26,8 +27,8 @@ const Home = () => {
     timeSlice: 500,
     whisperConfig: {
       language: inputLanguage,
-  },
-});
+    },
+  });
 
   const [temperature, setTemperature] = useState(1.0);
   const [language, setLanguage] = useState("de");
