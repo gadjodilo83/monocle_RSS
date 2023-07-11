@@ -107,7 +107,7 @@ const fetchGpt = async () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${inter.className} ${styles.main}`}>
-        <div className="flex w-screen h-screen flex-col items-center justify-center">
+		<div className="flex w-screen h-screen flex-col items-center justify-start">
           <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
           <div style={{ width: '50%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
@@ -118,7 +118,7 @@ const fetchGpt = async () => {
               <Select.Option value="it">Italiano</Select.Option>
               <Select.Option value="en">English</Select.Option>
             </Select>
-            <Input.TextArea className="mb-2" style={{ height: '100px' }} readOnly value={response} />
+            <Input.TextArea className="mb-2" style={{ height: '300px' }} readOnly value={response} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
