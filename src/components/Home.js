@@ -40,14 +40,6 @@ const Home = () => {
         Given a transcript between an interviewee and the interviewer who may want to hire the interviewee,
         provide a concise response of what the individual should say next.
     `;
-  const fetchGpt = async () => {
-    const userPrompt = window.transcript;
-    const systemPrompt = `
-        You are CharismaGPT, a powerful conversationalist with incredibly high EQ.
-        You are helping an individual decide what to say during their job interview. 
-        Given a transcript between an interviewee and the interviewer who may want to hire the interviewee,
-        provide a concise response of what the individual should say next.
-    `;
     const response = await fetch(`https://api.openai.com/v1/completions`, {
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
