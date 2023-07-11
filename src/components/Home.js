@@ -44,7 +44,7 @@ const fetchGpt = async () => {
       model: "gpt-3.5-turbo",
       messages: messages,
       temperature: temperature,
-      max_tokens: 512,
+      max_tokens: 2000,
     }),
     headers: {
       Authorization: `Bearer ${apiKey}`,
