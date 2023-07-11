@@ -59,7 +59,8 @@ const Home = () => {
 const fetchGpt = async () => {
   const messages = [
     { role: "system", content: systemPrompt },
-    { role: "user", content: question },
+    { role: "user", content: question }, // Text im Textfeld setQuestion
+    { role: "user", content: displayedResponse }, // Umgewandelter Text als Frage
   ];
 
   const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
@@ -136,6 +137,16 @@ const fetchGpt = async () => {
 			<Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
 			<Input.TextArea className="mb-2" style={{ height: '100px' }} placeholder="Ask a question" onChange={(e) => setQuestion(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
 			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
+
+			<Input.TextArea
+			  className="mb-2"
+			  style={{ height: '100px' }}
+			  value={question} // Wert des Textfelds setQuestion
+			  onChange={(e) => setQuestion(e.target.value)} // Update: Wert des Textfelds setQuestion aktualisieren
+			  autoSize={{ minRows: 2, maxRows: 6 }}
+			/>	
+
+	
 			<Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
