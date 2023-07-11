@@ -27,10 +27,10 @@ const Home = () => {
   // Neue Zustände
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [temperature, setTemperature] = useState(1.0);
-  const [assistantRole, setAssistantRole] = useState("");
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState(''); // Neuer Zustand für systemPrompt
+
 
 
   const fetchGpt = async () => {
@@ -52,7 +52,7 @@ const Home = () => {
           role: systemPrompt // systemPrompt wird als Rolle gesendet
         },
         assistant: {
-          role: assistantRole
+          role: "assistant" // Festgelegte Rolle "assistant"
         },
       }),
       headers: {
@@ -89,7 +89,6 @@ const Home = () => {
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <Input className="mb-2" style={{ height: '80px' }} value={systemPrompt} onChange={(e) => setSystemPrompt(e.target.value)} placeholder="System Role Content" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
-            <Input className="mb-2" style={{ height: '80px' }} value={assistantRole} onChange={(e) => setAssistantRole(e.target.value)} placeholder="Assistant Role" />
             <Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => setLanguage(value)}>
               <Select.Option value="de">Deutsch</Select.Option>
               <Select.Option value="it">Italiano</Select.Option>
