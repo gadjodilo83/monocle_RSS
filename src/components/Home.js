@@ -88,7 +88,7 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${inter.className} ${styles.main}`}>
-        <div className="flex w-screen h-screen flex-col items-center justify-center">
+        <div className="flex w-screen h-screen flex-col items-center justify-start pt-10">
           <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
           <div style={{ width: '50%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
@@ -99,7 +99,7 @@ const Home = () => {
               <Select.Option value="function">Function</Select.Option>
             </Select>
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
-            <Input className="mb-2" style={{ height: '80px' }} value={assistantRole} onChange={(e) => setAssistantRole(e.target.value)} placeholder="Assistant Role" />
+            <Input.TextArea className="mb-2" style={{ height: '120px' }} value={assistantRole} onChange={(e) => setAssistantRole(e.target.value)} placeholder="Assistant Role" />
             <Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => setLanguage(value)}>
               <Select.Option value="de">Deutsch</Select.Option>
               <Select.Option value="it">Italiano</Select.Option>
@@ -123,6 +123,8 @@ const Home = () => {
       </main>
     </>
   );
+  
+  
 
   function relayCallback(msg) {
     if (!msg) {
