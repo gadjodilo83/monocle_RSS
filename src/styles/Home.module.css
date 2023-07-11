@@ -5,7 +5,14 @@
   align-items: center;
   padding: 6rem;
   min-height: 100vh;
+  background-color: black;
+  color: turquoise;
 }
+
+.text-3xl {
+  color: turquoise;
+}
+
 
 .description {
   display: inherit;
