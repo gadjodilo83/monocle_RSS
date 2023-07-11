@@ -11,7 +11,7 @@ import { execMonocle } from "@/utils/comms";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const setLanguagePrompt = (language) => {
+const setLanguagePrompt = (language, setSystemPrompt) => {
   let systemPrompt;
   switch(language) {
     case "de":
@@ -99,12 +99,14 @@ const fetchGpt = async () => {
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <Input className="mb-2" style={{ height: '80px' }} value={systemPrompt} onChange={(e) => setSystemPrompt(e.target.value)} placeholder="System Role Content" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
-			<Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => {setLanguage(value); setLanguagePrompt(value)}}>
-			  <Select.Option value="de">Deutsch</Select.Option>
-			  <Select.Option value="it">Italiano</Select.Option>
-			  <Select.Option value="en">English</Select.Option>
-			</Select>
-			<Input className="mb-2" style={{ height: '80px' }} value={systemPrompt} onChange={(e) => setSystemPrompt(e.target.value)} placeholder="System Role Content" />
+			  <Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => {setLanguage(value); setLanguagePrompt(value, setSystemPrompt)}}>
+				<Select.Option value="de">Deutsch</Select.Option>
+				<Select.Option value="it">Italiano</Select.Option>
+				<Select.Option value="en">English</Select.Option>
+			  </Select>
+
+			  <Input className="mb-2" style={{ height: '80px' }} value={systemPrompt} onChange={(e) => setSystemPrompt(e.target.value)} placeholder="System Role Content" />
+
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
