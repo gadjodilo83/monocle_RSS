@@ -33,41 +33,32 @@ const Home = () => {
 
 
 
-  const fetchGpt = async () => {
-    const userPrompt = window.transcript;
-    const response = await fetch(`https://api.openai.com/v1/completions`, {
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        prompt:
-          systemPrompt +
-          "\ntranscript: " +
-          userPrompt +
-          "\noptimal interviewee's response: ",
-        temperature: temperature,
-        max_tokens: 512,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-        language: language,
-        system: {
-          role: systemPrompt // systemPrompt wird als Rolle gesendet
-        },
-        assistant: {
-          role: "assistant" // Festgelegte Rolle "assistant"
-        },
-      }),
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
+const fetchGpt = async () => {
+  const messages = [
+    { "role": "system", "content": systemPrompt },
+    { "role": "user", "content": window.transcript },
+  ];
 
-    const resJson = await response.json();
-    const res = resJson?.choices?.[0]?.text;
-    if (!res) return;
-    setResponse(res);
-    await displayRawRizz(res);
-  };
+  const response = await fetch(`https://api.openai.com/v1/chat/completions`, { // Changed endpoint to /chat/completions
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: messages,
+      temperature: temperature,
+      max_tokens: 512,
+    }),
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
+
+  const resJson = await response.json();
+  const res = resJson?.choices?.[0]?.message?.content;
+  if (!res) return;
+  setResponse(res);
+  await displayRawRizz(res);
+};
 
   useEffect(() => {
     // Sync the window variable and the transcript
