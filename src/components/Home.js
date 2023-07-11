@@ -8,6 +8,7 @@ import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
+import { useState, useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ const Home = () => {
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState(''); // Neuer Zustand für systemPrompt
   const [question, setQuestion] = useState("");
+  const [displayedResponse, setDisplayedResponse] = useState("");
 
   const setLanguagePrompt = (language) => {
     let systemPrompt;
@@ -81,6 +83,14 @@ const fetchGpt = async () => {
   const resJson = await response.json();
   const res = resJson?.choices?.[0]?.message?.content;
   if (!res) return;
+  // Set response with typewriter effect
+  setDisplayedResponse("");
+  for (let i = 0; i <= res.length; i++) {
+    const substr = res.substring(0, i);
+    setDisplayedResponse(substr);
+    await new Promise((resolve) => setTimeout(resolve, 50)); // Delay between each character
+  }
+
   setResponse(res);
   await displayRawRizz(res);
 };
@@ -119,7 +129,7 @@ const fetchGpt = async () => {
 
 			<Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
 			<Input.TextArea className="mb-2" style={{ height: '100px' }} placeholder="Ask a question" onChange={(e) => setQuestion(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
-            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={response} autoSize={{ minRows: 2, maxRows: 10 }}/>
+			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
 			<Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
