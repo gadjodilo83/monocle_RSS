@@ -117,10 +117,11 @@ const fetchGpt = async () => {
               <Select.Option value="en">English</Select.Option>
             </Select>
 
-			<Input className="mb-2" style={{ height: '80px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} />            
-			<Input.TextArea className="mb-2" style={{ height: '100px' }} placeholder="Ask a question" onChange={(e) => setQuestion(e.target.value)} />
+			<Input.TextArea className="mb-2" style={{ height: '80px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
+            
+			<Input.TextArea className="mb-2" style={{ height: '100px' }} placeholder="Ask a question" onChange={(e) => setQuestion(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
 
-            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={response} />
+            <Input.TextArea className="mb-2" style={{ height: '80px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
 			<Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
