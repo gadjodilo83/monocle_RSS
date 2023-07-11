@@ -31,6 +31,7 @@ const Home = () => {
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState(''); // Neuer Zustand für systemPrompt
+  const [question, setQuestion] = useState("");
 
   const setLanguagePrompt = (language) => {
     let systemPrompt;
@@ -57,7 +58,7 @@ const Home = () => {
 const fetchGpt = async () => {
   const messages = [
     { role: "system", content: systemPrompt },
-    { role: "user", content: systemPrompt },
+    { role: "user", content: question  },
   ];
 
   const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
