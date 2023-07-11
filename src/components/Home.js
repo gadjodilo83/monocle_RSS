@@ -19,13 +19,13 @@ const Home = () => {
   const [connected, setConnected] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const { startRecording, stopRecording, transcript } = useWhisper({
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_TOKEN,
+    apiKey: apiKey,
     streaming: true,
     timeSlice: 500,
     whisperConfig: {
-    language: "de",
-    },
-  });
+      language: inputLanguage,
+  },
+});
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [temperature, setTemperature] = useState(1.0);
   const [language, setLanguage] = useState("de");
@@ -118,6 +118,15 @@ const fetchGpt = async () => {
           <div style={{ width: '50%' }}>
 
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
+
+
+		<div>
+		  <label>
+			API Key:
+			<input type="text" value={apiKey.replace(/[<>]/g, '')} onChange={(e) => setApiKey(e.target.value)} />
+		  </label>
+		</div>
+
 
 			<InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
             <Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => {setLanguage(value); setLanguagePrompt(value, setSystemPrompt)}}>
