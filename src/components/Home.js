@@ -1,10 +1,10 @@
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import { useState, useEffect } from "react";
 import { ensureConnected } from "@/utils/bluetooth/js/main";
 import { replRawMode, replSend } from "@/utils/bluetooth/js/repl";
-import { Button } from "antd";
+import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
@@ -12,9 +12,9 @@ import { execMonocle } from "@/utils/comms";
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
+  // Bestehende Zustände
   const [connected, setConnected] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-
   const { startRecording, stopRecording, transcript } = useWhisper({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_TOKEN,
     streaming: true,
@@ -24,6 +24,22 @@ const Home = () => {
     },
   });
 
+  // Neue Zustände
+  const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
+  const [systemRole, setSystemRole] = useState("system");
+  const [temperature, setTemperature] = useState(1.0);
+  const [assistantRole, setAssistantRole] = useState("");
+  const [language, setLanguage] = useState("de");
+  const [response, setResponse] = useState("");
+
+  const fetchGpt = async () => {
+    const userPrompt = window.transcript;
+    const systemPrompt = `
+        You are CharismaGPT, a powerful conversationalist with incredibly high EQ.
+        You are helping an individual decide what to say during their job interview. 
+        Given a transcript between an interviewee and the interviewer who may want to hire the interviewee,
+        provide a concise response of what the individual should say next.
+    `;
   const fetchGpt = async () => {
     const userPrompt = window.transcript;
     const systemPrompt = `
@@ -34,19 +50,26 @@ const Home = () => {
     `;
     const response = await fetch(`https://api.openai.com/v1/completions`, {
       body: JSON.stringify({
-        model: "text-davinci-003",
+        model: "gpt-3.5-turbo",
         prompt:
           systemPrompt +
           "\ntranscript: " +
           userPrompt +
           "\noptimal interviewee's response: ",
-        temperature: 0.7,
+        temperature: temperature,
         max_tokens: 512,
         frequency_penalty: 0,
         presence_penalty: 0,
+        language: language,
+        system: {
+          role: systemRole
+        },
+        assistant: {
+          role: assistantRole
+        },
       }),
       headers: {
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_TOKEN}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       method: "POST",
@@ -55,6 +78,7 @@ const Home = () => {
     const resJson = await response.json();
     const res = resJson?.choices?.[0]?.text;
     if (!res) return;
+    setResponse(res);
     await displayRawRizz(res);
   };
 
@@ -72,26 +96,26 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${inter.className} ${styles.main}`}>
-        <div className="flex w-screen h-screen flex-col items-center justify-center">
-          <p className="text-3xl">{connected ? "Connected" : "Disconnected"}</p>
-          {transcript.text}
-          <Button
-            type="primary"
-            onClick={async () => {
-              await ensureConnected(logger, relayCallback);
-              app.run(execMonocle);
-              await displayRawRizz();
-            }}
-          >
-            Connect
-          </Button>
-          <div className="flex items-center mt-5 gap-2">
-            <Button onClick={onRecord}>
-              {isRecording ? "Stop recording" : "Start recording"}
-            </Button>
-            <Button onClick={fetchGpt}>Get response</Button>
-          </div>
+        {/* ... */}
+        <div className="flex items-center mt-5 gap-2">
+          <Input value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
+          <Select value={systemRole} onChange={(value) => setSystemRole(value)}>
+            <Select.Option value="system">System</Select.Option>
+            <Select.Option value="user">User</Select.Option>
+            <Select.Option value="assistant">Assistant</Select.Option>
+            <Select.Option value="function">Function</Select.Option>
+          </Select>
+          <InputNumber min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
+          <Input value={assistantRole} onChange={(e) => setAssistantRole(e.target.value)} placeholder="Assistant Role" />
+          <Select value={language} onChange={(value) => setLanguage(value)}>
+            <Select.Option value="de">Deutsch</Select.Option>
+            <Select.Option value="it">Italiano</Select.Option>
+            <Select.Option value="en">English</Select.Option>
+          </Select>
+          <Input.TextArea readOnly value={response} />
+          <Button onClick={fetchGpt}>Get response</Button>
         </div>
+        {/* ... */}
       </main>
     </>
   );
