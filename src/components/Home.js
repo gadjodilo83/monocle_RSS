@@ -119,7 +119,7 @@ const Home = () => {
       <main className={`${inter.className} ${styles.main}`}>
         <div className="flex w-screen h-screen flex-col items-center justify-start">
           <h1 className="text-3xl">chatGPT</h1> {/* Neuer Text */}
-	  <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
+	  <p className="text-3xl mb-4">{connected ? "Monocle Connected" : "Monocle Disconnected"}</p>
           <div style={{ width: '90%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
