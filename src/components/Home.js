@@ -129,11 +129,7 @@ const Home = () => {
               className="mb-2"
               style={{ width: '100%', height: '40px' }}
               value={language}
-              onChange={(value) => {
-                setLanguage(value);
-                setInputLanguage(value);
-                setLanguagePrompt(value);
-              }}
+              onChange={handleLanguageChange}
             >
               <Select.Option value="de">Deutsch</Select.Option>
               <Select.Option value="it">Italiano</Select.Option>
@@ -144,7 +140,6 @@ const Home = () => {
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
-              await displayRawRizz();
             }}>
               Connect
             </Button>
@@ -198,7 +193,6 @@ const Home = () => {
       replCmd += `display.text("${splitText[i]}", 0, ${i * 50}, 0xffffff);`;
     }
     replCmd += "display.show();";
-    console.log("**** replCmd ****", replCmd);
     await replSend(replCmd);
   }
 
