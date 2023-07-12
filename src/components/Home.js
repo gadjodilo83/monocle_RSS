@@ -122,22 +122,20 @@ const Home = () => {
           <div style={{ width: '90%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
-			<Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => {setLanguage(value); setLanguagePrompt(value)}}>
-              <Select.Option value="de">Deutsch</Select.Option>
-              <Select.Option value="it">Italiano</Select.Option>
-              <Select.Option value="en">English</Select.Option>
-            </Select>
-
-		  <Select
-			className="mb-2"
-			style={{ width: '100%', height: '40px' }}
-			value={language}
-			onChange={handleLanguageChange}
-		  >
-			<Select.Option value="de">Deutsch</Select.Option>
-			<Select.Option value="it">Italiano</Select.Option>
-			<Select.Option value="en">English</Select.Option>
-		  </Select>
+			<Select
+			  className="mb-2"
+			  style={{ width: '100%', height: '40px' }}
+			  value={language}
+			  onChange={(value) => {
+				setLanguage(value);
+				setInputLanguage(value);
+				setLanguagePrompt(value);
+			  }}
+			>
+			  <Select.Option value="de">Deutsch</Select.Option>
+			  <Select.Option value="it">Italiano</Select.Option>
+			  <Select.Option value="en">English</Select.Option>
+			</Select>
 
 
 
