@@ -8,6 +8,7 @@ import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
+import display
 
 const inter = Inter({ subsets: ["latin"] });
 
