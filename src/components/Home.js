@@ -4,7 +4,7 @@ import styles from "@/styles/Home.module.css";
 import { useState, useEffect } from "react";
 import { ensureConnected } from "@/utils/bluetooth/js/main";
 import { replRawMode, replSend } from "@/utils/bluetooth/js/repl";
-import { Button } from "antd";
+import { Button, Input } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
@@ -75,6 +75,7 @@ const Home = () => {
       <main className={`${inter.className} ${styles.main}`}>
         <div className="flex w-screen h-screen flex-col items-center justify-center">
           <p className="text-3xl">{connected ? "Connected" : "Disconnected"}</p>
+          <Input value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
           {transcript.text}
           <Button
             type="primary"
