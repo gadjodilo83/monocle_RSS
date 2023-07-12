@@ -20,6 +20,19 @@
 }
 
 
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+}
+
+.content {
+  width: 90%;
+  margin-top: auto;
+  margin-bottom: auto;
+}
 
 .description {
   display: inherit;
