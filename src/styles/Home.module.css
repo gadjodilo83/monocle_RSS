@@ -14,7 +14,6 @@
   margin-bottom: 20px;
 }
 
-
 .page {
   display: flex;
   flex-direction: column;
@@ -24,20 +23,17 @@
   margin-bottom: auto;
 }
 
-
 .container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  height: 100%;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .content {
-  width: 90%;
-  margin-top: auto;
-  margin-bottom: auto;
+  margin-top: 2rem;
 }
+
 
 .description {
   display: inherit;
