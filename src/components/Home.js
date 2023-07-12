@@ -118,6 +118,7 @@ const Home = () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
               await displayRawRizz();
+              showDisplay();
             }}>
               Connect
             </Button>
@@ -184,6 +185,11 @@ const Home = () => {
     if (msg === "Connected") {
       setConnected(true);
     }
+  }
+
+  // Funktion zum Anzeigen des Monocle-Displays
+  async function showDisplay() {
+    await replSend("display.show();");
   }
 }
 
