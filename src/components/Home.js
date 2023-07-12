@@ -17,8 +17,6 @@ const FONT_WIDTH = 24;
 const FONT_HEIGHT = 48;
 
 const Home = () => {
-  // Bestehende Zustände
-
   const handleLanguageChange = (value) => {
     setLanguage(value);
     setInputLanguage(value);
@@ -93,14 +91,8 @@ const Home = () => {
     const res = resJson?.choices?.[0]?.message?.content;
     if (!res) return;
 
-    setDisplayedResponse("");
-    for (let i = 0; i <= res.length; i++) {
-      const substr = res.substring(0, i);
-      setDisplayedResponse(substr);
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    }
-
     setResponse(res);
+    setDisplayedResponse(res); // Setze die angezeigte Antwort auf das Textfeld
     await displayRawRizz(res);
   };
 
@@ -111,32 +103,6 @@ const Home = () => {
   useEffect(() => {
     setLanguagePrompt(language);
   }, [language]);
-
-  async function logger(msg) {
-    if (msg === "Connected") {
-      setConnected(true);
-    }
-  }
-
-  function relayCallback(msg) {
-    if (!msg) {
-      return;
-    }
-    if (msg.trim() === "trigger b") {
-      // Left btn
-      // fetchGpt();
-    }
-
-    if (msg.trim() === "trigger a") {
-      // Right btn
-      // onRecord();
-    }
-  }
-
-  function onRecord() {
-    isRecording ? stopRecording() : startRecording();
-    setIsRecording(!isRecording);
-  }
 
   function wrapText(inputText) {
     const columns = Math.floor(WIDTH / FONT_WIDTH);
@@ -171,6 +137,32 @@ const Home = () => {
     display.show();
   }
 
+  async function logger(msg) {
+    if (msg === "Connected") {
+      setConnected(true);
+    }
+  }
+
+  function relayCallback(msg) {
+    if (!msg) {
+      return;
+    }
+    if (msg.trim() === "trigger b") {
+      // Left btn
+      // fetchGpt();
+    }
+
+    if (msg.trim() === "trigger a") {
+      // Right btn
+      // onRecord();
+    }
+  }
+
+  function onRecord() {
+    isRecording ? stopRecording() : startRecording();
+    setIsRecording(!isRecording);
+  }
+
   return (
     <>
       <Head>
@@ -201,8 +193,7 @@ const Home = () => {
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
-              await fetchGpt(); // Zuerst chatGPT abrufen
-              await displayRawRizz(response); // Dann das Display aktualisieren
+              await displayRawRizz(response);
             }}>
               Connect
             </Button>
