@@ -108,10 +108,44 @@ const Home = () => {
     window.transcript = transcript.text;
   }, [transcript.text]);
 
+
+  
   useEffect(() => {
     setLanguagePrompt(language);
   }, [language]);
 
+
+
+  async function logger(msg) {
+    if (msg === "Connected") {
+      setConnected(true);
+    }
+  }
+
+  function relayCallback(msg) {
+    if (!msg) {
+      return;
+    }
+    if (msg.trim() === "trigger b") {
+      // Left btn
+      // fetchGpt();
+    }
+
+    if (msg.trim() === "trigger a") {
+      // Right btn
+      // onRecord();
+    }
+  }
+
+  function onRecord() {
+    isRecording ? stopRecording() : startRecording();
+    setIsRecording(!isRecording);
+  }
+
+
+
+
+  
   function wrapText(inputText) {
     const columns = Math.floor(WIDTH / FONT_WIDTH);
     const rows = Math.floor(HEIGHT / FONT_HEIGHT);
@@ -145,31 +179,7 @@ const Home = () => {
     display.show();
   }
 
-  async function logger(msg) {
-    if (msg === "Connected") {
-      setConnected(true);
-    }
-  }
 
-  function relayCallback(msg) {
-    if (!msg) {
-      return;
-    }
-    if (msg.trim() === "trigger b") {
-      // Left btn
-      // fetchGpt();
-    }
-
-    if (msg.trim() === "trigger a") {
-      // Right btn
-      // onRecord();
-    }
-  }
-
-  function onRecord() {
-    isRecording ? stopRecording() : startRecording();
-    setIsRecording(!isRecording);
-  }
 
   return (
     <>
