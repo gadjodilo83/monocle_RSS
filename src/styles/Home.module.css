@@ -9,30 +9,6 @@
   color: turquoise;
 }
 
-.title {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.page {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  margin-top: 0;
-  margin-bottom: auto;
-}
-
-.container {
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.content {
-  margin-top: 2rem;
-}
 
 .description {
   display: inherit;
