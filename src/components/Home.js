@@ -59,46 +59,47 @@ const Home = () => {
     setSystemPrompt(systemPrompt);
   }
 
-  const fetchGpt = async () => {
-    const messages = [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: transcript.text }, // Verwende den transkribierten Text als Frage
-    ];
+const fetchGpt = async () => {
+  const messages = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: transcript.text }, // Verwende den transkribierten Text als Frage
+  ];
 
-    const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: messages,
-        temperature: temperature,
-        max_tokens: 2000,
-      }),
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
+  const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: messages,
+      temperature: temperature,
+      max_tokens: 2000,
+    }),
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
 
-    if (!response.ok) {
-      const message = await response.text();
-      console.error("API request error:", response.status, message);
-      throw new Error(`API request failed: ${message}`);
-    }
+  if (!response.ok) {
+    const message = await response.text();
+    console.error("API request error:", response.status, message);
+    throw new Error(`API request failed: ${message}`);
+  }
 
-    const resJson = await response.json();
-    const res = resJson?.choices?.[0]?.message?.content;
-    if (!res) return;
+  const resJson = await response.json();
+  const res = resJson?.choices?.[0]?.message?.content;
+  if (!res) return;
 
-    setDisplayedResponse("");
-    for (let i = 0; i <= res.length; i++) {
-      const substr = res.substring(0, i);
-      setDisplayedResponse(substr);
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    }
+  setDisplayedResponse("");
+  for (let i = 0; i <= res.length; i++) {
+    const substr = res.substring(0, i);
+    setDisplayedResponse(substr);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
 
-    setResponse(res);
-    await displayRawRizz(res);
-  };
+  setResponse(res);
+  await displayRawRizz(displayedResponse); // Änderung hier
+};
+
 
   useEffect(() => {
     window.transcript = transcript.text;
