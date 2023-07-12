@@ -12,8 +12,6 @@ import { execMonocle } from "@/utils/comms";
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
-  // Bestehende Zustände
-
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [inputLanguage, setInputLanguage] = useState("de");
   const [connected, setConnected] = useState(false);
@@ -55,7 +53,7 @@ const Home = () => {
   const fetchGpt = async () => {
     const messages = [
       { role: "system", content: systemPrompt },
-      { role: "user", content: transcript.text }, // Verwende den transkribierten Text als Frage
+      { role: "user", content: transcript.text },
     ];
 
     const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
@@ -82,13 +80,7 @@ const Home = () => {
     const res = resJson?.choices?.[0]?.message?.content;
     if (!res) return;
 
-    setDisplayedResponse("");
-    for (let i = 0; i <= res.length; i++) {
-      const substr = res.substring(0, i);
-      setDisplayedResponse(substr);
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    }
-
+    setDisplayedResponse(res);
     setResponse(res);
     await displayRawRizz(res);
   };
@@ -121,7 +113,7 @@ const Home = () => {
               <Select.Option value="en">English</Select.Option>
             </Select>
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 6 }} />
-			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
+            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 2, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
