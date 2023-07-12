@@ -111,7 +111,8 @@ const Home = () => {
       </Head>
       <main className={`${inter.className} ${styles.main}`}>
         <div className="flex w-screen h-screen flex-col items-center justify-start">
-          <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
+          <div className="mt-10"> {/* Fügen Sie die Klasse 'mt-10' hinzu, um den oberen Abstand zu erhöhen */}
+		  <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
           <div style={{ width: '80%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
