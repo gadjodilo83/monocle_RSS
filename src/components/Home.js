@@ -175,7 +175,7 @@ const Home = () => {
               value={language}
               onChange={(value) => {
                 setLanguage(value);
-                handleLanguageChange(value); // Funktion handleLanguageChange wird aufgerufen
+                setLanguagePrompt(value); // Funktion setLanguagePrompt wird aufgerufen
               }}
             >
               <Select.Option value="de">Deutsch</Select.Option>
