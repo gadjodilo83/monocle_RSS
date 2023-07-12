@@ -109,11 +109,11 @@ const Home = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${inter.className} ${styles.main}`}>
-		<div className="flex w-screen h-screen flex-col items-center justify-start">
-		<div className="mt-10">
-		<p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
-          <div style={{ width: '80%' }}>
+		<main className={`${inter.className} ${styles.main}`}>
+		  <div className="flex w-screen h-screen flex-col items-center justify-start">
+			<div className="mt-10">
+			  <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
+			  <div style={{ width: '80%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
             <Select className="mb-2" style={{ width: '100%', height: '40px' }} value={language} onChange={(value) => {setLanguage(value); setLanguagePrompt(value, setSystemPrompt)}}>
