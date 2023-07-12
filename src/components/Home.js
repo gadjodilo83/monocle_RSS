@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
-import { ensureConnected } from "@/utils/bluetooth/js/main";
-import { replRawMode, replSend } from "@/utils/bluetooth/js/repl";
 import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
+import { ensureConnected } from "@/utils/bluetooth/js/main";
+import { replRawMode, replSend } from "@/utils/bluetooth/js/repl";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
+import styles from "@/styles/Home.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,12 +17,6 @@ const FONT_WIDTH = 24;
 const FONT_HEIGHT = 48;
 
 const Home = () => {
-  const handleLanguageChange = (value) => {
-    setLanguage(value);
-    setInputLanguage(value);
-    setLanguagePrompt(value);
-  };
-
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [inputLanguage, setInputLanguage] = useState("de");
   const [connected, setConnected] = useState(false);
@@ -40,7 +34,6 @@ const Home = () => {
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState("");
-  const [question, setQuestion] = useState("");
   const [displayedResponse, setDisplayedResponse] = useState("");
 
   const setLanguagePrompt = (language) => {
@@ -64,7 +57,7 @@ const Home = () => {
   const fetchGpt = async () => {
     const messages = [
       { role: "system", content: systemPrompt },
-      { role: "user", content: transcript.text }, // Verwende den transkribierten Text als Frage
+      { role: "user", content: transcript.text },
     ];
 
     const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
@@ -92,7 +85,7 @@ const Home = () => {
     if (!res) return;
 
     setResponse(res);
-    setDisplayedResponse(res); // Setze die angezeigte Antwort auf das Textfeld
+    setDisplayedResponse(res);
     await displayRawRizz(res);
   };
 
@@ -129,6 +122,7 @@ const Home = () => {
     replCmd += "display.show();";
     console.log("**** replCmd ****", replCmd);
     await replSend(replCmd);
+    display.show();
   }
 
   async function displayRawRizz(rizz) {
