@@ -132,7 +132,8 @@ const Home = () => {
 
     for (let i = 0; i < wrappedText.length; i++) {
       replCmd += `display.text("${wrappedText[i]}", 0, ${i * FONT_HEIGHT}, 0xffffff);`;
-    }
+    display.show();
+	}
 
     replCmd += "display.show();";
     console.log("**** replCmd ****", replCmd);
@@ -142,6 +143,7 @@ const Home = () => {
   async function displayRawRizz(rizz) {
     await replRawMode(true);
     await displayRizz(rizz);
+	display.show();
   }
 
   async function logger(msg) {
