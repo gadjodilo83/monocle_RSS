@@ -146,7 +146,8 @@ const fetchGpt = async () => {
             <Button className="mb-2" onClick={onRecord}>
               {isRecording ? "Stop recording" : "Start recording"}
             </Button>
-            <Button className="mb-2" onClick={fetchGpt}>Get response</Button>
+            <Button className="mb-2" onClick={() => fetchGpt()}>Get response</Button>
+
           </div>
           {transcript.text}
         </div>
