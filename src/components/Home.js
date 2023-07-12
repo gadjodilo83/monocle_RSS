@@ -64,7 +64,7 @@ const Home = () => {
 const fetchGpt = async () => {
   const messages = [
     { role: "system", content: systemPrompt },
-    { role: "user", content: transcript.text }, // Verwende den transkribierten Text als Frage
+    { role: "user", content: transcript.text },
   ];
 
   const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
@@ -90,7 +90,7 @@ const fetchGpt = async () => {
   const resJson = await response.json();
   const res = resJson?.choices?.[0]?.text;
   if (!res) return;
-  await displayRawRizz(res); // Fehlende Zeile, um den erhaltenen Text an displayRawRizz zu übergeben
+  await displayRawRizz(res);
 };
 
 
