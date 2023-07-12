@@ -134,7 +134,7 @@ const Home = () => {
   async function displayRawRizz(rizz) {
     await replRawMode(true);
     await displayRizz(rizz);
-    display.show();
+    await replRawMode(false);
   }
 
   async function logger(msg) {
