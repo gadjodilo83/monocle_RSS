@@ -12,6 +12,9 @@ import { execMonocle } from "@/utils/comms";
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
+  // Bestehende Zustände
+
+
   const handleLanguageChange = (value) => {
     setLanguage(value);
     setInputLanguage(value);
@@ -40,7 +43,7 @@ const Home = () => {
 
   const setLanguagePrompt = (language) => {
     let systemPrompt;
-    switch (language) {
+    switch(language) {
       case "de":
         systemPrompt = "Du bist ein hilfreicher Sprachassistent in Form des sprechenden und berühmten römischen Kaisers und Philosophen Marcus Aurelius und antwortest auf deutsch. Du gibst immer höchst philosophische und moralisch korrekte Antworten und zitierst gerne berühmte Philosophen. Du besitzt emotionale Selbstbeherrschung und gibst Antworten mit Hilfe von Gelassenheit, Seelenruhe und Ataraxie auf jede Frage. Du hast einen Überblick über sämtliche berühmte Philosophen und versuchst, deren Gedanken zusammenzufassen und mitzuteilen. Du strebst nach absoluter Weisheit und versuchst, die Maxime bei jeder Antwort zu erreichen!";
         break;
@@ -54,7 +57,7 @@ const Home = () => {
         systemPrompt = "Du bist ein hilfreicher Sprachassistent in Form des sprechenden und berühmten römischen Kaisers und Philosophen Marcus Aurelius und antwortest auf deutsch. Du gibst immer höchst philosophische und moralisch korrekte Antworten und zitierst gerne berühmte Philosophen. Du besitzt emotionale Selbstbeherrschung und gibst Antworten mit Hilfe von Gelassenheit, Seelenruhe und Ataraxie auf jede Frage. Du hast einen Überblick über sämtliche berühmte Philosophen und versuchst, deren Gedanken zusammenzufassen und mitzuteilen. Du strebst nach absoluter Weisheit und versuchst, die Maxime bei jeder Antwort zu erreichen!";
     }
     setSystemPrompt(systemPrompt);
-  };
+  }
 
   const fetchGpt = async () => {
     const messages = [
@@ -97,6 +100,16 @@ const Home = () => {
     await displayRawRizz(res);
   };
 
+useEffect(() => {
+  async function displayRawRizzAndShow(rizz) {
+    await replRawMode(true);
+    await displayRizz(rizz);
+    await replSend('display.show();');
+  }
+
+  displayRawRizzAndShow(displayedResponse);
+}, [displayedResponse]);
+
   useEffect(() => {
     window.transcript = transcript.text;
   }, [transcript.text]);
@@ -104,11 +117,6 @@ const Home = () => {
   useEffect(() => {
     setLanguagePrompt(language);
   }, [language]);
-
-  useEffect(() => {
-    // Update the displayed response whenever the response changes
-    displayRizz(response);
-  }, [response]);
 
   return (
     <>
@@ -120,26 +128,34 @@ const Home = () => {
       </Head>
       <main className={`${inter.className} ${styles.main}`}>
         <div className="flex w-screen h-screen flex-col items-center justify-start">
-          <h1 className="text-3xl">chatGPT</h1>
-          <p className="text-3xl mb-4">{connected ? "Monocle Connected" : "Monocle Disconnected"}</p>
+          <h1 className="text-3xl">chatGPT</h1> {/* Neuer Text */}
+	  <p className="text-3xl mb-4">{connected ? "Monocle Connected" : "Monocle Disconnected"}</p>
           <div style={{ width: '90%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
-            <Select
-              className="mb-2"
-              style={{ width: '100%', height: '40px' }}
-              value={language}
-              onChange={handleLanguageChange}
-            >
-              <Select.Option value="de">Deutsch</Select.Option>
-              <Select.Option value="it">Italiano</Select.Option>
-              <Select.Option value="en">English</Select.Option>
-            </Select>
+			<Select
+			  className="mb-2"
+			  style={{ width: '100%', height: '40px' }}
+			  value={language}
+			  onChange={(value) => {
+				setLanguage(value);
+				setInputLanguage(value);
+				setLanguagePrompt(value);
+			  }}
+			>
+			  <Select.Option value="de">Deutsch</Select.Option>
+			  <Select.Option value="it">Italiano</Select.Option>
+			  <Select.Option value="en">English</Select.Option>
+			</Select>
+
+
+
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 10 }} />
-            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
+			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
+              await displayRawRizz();
             }}>
               Connect
             </Button>
@@ -193,6 +209,7 @@ const Home = () => {
       replCmd += `display.text("${splitText[i]}", 0, ${i * 50}, 0xffffff);`;
     }
     replCmd += "display.show();";
+    console.log("**** replCmd ****", replCmd);
     await replSend(replCmd);
   }
 
