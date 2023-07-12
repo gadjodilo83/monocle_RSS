@@ -108,7 +108,7 @@ useEffect(() => {
   }
 
   displayRawRizzAndShow(displayedResponse);
-}, [displayedResponse]);
+}, [displayedResponse, displayRizz]);
 
   useEffect(() => {
     window.transcript = transcript.text;
