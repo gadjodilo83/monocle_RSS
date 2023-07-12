@@ -136,6 +136,7 @@ const Home = () => {
             <Button className="mb-2" onClick={fetchGpt}>Get response</Button>
           </div>
           {transcript.text}
+		  </div>
         </div>
       </main>
     </>
