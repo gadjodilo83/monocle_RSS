@@ -8,7 +8,6 @@ import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
-import { useState, useEffect } from "react";
 
 
 
@@ -88,20 +87,11 @@ const fetchGpt = async () => {
     throw new Error(`API request failed: ${message}`);
   }
 
-  const resJson = await response.json();
-  const res = resJson?.choices?.[0]?.message?.content;
-  if (!res) return;
-
-  setDisplayedResponse("");
-  for (let i = 0; i <= res.length; i++) {
-    const substr = res.substring(0, i);
-    setDisplayedResponse(substr);
-    await new Promise((resolve) => setTimeout(resolve, 50));
-  }
-
-  setResponse(res);
-  await displayRawRizz(displayedResponse); // Änderung hier
-};
+    const resJson = await response.json();
+    const res = resJson?.choices?.[0]?.text;
+    if (!res) return;
+    await displayRawRizz(res);
+  };
 
 
   useEffect(() => {
