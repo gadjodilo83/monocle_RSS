@@ -87,11 +87,11 @@ const fetchGpt = async () => {
     throw new Error(`API request failed: ${message}`);
   }
 
-    const resJson = await response.json();
-    const res = resJson?.choices?.[0]?.text;
-    if (!res) return;
-    await displayRawRizz(res);
-  };
+  const resJson = await response.json();
+  const res = resJson?.choices?.[0]?.text;
+  if (!res) return;
+  await displayRawRizz(res); // Fehlende Zeile, um den erhaltenen Text an displayRawRizz zu übergeben
+};
 
 
   useEffect(() => {
