@@ -108,13 +108,9 @@ const Home = () => {
     window.transcript = transcript.text;
   }, [transcript.text]);
 
-
-  
   useEffect(() => {
     setLanguagePrompt(language);
   }, [language]);
-
-
 
   async function logger(msg) {
     if (msg === "Connected") {
@@ -142,10 +138,6 @@ const Home = () => {
     setIsRecording(!isRecording);
   }
 
-
-
-
-  
   function wrapText(inputText) {
     const columns = Math.floor(WIDTH / FONT_WIDTH);
     const rows = Math.floor(HEIGHT / FONT_HEIGHT);
@@ -179,8 +171,6 @@ const Home = () => {
     display.show();
   }
 
-
-
   return (
     <>
       <Head>
@@ -211,7 +201,8 @@ const Home = () => {
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
-              await displayRawRizz();
+              await fetchGpt(); // Zuerst chatGPT abrufen
+              await displayRawRizz(response); // Dann das Display aktualisieren
             }}>
               Connect
             </Button>
