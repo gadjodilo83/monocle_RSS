@@ -109,7 +109,12 @@ const Home = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-     <main className={`${inter.className} ${styles.main} ${styles.page}`}>
+    <main className={`${inter.className} ${styles.main}`}>
+      <div className={`${styles.container}`}>
+        <h1 className={`${styles.title}`}>Monocle chatGPT</h1>
+        <div className={`${styles.content}`}>
+  
+    <main className={`${inter.className} ${styles.main} ${styles.page}`}>
       <div className="flex w-screen h-screen flex-col items-center justify-start">
           <p className="text-3xl mb-4">{connected ? "Connected" : "Disconnected"}</p>
           <div className="flex flex-col items-center" style={{ width: '90%' }}>
