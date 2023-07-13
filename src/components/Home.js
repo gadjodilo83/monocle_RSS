@@ -194,7 +194,7 @@ async function logger(msg) {
 
 
 function wrapText(inputText) {
-  const block = 50;
+  const block = 30;
   let text = [];
   for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
     text.push(inputText.substring(block * i, block * (i + 1)));
