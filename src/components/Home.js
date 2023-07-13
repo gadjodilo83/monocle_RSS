@@ -126,6 +126,7 @@ const Home = () => {
 			</Select>
 
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 10 }} />
+			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
@@ -169,10 +170,36 @@ const Home = () => {
     await displayRizz(rizz);
   }
 
+  async function displayRizz(rizz) {
+    if (!rizz) return;
+    const splitText = wrapText(rizz);
+    let replCmd = "import display\n";
+    let texts = [];
+    for (let i = 0; i < splitText.length; i++) {
+      let textObjectName = `t${i}`;
+      replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
+      texts.push(textObjectName);
+    }
+    replCmd += `display.show(${texts.join(', ')})\n`;
+    console.log("**** replCmd ****", replCmd);
+    await replSend(replCmd);
+  }
+
   async function logger(msg) {
     if (msg === "Connected") {
       setConnected(true);
     }
+  }
+
+  function wrapText(inputText) {
+    const block = 30;
+    let text = [];
+    for (let i = 0; i < 6; i++) {
+      text.push(
+        inputText.substring(block * i, block * (i + 1)).replace("\n", "")
+      );
+    }
+    return text;
   }
 }
 
