@@ -198,7 +198,7 @@ async function displayRizz(rizz) {
     let textObjects = [];
     for (let i = 0; i < splitText.length; i++) {
       let textObjectName = `t${i}`;
-      replCmd += `let ${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff);`;
+      replCmd += `let ${textObjectName} = new display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff);`;
       textObjects.push(textObjectName);
     }
     replCmd += `display.show(${textObjects.join(', ')});`;
