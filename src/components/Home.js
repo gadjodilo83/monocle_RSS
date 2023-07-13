@@ -186,6 +186,13 @@ async function displayRizz(rizz) {
   await replSend(replCmd);
 }
 
+async function logger(msg) {
+  if (msg === "Connected") {
+    setConnected(true);
+  }
+}
+
+
 function wrapText(inputText) {
   const block = 30;
   let text = [];
