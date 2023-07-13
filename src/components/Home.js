@@ -191,17 +191,20 @@ const Home = () => {
     return text;
   }
 
-  async function displayRizz(rizz) {
+async function displayRizz(rizz) {
     if (!rizz) return;
     const splitText = wrapText(rizz);
     let replCmd = "import display;";
+    let textObjects = [];
     for (let i = 0; i < splitText.length; i++) {
-      replCmd += `display.text("${splitText[i]}", 0, ${i * 50}, 0xffffff);`;
+      let textObjectName = `t${i}`;
+      replCmd += `let ${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff);`;
+      textObjects.push(textObjectName);
     }
-    replCmd += "display.show();";
+    replCmd += `display.show(${textObjects.join(', ')});`;
     console.log("**** replCmd ****", replCmd);
     await replSend(replCmd);
-  }
+}
 
   async function displayRawRizz(rizz) {
     await replRawMode(true);
