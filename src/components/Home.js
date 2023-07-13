@@ -79,7 +79,6 @@ const Home = () => {
     const res = resJson?.choices?.[0]?.message?.content;
     if (!res) return;
 
-    setDisplayedResponse("");
     await displayRawRizz(res);
     setResponse(res);
   };
@@ -114,7 +113,14 @@ const Home = () => {
       replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
       texts.push(textObjectName);
     }
-    replCmd += `display.show(${texts.join(', ')})\n`;
+
+    replCmd += `while True:\n`;
+    replCmd += `  for i in range(len(${texts.join(', ')})):\n`;
+    replCmd += `    display.show(${texts.join(', ')})\n`;
+    replCmd += `    await asyncio.sleep(1)\n`;
+    replCmd += `    display.clear()\n`;
+    replCmd += `    ${texts.join(', ')} = ${texts.join(', ')}[1:] + [${texts[0]}]\n`;
+
     console.log("**** replCmd ****", replCmd);
     await replSend(replCmd);
   }
@@ -183,7 +189,7 @@ const Home = () => {
             </Select>
 
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 10 }} />
-            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
+            //<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
