@@ -191,11 +191,11 @@ const Home = () => {
     return text;
   }
 
-let lastDisplayedText = '';
+const [lastDisplayedText, setLastDisplayedText] = useState('');
 
 async function displayRizz(rizz) {
     if (!rizz || rizz === lastDisplayedText) return;
-    lastDisplayedText = rizz;
+    setLastDisplayedText(rizz);
     
     const splitText = wrapText(rizz);
     let replCmd = "import display\n";
