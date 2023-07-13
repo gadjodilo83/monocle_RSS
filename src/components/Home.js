@@ -12,6 +12,9 @@ import { execMonocle } from "@/utils/comms";
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
+  // Bestehende Zustände
+
+
   const handleLanguageChange = (value) => {
     setLanguage(value);
     setInputLanguage(value);
@@ -115,8 +118,8 @@ const Home = () => {
       </Head>
       <main className={`${inter.className} ${styles.main}`}>
         <div className="flex w-screen h-screen flex-col items-center justify-start">
-          <h1 className="text-3xl">chatGPT</h1>
-          <p className="text-3xl mb-4">{connected ? "Monocle Connected" : "Monocle Disconnected"}</p>
+          <h1 className="text-3xl">chatGPT</h1> {/* Neuer Text */}
+	  <p className="text-3xl mb-4">{connected ? "Monocle Connected" : "Monocle Disconnected"}</p>
           <div style={{ width: '90%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
@@ -124,12 +127,18 @@ const Home = () => {
 			  className="mb-2"
 			  style={{ width: '100%', height: '40px' }}
 			  value={language}
-			  onChange={handleLanguageChange}
+			  onChange={(value) => {
+				setLanguage(value);
+				setInputLanguage(value);
+				setLanguagePrompt(value);
+			  }}
 			>
 			  <Select.Option value="de">Deutsch</Select.Option>
 			  <Select.Option value="it">Italiano</Select.Option>
 			  <Select.Option value="en">English</Select.Option>
 			</Select>
+
+
 
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 10 }} />
 			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
@@ -182,7 +191,7 @@ const Home = () => {
     return text;
   }
 
-  async function displayRizz(rizz) {
+async function displayRizz(rizz) {
     if (!rizz) return;
     const splitText = wrapText(rizz);
     let replCmd = "import display\n";
@@ -195,7 +204,7 @@ const Home = () => {
     replCmd += `display.show(${texts.join(', ')})\n`;
     console.log("**** replCmd ****", replCmd);
     await replSend(replCmd);
-  }
+}
 
   async function displayRawRizz(rizz) {
     await replRawMode(true);
