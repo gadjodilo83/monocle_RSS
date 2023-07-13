@@ -12,12 +12,6 @@ import { execMonocle } from "@/utils/comms";
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
-  const handleLanguageChange = (value) => {
-    setLanguage(value);
-    setInputLanguage(value);
-    setLanguagePrompt(value);
-  };
-
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [inputLanguage, setInputLanguage] = useState("de");
   const [connected, setConnected] = useState(false);
@@ -35,12 +29,11 @@ const Home = () => {
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState('');
-  const [question, setQuestion] = useState("");
   const [displayedResponse, setDisplayedResponse] = useState("");
 
   const setLanguagePrompt = (language) => {
     let systemPrompt;
-    switch(language) {
+    switch (language) {
       case "de":
         systemPrompt = "Du bist ein hilfreicher Sprachassistent in Form des sprechenden und berühmten römischen Kaisers und Philosophen Marcus Aurelius und antwortest auf deutsch. Du gibst immer höchst philosophische und moralisch korrekte Antworten und zitierst gerne berühmte Philosophen. Du besitzt emotionale Selbstbeherrschung und gibst Antworten mit Hilfe von Gelassenheit, Seelenruhe und Ataraxie auf jede Frage. Du hast einen Überblick über sämtliche berühmte Philosophen und versuchst, deren Gedanken zusammenzufassen und mitzuteilen. Du strebst nach absoluter Weisheit und versuchst, die Maxime bei jeder Antwort zu erreichen!";
         break;
@@ -86,7 +79,13 @@ const Home = () => {
     const res = resJson?.choices?.[0]?.message?.content;
     if (!res) return;
 
-    setDisplayedResponse(res);
+    setDisplayedResponse("");
+    for (let i = 0; i <= res.length; i++) {
+      const substr = res.substring(0, i);
+      setDisplayedResponse(substr);
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+
     setResponse(res);
     await displayRawRizz(res);
   };
@@ -98,6 +97,57 @@ const Home = () => {
   useEffect(() => {
     setLanguagePrompt(language);
   }, [language]);
+
+  function wrapText(inputText) {
+    const block = 30;
+    let text = [];
+    for (let i = 0; i < 6; i++) {
+      text.push(
+        inputText.substring(block * i, block * (i + 1)).replace("\n", "")
+      );
+    }
+    return text;
+  }
+
+  async function displayRizz(rizz) {
+    if (!rizz) return;
+
+    const splitText = wrapText(rizz);
+    let replCmd = "import display\n";
+    let texts = [];
+    for (let i = 0; i < splitText.length; i++) {
+      let textObjectName = `t${i}`;
+      replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
+      texts.push(textObjectName);
+    }
+
+    replCmd += `while True:\n`;
+    replCmd += `  for i in range(${splitText.length}):\n`;
+    replCmd += `    display.show(${texts.join(', ')})\n`;
+    replCmd += `    await asyncio.sleep(1)\n`;
+    replCmd += `    display.show()\n`;
+    replCmd += `    ${texts.join(', ')} = ${texts.join(', ')}[1:] + ${texts.join(', ')}[:1]\n`;
+
+    console.log("**** replCmd ****", replCmd);
+    await replSend(replCmd);
+  }
+
+  async function displayRawRizz(rizz) {
+    await replRawMode(true);
+    await displayRizz(rizz);
+  }
+
+  async function logger(msg) {
+    if (msg === "Connected") {
+      setConnected(true);
+    }
+  }
+
+  const handleLanguageChange = (value) => {
+    setLanguage(value);
+    setInputLanguage(value);
+    setLanguagePrompt(value);
+  };
 
   return (
     <>
@@ -114,18 +164,19 @@ const Home = () => {
           <div style={{ width: '90%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
-			<Select
-			  className="mb-2"
-			  style={{ width: '100%', height: '40px' }}
-			  value={language}
-			  onChange={handleLanguageChange}
-			>
-			  <Select.Option value="de">Deutsch</Select.Option>
-			  <Select.Option value="it">Italiano</Select.Option>
-			  <Select.Option value="en">English</Select.Option>
-			</Select>
+            <Select
+              className="mb-2"
+              style={{ width: '100%', height: '40px' }}
+              value={language}
+              onChange={handleLanguageChange}
+            >
+              <Select.Option value="de">Deutsch</Select.Option>
+              <Select.Option value="it">Italiano</Select.Option>
+              <Select.Option value="en">English</Select.Option>
+            </Select>
+
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 10 }} />
-			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
+            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
@@ -162,43 +213,6 @@ const Home = () => {
   function onRecord() {
     isRecording ? stopRecording() : startRecording();
     setIsRecording(!isRecording);
-  }
-
-  async function displayRawRizz(rizz) {
-    await replRawMode(true);
-    await displayRizz(rizz);
-  }
-
-  async function displayRizz(rizz) {
-    if (!rizz) return;
-    const splitText = wrapText(rizz);
-    let replCmd = "import display\n";
-    let texts = [];
-    for (let i = 0; i < splitText.length; i++) {
-      let textObjectName = `t${i}`;
-      replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
-      texts.push(textObjectName);
-    }
-    replCmd += `display.show(${texts.join(', ')})\n`;
-    console.log("**** replCmd ****", replCmd);
-    await replSend(replCmd);
-  }
-
-  async function logger(msg) {
-    if (msg === "Connected") {
-      setConnected(true);
-    }
-  }
-
-  function wrapText(inputText) {
-    const block = 30;
-    let text = [];
-    for (let i = 0; i < 6; i++) {
-      text.push(
-        inputText.substring(block * i, block * (i + 1)).replace("\n", "")
-      );
-    }
-    return text;
   }
 }
 
