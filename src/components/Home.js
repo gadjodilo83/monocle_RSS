@@ -12,6 +12,8 @@ import { execMonocle } from "@/utils/comms";
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
+  // Bestehende Zustände
+
   const handleLanguageChange = (value) => {
     setLanguage(value);
     setInputLanguage(value);
@@ -37,7 +39,6 @@ const Home = () => {
   const [systemPrompt, setSystemPrompt] = useState('');
   const [question, setQuestion] = useState("");
   const [displayedResponse, setDisplayedResponse] = useState("");
-  const [lastDisplayedText, setLastDisplayedText] = useState('');
 
   const setLanguagePrompt = (language) => {
     let systemPrompt;
@@ -87,16 +88,15 @@ const Home = () => {
     const res = resJson?.choices?.[0]?.message?.content;
     if (!res) return;
 
-    let tempResponse = "";
+    setDisplayedResponse("");
     for (let i = 0; i <= res.length; i++) {
       const substr = res.substring(0, i);
-      tempResponse = substr;
+      setDisplayedResponse(substr);
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
-    setResponse(tempResponse);
-    setDisplayedResponse(tempResponse);
-    await displayRawRizz(tempResponse);
+    setResponse(res);
+    await displayRawRizz(res);
   };
 
   useEffect(() => {
@@ -117,7 +117,7 @@ const Home = () => {
       </Head>
       <main className={`${inter.className} ${styles.main}`}>
         <div className="flex w-screen h-screen flex-col items-center justify-start">
-          <h1 className="text-3xl">chatGPT</h1>
+          <h1 className="text-3xl">chatGPT</h1> {/* Neuer Text */}
           <p className="text-3xl mb-4">{connected ? "Monocle Connected" : "Monocle Disconnected"}</p>
           <div style={{ width: '90%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
@@ -126,11 +126,7 @@ const Home = () => {
               className="mb-2"
               style={{ width: '100%', height: '40px' }}
               value={language}
-              onChange={(value) => {
-                setLanguage(value);
-                setInputLanguage(value);
-                setLanguagePrompt(value);
-              }}
+              onChange={handleLanguageChange}
             >
               <Select.Option value="de">Deutsch</Select.Option>
               <Select.Option value="it">Italiano</Select.Option>
@@ -148,9 +144,7 @@ const Home = () => {
             <Button className="mb-2" onClick={onRecord}>
               {isRecording ? "Stop recording" : "Start recording"}
             </Button>
-            <Button className="mb-2" onClick={fetchGpt}>
-              Get response
-            </Button>
+            <Button className="mb-2" onClick={fetchGpt}>Get response</Button>
           </div>
           {transcript.text}
         </div>
@@ -190,9 +184,7 @@ const Home = () => {
   }
 
   async function displayRizz(rizz) {
-    if (!rizz || rizz === lastDisplayedText) return;
-    setLastDisplayedText(rizz);
-
+    if (!rizz) return;
     const splitText = wrapText(rizz);
     let replCmd = "import display\n";
     let texts = [];
