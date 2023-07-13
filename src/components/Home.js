@@ -80,14 +80,8 @@ const Home = () => {
     if (!res) return;
 
     setDisplayedResponse("");
-    for (let i = 0; i <= res.length; i++) {
-      const substr = res.substring(0, i);
-      setDisplayedResponse(substr);
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    }
-
-    setResponse(res);
     await displayRawRizz(res);
+    setResponse(res);
   };
 
   useEffect(() => {
@@ -120,14 +114,7 @@ const Home = () => {
       replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
       texts.push(textObjectName);
     }
-
-    replCmd += `while True:\n`;
-    replCmd += `  for i in range(${splitText.length}):\n`;
-    replCmd += `    display.show(${texts.join(', ')})\n`;
-    replCmd += `    await asyncio.sleep(1)\n`;
-    replCmd += `    display.show()\n`;
-    replCmd += `    ${texts.join(', ')} = ${texts.join(', ')}[1:] + ${texts.join(', ')}[:1]\n`;
-
+    replCmd += `display.show(${texts.join(', ')})\n`;
     console.log("**** replCmd ****", replCmd);
     await replSend(replCmd);
   }
@@ -141,6 +128,26 @@ const Home = () => {
     if (msg === "Connected") {
       setConnected(true);
     }
+  }
+
+  function relayCallback(msg) {
+    if (!msg) {
+      return;
+    }
+    if (msg.trim() === "trigger b") {
+      // Left btn
+      // fetchGpt();
+    }
+
+    if (msg.trim() === "trigger a") {
+      // Right btn
+      // onRecord();
+    }
+  }
+
+  function onRecord() {
+    isRecording ? stopRecording() : startRecording();
+    setIsRecording(!isRecording);
   }
 
   const handleLanguageChange = (value) => {
@@ -194,26 +201,6 @@ const Home = () => {
       </main>
     </>
   );
-
-  function relayCallback(msg) {
-    if (!msg) {
-      return;
-    }
-    if (msg.trim() === "trigger b") {
-      // Left btn
-      // fetchGpt();
-    }
-
-    if (msg.trim() === "trigger a") {
-      // Right btn
-      // onRecord();
-    }
-  }
-
-  function onRecord() {
-    isRecording ? stopRecording() : startRecording();
-    setIsRecording(!isRecording);
-  }
-}
+};
 
 export default Home;
