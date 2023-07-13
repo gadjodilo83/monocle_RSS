@@ -40,6 +40,8 @@ const Home = () => {
   const [systemPrompt, setSystemPrompt] = useState('');
   const [question, setQuestion] = useState("");
   const [displayedResponse, setDisplayedResponse] = useState("");
+  const [lastDisplayedText, setLastDisplayedText] = useState('');
+
 
   const setLanguagePrompt = (language) => {
     let systemPrompt;
@@ -191,11 +193,10 @@ const Home = () => {
     return text;
   }
 
-let lastDisplayedText = '';
 
 async function displayRizz(rizz) {
     if (!rizz || rizz === lastDisplayedText) return;
-    lastDisplayedText = rizz;
+    setLastDisplayedText(rizz);
     
     const splitText = wrapText(rizz);
     let replCmd = "import display\n";
