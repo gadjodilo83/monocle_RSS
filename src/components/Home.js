@@ -188,7 +188,8 @@ async function displayRizz(rizz) {
     replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\\n`;
     texts.push(textObjectName);
   }
-  replCmd += `display.show(${texts.join(', ')})\\n`;
+  replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * display.FONT_HEIGHT}, 0xffffff)\\n`;
+
   console.log("**** replCmd ****", replCmd);
   await replSend(replCmd);
 }
