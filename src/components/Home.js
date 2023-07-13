@@ -12,9 +12,6 @@ import { execMonocle } from "@/utils/comms";
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
-  // Bestehende Zustände
-
-
   const handleLanguageChange = (value) => {
     setLanguage(value);
     setInputLanguage(value);
@@ -42,7 +39,6 @@ const Home = () => {
   const [displayedResponse, setDisplayedResponse] = useState("");
   const [lastDisplayedText, setLastDisplayedText] = useState('');
 
-
   const setLanguagePrompt = (language) => {
     let systemPrompt;
     switch(language) {
@@ -61,47 +57,47 @@ const Home = () => {
     setSystemPrompt(systemPrompt);
   }
 
-const fetchGpt = async () => {
-  const messages = [
-    { role: "system", content: systemPrompt },
-    { role: "user", content: transcript.text }, // Verwende den transkribierten Text als Frage
-  ];
+  const fetchGpt = async () => {
+    const messages = [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: transcript.text }, // Verwende den transkribierten Text als Frage
+    ];
 
-  const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: messages,
-      temperature: temperature,
-      max_tokens: 2000,
-    }),
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-  });
+    const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: messages,
+        temperature: temperature,
+        max_tokens: 2000,
+      }),
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
 
-  if (!response.ok) {
-    const message = await response.text();
-    console.error("API request error:", response.status, message);
-    throw new Error(`API request failed: ${message}`);
-  }
+    if (!response.ok) {
+      const message = await response.text();
+      console.error("API request error:", response.status, message);
+      throw new Error(`API request failed: ${message}`);
+    }
 
-  const resJson = await response.json();
-  const res = resJson?.choices?.[0]?.message?.content;
-  if (!res) return;
+    const resJson = await response.json();
+    const res = resJson?.choices?.[0]?.message?.content;
+    if (!res) return;
 
-  let tempResponse = "";
-  for (let i = 0; i <= res.length; i++) {
-    const substr = res.substring(0, i);
-    tempResponse = substr;
-    await new Promise((resolve) => setTimeout(resolve, 50));
-  }
+    let tempResponse = "";
+    for (let i = 0; i <= res.length; i++) {
+      const substr = res.substring(0, i);
+      tempResponse = substr;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
 
-  setResponse(tempResponse);
-  setDisplayedResponse(tempResponse);
-  await displayRawRizz(tempResponse);
-};
+    setResponse(tempResponse);
+    setDisplayedResponse(tempResponse);
+    await displayRawRizz(tempResponse);
+  };
 
   useEffect(() => {
     window.transcript = transcript.text;
@@ -121,30 +117,27 @@ const fetchGpt = async () => {
       </Head>
       <main className={`${inter.className} ${styles.main}`}>
         <div className="flex w-screen h-screen flex-col items-center justify-start">
-          <h1 className="text-3xl">chatGPT</h1> {/* Neuer Text */}
-	  <p className="text-3xl mb-4">{connected ? "Monocle Connected" : "Monocle Disconnected"}</p>
+          <h1 className="text-3xl">chatGPT</h1>
+          <p className="text-3xl mb-4">{connected ? "Monocle Connected" : "Monocle Disconnected"}</p>
           <div style={{ width: '90%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
-			<Select
-			  className="mb-2"
-			  style={{ width: '100%', height: '40px' }}
-			  value={language}
-			  onChange={(value) => {
-				setLanguage(value);
-				setInputLanguage(value);
-				setLanguagePrompt(value);
-			  }}
-			>
-			  <Select.Option value="de">Deutsch</Select.Option>
-			  <Select.Option value="it">Italiano</Select.Option>
-			  <Select.Option value="en">English</Select.Option>
-			</Select>
-
-
-
+            <Select
+              className="mb-2"
+              style={{ width: '100%', height: '40px' }}
+              value={language}
+              onChange={(value) => {
+                setLanguage(value);
+                setInputLanguage(value);
+                setLanguagePrompt(value);
+              }}
+            >
+              <Select.Option value="de">Deutsch</Select.Option>
+              <Select.Option value="it">Italiano</Select.Option>
+              <Select.Option value="en">English</Select.Option>
+            </Select>
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 10 }} />
-			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
+            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
@@ -155,7 +148,9 @@ const fetchGpt = async () => {
             <Button className="mb-2" onClick={onRecord}>
               {isRecording ? "Stop recording" : "Start recording"}
             </Button>
-            <Button className="mb-2" onClick={fetchGpt}>Get response</Button>
+            <Button className="mb-2" onClick={fetchGpt}>
+              Get response
+            </Button>
           </div>
           {transcript.text}
         </div>
@@ -194,23 +189,22 @@ const fetchGpt = async () => {
     return text;
   }
 
+  async function displayRizz(rizz) {
+    if (!rizz || rizz === lastDisplayedText) return;
+    setLastDisplayedText(rizz);
 
-async function displayRizz(rizz) {
-  if (!rizz || rizz === lastDisplayedText) return;
-  setLastDisplayedText(rizz);
-
-  const splitText = wrapText(rizz);
-  let replCmd = "import display\n";
-  let texts = [];
-  for (let i = 0; i < splitText.length; i++) {
-    let textObjectName = `t${i}`;
-    replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
-    texts.push(textObjectName);
+    const splitText = wrapText(rizz);
+    let replCmd = "import display\n";
+    let texts = [];
+    for (let i = 0; i < splitText.length; i++) {
+      let textObjectName = `t${i}`;
+      replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
+      texts.push(textObjectName);
+    }
+    replCmd += `display.show(${texts.join(', ')})\n`;
+    console.log("**** replCmd ****", replCmd);
+    await replSend(replCmd);
   }
-  replCmd += `display.show(${texts.join(', ')})\n`;
-  console.log("**** replCmd ****", replCmd);
-  await replSend(replCmd);
-}
 
   async function displayRawRizz(rizz) {
     await replRawMode(true);
