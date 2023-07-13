@@ -179,7 +179,7 @@ async function displayRizz(rizz) {
     replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
     texts.push(textObjectName);
     // Füge eine Verzögerung von 500ms hinzu, bevor du den nächsten Textblock sendest
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
   }
   replCmd += `display.show(${texts.join(', ')})\n`;
   console.log("**** replCmd ****", replCmd);
@@ -194,7 +194,7 @@ async function logger(msg) {
 
 
 function wrapText(inputText) {
-  const block = 30;
+  const block = 100;
   let text = [];
   // Verwende eine Schleife, die über die gesamte Länge des Textes läuft
   for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
