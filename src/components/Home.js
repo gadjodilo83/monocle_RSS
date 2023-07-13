@@ -171,6 +171,7 @@ const Home = () => {
 
 async function displayRizz(rizz) {
   if (!rizz) return;
+  await clearDisplay();  // Display löschen
   const splitText = wrapText(rizz);
   let replCmd = "import display\n";
   let texts = [];
@@ -178,7 +179,6 @@ async function displayRizz(rizz) {
     let textObjectName = `t${i}`;
     replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
     texts.push(textObjectName);
-    // Füge eine Verzögerung von 500ms hinzu, bevor du den nächsten Textblock sendest
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
   replCmd += `display.show(${texts.join(', ')})\n`;
@@ -194,17 +194,20 @@ async function logger(msg) {
 
 
 function wrapText(inputText) {
-  const block = 100;
+  const block = 50;
   let text = [];
-  // Verwende eine Schleife, die über die gesamte Länge des Textes läuft
   for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
-    text.push(
-      inputText.substring(block * i, block * (i + 1)).replace("\n", "")
-    );
+    text.push(inputText.substring(block * i, block * (i + 1)));
   }
   return text;
 }
-
 }
+
+async function clearDisplay() {
+  let replCmd = "import display\n";
+  replCmd += "display.clear()\n";
+  await replSend(replCmd);
+}
+
 
 export default Home;
