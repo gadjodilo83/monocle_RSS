@@ -31,7 +31,7 @@ const Home = () => {
     },
   });
 
-  const [temperature, setTemperature] = useState(1.0);
+  const [temperature, setTemperature] = useState(0.1);
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState('');
@@ -114,18 +114,18 @@ const Home = () => {
           <div style={{ width: '90%' }}>
             <Input className="mb-2" style={{ height: '40px' }} value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" />
             <InputNumber className="mb-2" style={{ width: '100%', height: '40px' }} min={0} max={2} step={0.1} value={temperature} onChange={(value) => setTemperature(value)} />
-			<Select
-			  className="mb-2"
-			  style={{ width: '100%', height: '40px' }}
-			  value={language}
-			  onChange={handleLanguageChange}
-			>
-			  <Select.Option value="de">Deutsch</Select.Option>
-			  <Select.Option value="it">Italiano</Select.Option>
-			  <Select.Option value="en">English</Select.Option>
-			</Select>
+            <Select
+              className="mb-2"
+              style={{ width: '100%', height: '40px' }}
+              value={language}
+              onChange={handleLanguageChange}
+            >
+              <Select.Option value="de">Deutsch</Select.Option>
+              <Select.Option value="it">Italiano</Select.Option>
+              <Select.Option value="en">English</Select.Option>
+            </Select>
             <Input.TextArea className="mb-2" style={{ height: '100px' }} value={systemPrompt} placeholder="Define the role of GPT-3" onChange={(e) => setSystemPrompt(e.target.value)} autoSize={{ minRows: 2, maxRows: 10 }} />
-			<Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
+            <Input.TextArea className="mb-2" style={{ height: '600px' }} readOnly value={displayedResponse} autoSize={{ minRows: 3, maxRows: 10 }} />
             <Button className="mb-2" type="primary" onClick={async () => {
               await ensureConnected(logger, relayCallback);
               app.run(execMonocle);
@@ -169,38 +169,38 @@ const Home = () => {
     await displayRizz(rizz);
   }
 
-async function displayRizz(rizz) {
-  if (!rizz) return;
-  await clearDisplay();  // Display löschen
-  const splitText = wrapText(rizz);
-  let replCmd = "import display\n";
-  let texts = [];
-  for (let i = 0; i < splitText.length; i++) {
-    let textObjectName = `t${i}`;
-    replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
-    texts.push(textObjectName);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  async function displayRizz(rizz) {
+    if (!rizz) return;
+    await clearDisplay();  // Display löschen
+    const splitText = wrapText(rizz);
+    let replCmd = "import display\n";
+    let texts = [];
+    for (let i = 0; i < splitText.length; i++) {
+      let textObjectName = `t${i}`;
+      replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
+      texts.push(textObjectName);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    replCmd += `display.show(${texts.join(', ')})\n`;
+    console.log("**** replCmd ****", replCmd);
+    await replSend(replCmd);
   }
-  replCmd += `display.show(${texts.join(', ')})\n`;
-  console.log("**** replCmd ****", replCmd);
-  await replSend(replCmd);
-}
 
-async function logger(msg) {
-  if (msg === "Connected") {
-    setConnected(true);
+  async function logger(msg) {
+    if (msg === "Connected") {
+      setConnected(true);
+    }
   }
-}
 
 
-function wrapText(inputText) {
-  const block = 15;
-  let text = [];
-  for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
-    text.push(inputText.substring(block * i, block * (i + 1)));
+  function wrapText(inputText) {
+    const block = 15;
+    let text = [];
+    for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
+      text.push(inputText.substring(block * i, block * (i + 1)));
+    }
+    return text;
   }
-  return text;
-}
 }
 
 async function clearDisplay() {
@@ -208,6 +208,5 @@ async function clearDisplay() {
   replCmd += "display.clear()\n";
   await replSend(replCmd);
 }
-
 
 export default Home;
