@@ -184,7 +184,7 @@ async function displayRizz(rizz) {
   replCmd += `    display.show(${texts.join(', ')})\n`;
   replCmd += `    await asyncio.sleep(1)\n`;
   replCmd += `    display.clear()\n`;
-  replCmd += `    ${texts.join(', ')} = ${texts.join(', ')}[1:] + [${texts[0]}]\n`;
+  replCmd += `    ${texts.join(', ')}, = move(${texts.join(', ')}, +x, +y)\n`;
   replCmd += `await scroll_text()\n`;
   console.log("**** replCmd ****", replCmd);
   await replSend(replCmd);
