@@ -195,13 +195,13 @@ async function displayRizz(rizz) {
     if (!rizz) return;
     const splitText = wrapText(rizz);
     let replCmd = "import display;";
-    let textObjects = [];
+    let texts = [];
     for (let i = 0; i < splitText.length; i++) {
       let textObjectName = `t${i}`;
       replCmd += `let ${textObjectName} = new display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff);`;
-      textObjects.push(textObjectName);
+      texts.push(textObjectName);
     }
-    replCmd += `display.show(${textObjects.join(', ')});`;
+    replCmd += `display.show(${texts.join(', ')});`;
     console.log("**** replCmd ****", replCmd);
     await replSend(replCmd);
 }
