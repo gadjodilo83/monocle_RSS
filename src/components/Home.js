@@ -31,7 +31,7 @@ const Home = () => {
     },
   });
 
-  const [temperature, setTemperature] = useState(1.0);
+  const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState('');
@@ -177,7 +177,7 @@ async function displayRizz(rizz) {
   let texts = [];
   for (let i = 0; i < splitText.length; i++) {
     let textObjectName = `t${i}`;
-    replCmd += `${textObjectName} = display.Text("${splitText[i]}", -30, ${i * 50}, 0xffffff)\n`;
+    replCmd += `${textObjectName} = display.Text("${splitText[i]}", -60, ${i * 50}, 0xffffff)\n`;
     texts.push(textObjectName);
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
