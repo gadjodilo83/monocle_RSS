@@ -191,8 +191,12 @@ const Home = () => {
     return text;
   }
 
+let lastDisplayedText = '';
+
 async function displayRizz(rizz) {
-    if (!rizz) return;
+    if (!rizz || rizz === lastDisplayedText) return;
+    lastDisplayedText = rizz;
+    
     const splitText = wrapText(rizz);
     let replCmd = "import display\n";
     let texts = [];
