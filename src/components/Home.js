@@ -8,7 +8,6 @@ import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
-import { display } from 'display-module';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -173,44 +172,32 @@ const Home = () => {
 async function displayRizz(rizz) {
   if (!rizz) return;
   const splitText = wrapText(rizz);
-  let replCmd = "import display\\n";
+  let replCmd = "import display\n";
   let texts = [];
-  
-  // Define the maximum number of lines that can be displayed
-  const maxLines = Math.floor(display.HEIGHT / display.FONT_HEIGHT);
-
-  // If there are more segments than can be displayed, truncate the array
-  if (splitText.length > maxLines) {
-    splitText.length = maxLines;
-  }
-
   for (let i = 0; i < splitText.length; i++) {
     let textObjectName = `t${i}`;
-    replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\\n`;
+    replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * 50}, 0xffffff)\n`;
     texts.push(textObjectName);
+    // Füge eine Verzögerung von 500ms hinzu, bevor du den nächsten Textblock sendest
+    await new Promise(resolve => setTimeout(resolve, 500));
   }
-  replCmd += `${textObjectName} = display.Text("${splitText[i]}", 0, ${i * display.FONT_HEIGHT}, 0xffffff)\\n`;
-
+  replCmd += `display.show(${texts.join(', ')})\n`;
   console.log("**** replCmd ****", replCmd);
   await replSend(replCmd);
 }
 
-  async function logger(msg) {
-    if (msg === "Connected") {
-      setConnected(true);
-    }
+function wrapText(inputText) {
+  const block = 30;
+  let text = [];
+  // Verwende eine Schleife, die über die gesamte Länge des Textes läuft
+  for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
+    text.push(
+      inputText.substring(block * i, block * (i + 1)).replace("\n", "")
+    );
   }
+  return text;
+}
 
-  function wrapText(inputText) {
-    const block = 30;
-    let text = [];
-    for (let i = 0; i < 6; i++) {
-      text.push(
-        inputText.substring(block * i, block * (i + 1)).replace("\n", "")
-      );
-    }
-    return text;
-  }
 }
 
 export default Home;
