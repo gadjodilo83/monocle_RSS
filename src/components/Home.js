@@ -214,13 +214,7 @@ function cleanText(inputText) {
   return cleanedText;
 }
 
-function cleanText(inputText) {
-  let cleanedText = inputText.replace(/\\/g, ''); // remove backslashes
-  cleanedText = cleanedText.replace(/\"\"/g, '\"'); // replace double quotes with single quotes
-  return cleanedText;
-}
-
-function displayRizz(rizz) {
+async function displayRizz(rizz) {
   if (!rizz) return;
   await clearDisplay(); // Display löschen
   rizz = cleanText(rizz); // clean the text before splitting it
