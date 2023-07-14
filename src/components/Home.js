@@ -159,17 +159,17 @@ const Home = () => {
               value={displayedResponse}
               autoSize={{ minRows: 3, maxRows: 10 }}
             />
-            <Button
-              className="mb-2"
-              type="primary"
-              onClick={async () => {
-                await ensureConnected(logger, relayCallback);
-                app.run(execMonocle);
-                await displayRawRizz();
-              }}
-            >
-              Connect
-            </Button>
+			<Button
+			  className="mb-2"
+			  type="primary"
+			  onClick={async () => {
+				await ensureConnected();
+				app.run(execMonocle);
+				await displayRawRizz();
+			  }}
+			>
+			  Connect
+			</Button>
             <Button className="mb-2" onClick={onRecord}>
               {isRecording ? "Stop recording" : "Start recording"}
             </Button>
