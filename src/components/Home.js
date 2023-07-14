@@ -226,7 +226,7 @@ async function displayRizz(rizz) {
 	const xCoordinate = 0; // Beispielwert für die x-Koordinate
 	const yCoordinate = i * 50;
 	// const yCoordinate = 0; // Beispielwert für die y-Koordinate
-    const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
+    const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff, size=20)\n`;
     replCmd += textCmd;
     textObjects.push(textObjectName);
     await new Promise((resolve) => setTimeout(resolve, 1000));
