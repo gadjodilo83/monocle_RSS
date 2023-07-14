@@ -202,41 +202,44 @@ const Home = () => {
     await displayRizz(rizz);
   }
 
-  function cleanText(inputText) {
-    let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
-    cleanedText = cleanedText.replace(/""/g, '"'); // replace double quotes with single quotes
-    return cleanedText;
-  }
+function cleanText(inputText) {
+  let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
+  cleanedText = cleanedText.replace(/""/g, '"'); // replace double quotes with single quotes
+  return cleanedText;
+}
 
-  async function displayRizz(rizz) {
-    if (!rizz) return;
-    await clearDisplay(); // Display löschen
-    const splitText = wrapText(rizz);
-    let replCmd = "import display\n";
-    let textObjects = [];
-    for (let i = 0; i < splitText.length; i++) {
-      const textObjectName = `t${i}`;
-      const text = splitText[i].replace(/"/g, "");
-      const xCoordinate = 0; // Beispielwert für die x-Koordinate
-      const yCoordinate = i * 50; // Vertikaler Abstand zwischen den Textzeilen
-      const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
-      replCmd += textCmd;
-      textObjects.push(textObjectName);
-    }
-    const showCmd = `display.show(${textObjects.join(", ")})\n`;
-    replCmd += showCmd;
-    replCmd += "while True:\n";
-    replCmd += "    for i in range(len(" + textObjects[0] + ".get()) - 15):\n";
-    replCmd += "        for j in range(len(" + textObjects[0] + ".get()) - 15):\n";
-    replCmd += "            " + textObjects[0] + ".scroll(j, i)\n";
-    replCmd += "            " + textObjects[1] + ".scroll(j, i)\n";
-    replCmd += "            " + textObjects[2] + ".scroll(j, i)\n";
-    replCmd += "            " + textObjects[3] + ".scroll(j, i)\n";
-    replCmd += "            display.show(" + textObjects.join(", ") + ")\n";
-    replCmd += "            time.sleep(0.1)\n";
-    console.log("**** replCmd ****", replCmd);
-    await replSend(replCmd);
+async function displayRizz(rizz) {
+  if (!rizz) return;
+  await clearDisplay(); // Display löschen
+  const splitText = wrapText(rizz);
+  let replCmd = "import display\n";
+  let textObjects = [];
+  for (let i = 0; i < splitText.length; i++) {
+    const textObjectName = `t${i}`;
+    const text = splitText[i].replace(/"/g, "");
+    const xCoordinate = 0; // Beispielwert für die x-Koordinate
+    const yCoordinate = i * 50; // Vertikaler Abstand zwischen den Textzeilen
+    const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
+    replCmd += textCmd;
+    textObjects.push(textObjectName);
   }
+  const showCmd = `display.show(${textObjects.join(", ")})\n`;
+  replCmd += showCmd;
+  replCmd += "while True:\n";
+  replCmd += "    for i in range(len(" + textObjects[0] + ".get()) - 15):\n";
+  replCmd += "        for j in range(len(" + textObjects[0] + ".get()) - 15):\n";
+  replCmd += "            for textObj in [" + textObjects.join(", ") + "]:\n";
+  replCmd += "                textObj.scroll(j, i)\n";
+  replCmd += "            display.show(" + textObjects.join(", ") + ")\n";
+  replCmd += "            time.sleep(0.1)\n";
+  console.log("**** replCmd ****", replCmd);
+  await replSend(replCmd);
+}
+
+
+
+
+
 
   async function logger(msg) {
     if (msg === "Connected") {
