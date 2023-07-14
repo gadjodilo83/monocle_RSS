@@ -198,6 +198,9 @@ const Home = () => {
     }
   }
 
+async def main():
+    result = await other_async_function()  # This is inside an async def function
+
   function onRecord() {
     isRecording ? stopRecording() : startRecording();
     setIsRecording(!isRecording);
