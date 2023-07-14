@@ -152,13 +152,7 @@ const Home = () => {
               onChange={(e) => setSystemPrompt(e.target.value)}
               autoSize={{ minRows: 2, maxRows: 10 }}
             />
-            <Input.TextArea
-              className="mb-2"
-              style={{ height: "600px" }}
-              readOnly
-              value={displayedResponse}
-              autoSize={{ minRows: 3, maxRows: 10 }}
-            />
+
             <Button
               className="mb-2"
               type="primary"
@@ -226,7 +220,7 @@ async function displayRizz(rizz) {
 	const xCoordinate = 0; // Beispielwert für die x-Koordinate
 	const yCoordinate = i * 50;
 	// const yCoordinate = 0; // Beispielwert für die y-Koordinate
-    const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff, size=20)\n`;
+    const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
     replCmd += textCmd;
     textObjects.push(textObjectName);
     await new Promise((resolve) => setTimeout(resolve, 1000));
