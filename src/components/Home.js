@@ -224,7 +224,8 @@ async function displayRizz(rizz) {
     const textObjectName = `t${i}`;
     const text = splitText[i].replace(/"/g, "");
 	const xCoordinate = 0; // Beispielwert für die x-Koordinate
-	const yCoordinate = 0; // Beispielwert für die y-Koordinate
+	const yCoordinate = i * 50;
+	// const yCoordinate = 0; // Beispielwert für die y-Koordinate
     const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
     replCmd += textCmd;
     textObjects.push(textObjectName);
