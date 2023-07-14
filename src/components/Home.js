@@ -159,17 +159,17 @@ const Home = () => {
               value={displayedResponse}
               autoSize={{ minRows: 3, maxRows: 10 }}
             />
-			<Button
-			  className="mb-2"
-			  type="primary"
-			  onClick={async () => {
-				await ensureConnected();
-				app.run(execMonocle);
-				await displayRawRizz();
-			  }}
-			>
-			  Connect
-			</Button>
+            <Button
+              className="mb-2"
+              type="primary"
+              onClick={async () => {
+                await ensureConnected(logger, relayCallback);
+                app.run(execMonocle);
+                await displayRawRizz();
+              }}
+            >
+              Connect
+            </Button>
             <Button className="mb-2" onClick={onRecord}>
               {isRecording ? "Stop recording" : "Start recording"}
             </Button>
@@ -182,32 +182,31 @@ const Home = () => {
       </main>
     </>
   );
-};
 
-function relayCallback(msg) {
-  if (!msg) {
-    return;
+  function relayCallback(msg) {
+    if (!msg) {
+      return;
+    }
+    if (msg.trim() === "trigger b") {
+      // Left btn
+      // fetchGpt();
+    }
+
+    if (msg.trim() === "trigger a") {
+      // Right btn
+      // onRecord();
+    }
   }
-  if (msg.trim() === "trigger b") {
-    // Left btn
-    // fetchGpt();
+
+  function onRecord() {
+    isRecording ? stopRecording() : startRecording();
+    setIsRecording(!isRecording);
   }
 
-  if (msg.trim() === "trigger a") {
-    // Right btn
-    // onRecord();
+  async function displayRawRizz(rizz) {
+    await replRawMode(true);
+    await displayRizz(rizz);
   }
-}
-
-function onRecord() {
-  isRecording ? stopRecording() : startRecording();
-  setIsRecording(!isRecording);
-}
-
-async function displayRawRizz(rizz) {
-  await replRawMode(true);
-  await displayRizz(rizz);
-}
 
 function cleanText(inputText) {
   let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
@@ -218,16 +217,15 @@ function cleanText(inputText) {
 async function displayRizz(rizz) {
   if (!rizz) return;
   await clearDisplay(); // Display löschen
-  rizz = cleanText(rizz); // clean the text before splitting it
   const splitText = wrapText(rizz);
   let replCmd = "import display\n";
   let textObjects = [];
   for (let i = 0; i < splitText.length; i++) {
     const textObjectName = `t${i}`;
-    const text = splitText[i];
-    const xCoordinate = 0; // Beispielwert für die x-Koordinate
-    const yCoordinate = i * 50; // increment y coordinate by 50 for each text object
-    const textCmd = `${textObjectName} = display.Text("${text}", ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
+    const text = splitText[i].replace(/"/g, "");
+	const xCoordinate = 0; // Beispielwert für die x-Koordinate
+	const yCoordinate = 0; // Beispielwert für die y-Koordinate
+    const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
     replCmd += textCmd;
     textObjects.push(textObjectName);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -238,14 +236,26 @@ async function displayRizz(rizz) {
   await replSend(replCmd);
 }
 
-function wrapText(inputText) {
-  const block = 30; // adjust block size to control the size of text pieces
-  let text = [];
-  for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
-    text.push(inputText.substring(block * i, block * (i + 1)));
+
+
+
+
+
+  async function logger(msg) {
+    if (msg === "Connected") {
+      setConnected(true);
+    }
   }
-  return text;
-}
+
+  function wrapText(inputText) {
+    const block = 25;
+    let text = [];
+    for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
+      text.push(inputText.substring(block * i, block * (i + 1)));
+    }
+    return text;
+  }
+};
 
 async function clearDisplay() {
   let replCmd = "import display\n";
