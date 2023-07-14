@@ -182,35 +182,36 @@ const Home = () => {
       </main>
     </>
   );
+};
 
-  function relayCallback(msg) {
-    if (!msg) {
-      return;
-    }
-    if (msg.trim() === "trigger b") {
-      // Left btn
-      // fetchGpt();
-    }
-
-    if (msg.trim() === "trigger a") {
-      // Right btn
-      // onRecord();
-    }
+function relayCallback(msg) {
+  if (!msg) {
+    return;
+  }
+  if (msg.trim() === "trigger b") {
+    // Left btn
+    // fetchGpt();
   }
 
-  function onRecord() {
-    isRecording ? stopRecording() : startRecording();
-    setIsRecording(!isRecording);
+  if (msg.trim() === "trigger a") {
+    // Right btn
+    // onRecord();
   }
+}
 
-  async function displayRawRizz(rizz) {
-    await replRawMode(true);
-    await displayRizz(rizz);
-  }
+function onRecord() {
+  isRecording ? stopRecording() : startRecording();
+  setIsRecording(!isRecording);
+}
+
+async function displayRawRizz(rizz) {
+  await replRawMode(true);
+  await displayRizz(rizz);
+}
 
 function cleanText(inputText) {
-  let cleanedText = inputText.replace(/\\/g, ''); // remove backslashes
-  cleanedText = cleanedText.replace(/\"\"/g, '\"'); // replace double quotes with single quotes
+  let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
+  cleanedText = cleanedText.replace(/""/g, '"'); // replace double quotes with single quotes
   return cleanedText;
 }
 
@@ -245,8 +246,6 @@ function wrapText(inputText) {
   }
   return text;
 }
-  }
-};
 
 async function clearDisplay() {
   let replCmd = "import display\n";
