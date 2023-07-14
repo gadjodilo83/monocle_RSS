@@ -208,18 +208,31 @@ const Home = () => {
     await displayRizz(rizz);
   }
 
-async function displayRizz(rizz) {
+function cleanText(inputText) {
+  let cleanedText = inputText.replace(/\\/g, ''); // remove backslashes
+  cleanedText = cleanedText.replace(/\"\"/g, '\"'); // replace double quotes with single quotes
+  return cleanedText;
+}
+
+function cleanText(inputText) {
+  let cleanedText = inputText.replace(/\\/g, ''); // remove backslashes
+  cleanedText = cleanedText.replace(/\"\"/g, '\"'); // replace double quotes with single quotes
+  return cleanedText;
+}
+
+function displayRizz(rizz) {
   if (!rizz) return;
   await clearDisplay(); // Display löschen
+  rizz = cleanText(rizz); // clean the text before splitting it
   const splitText = wrapText(rizz);
   let replCmd = "import display\n";
   let textObjects = [];
   for (let i = 0; i < splitText.length; i++) {
     const textObjectName = `t${i}`;
-    const text = splitText[i].replace(/"/g, "");
-	const xCoordinate = 0; // Beispielwert für die x-Koordinate
-	const yCoordinate = 0; // Beispielwert für die y-Koordinate
-    const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
+    const text = splitText[i];
+    const xCoordinate = 0; // Beispielwert für die x-Koordinate
+    const yCoordinate = i * 50; // increment y coordinate by 50 for each text object
+    const textCmd = `${textObjectName} = display.Text("${text}", ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
     replCmd += textCmd;
     textObjects.push(textObjectName);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -230,24 +243,14 @@ async function displayRizz(rizz) {
   await replSend(replCmd);
 }
 
-
-
-
-
-
-  async function logger(msg) {
-    if (msg === "Connected") {
-      setConnected(true);
-    }
+function wrapText(inputText) {
+  const block = 30; // adjust block size to control the size of text pieces
+  let text = [];
+  for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
+    text.push(inputText.substring(block * i, block * (i + 1)));
   }
-
-  function wrapText(inputText) {
-    const block = 25;
-    let text = [];
-    for (let i = 0; i < Math.ceil(inputText.length / block); i++) {
-      text.push(inputText.substring(block * i, block * (i + 1)));
-    }
-    return text;
+  return text;
+}
   }
 };
 
