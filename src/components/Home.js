@@ -213,21 +213,26 @@ async function displayRizz(rizz) {
   await clearDisplay(); // Display löschen
   const splitText = wrapText(rizz);
   let replCmd = "import display\n";
-  let texts = [];
+  let textObjects = [];
   for (let i = 0; i < splitText.length; i++) {
     const textObjectName = `t${i}`;
-    const xCoordinate = 1; // Beispielwert für x-Koordinate (horizontal)
-    const yCoordinate = 10 + i * 50; // Beispielwert für y-Koordinate (vertikal)
-    replCmd += `${textObjectName} = display.Text(${JSON.stringify(
-      splitText[i]
-    )}, ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
-    texts.push(textObjectName);
+    const text = splitText[i].replace(/"/g, "");
+	const xCoordinate = 0; // Beispielwert für die x-Koordinate
+	const yCoordinate = 0; // Beispielwert für die y-Koordinate
+    const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
+    replCmd += textCmd;
+    textObjects.push(textObjectName);
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
-  replCmd += `display.show(${texts.join(", ")})\n`;
+  const showCmd = `display.show(${textObjects.join(", ")})\n`;
+  replCmd += showCmd;
   console.log("**** replCmd ****", replCmd);
   await replSend(replCmd);
 }
+
+
+
+
 
 
   async function logger(msg) {
