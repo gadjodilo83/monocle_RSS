@@ -103,6 +103,14 @@ const Home = () => {
     setLanguagePrompt(language);
   }, [language]);
 
+  async function clearDisplay() {
+    let replCmd = "import display\n";
+    replCmd += "display.clear()\n";
+    await replSend(replCmd);
+  }
+
+
+
   return (
     <>
       <Head>
@@ -248,10 +256,6 @@ function wrapText(inputText) {
   }
 };
 
-async function clearDisplay() {
-  let replCmd = "import display\n";
-  replCmd += "display.clear()\n";
-  await replSend(replCmd);
-}
+
 
 export default Home;
