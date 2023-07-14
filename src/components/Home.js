@@ -233,16 +233,19 @@ async function displayRizz(rizz) {
     replCmd += textCmd;
     textObjects.push(textObjectName);
   }
-  const showCmd = `display.show(${textObjects.join(", ")})\n`;
-  replCmd += showCmd;
-  replCmd += "while True:\n";
-  replCmd += "    for i in range(len(" + textObjects[0] + ".get()) - 15):\n";
-  replCmd += "        for j in range(len(" + textObjects[0] + ".get()) - 15):\n";
-  replCmd += "            for textObj in [" + textObjects.join(", ") + "]:\n";
-  replCmd += "                textObj.scroll(j, i)\n";
-  replCmd += "            display.show(" + textObjects.join(", ") + ")\n";
-  replCmd += "            await asyncio.sleep(0.1)\n"; // Verwende asyncio.sleep statt time.sleep
-  console.log("**** replCmd ****", replCmd);
+	let showCmd = `display.show(${textObjects.join(", ")})\n`;
+	replCmd += "import asyncio\n";
+	replCmd += "async def scroll_and_display():\n";
+	replCmd += showCmd;
+	replCmd += "    while True:\n";
+	replCmd += `        for i in range(len(${textObjects[0]}.get()) - 15):\n`;
+	replCmd += `            for j in range(len(${textObjects[0]}.get()) - 15):\n`;
+	replCmd += `                for textObj in [${textObjects.join(", ")}]:\n`;
+	replCmd += "                    textObj.scroll(j, i)\n";
+	replCmd += `                display.show(${textObjects.join(", ")})\n`;
+	replCmd += "                await asyncio.sleep(0.1)\n"; // Verwende asyncio.sleep statt time.sleep
+	replCmd += "asyncio.run(scroll_and_display())\n";
+	console.log("**** replCmd ****", replCmd);
   
   // Split the command into segments and send each segment separately with a delay
   const cmdSegments = splitIntoSegments(replCmd, 255);
