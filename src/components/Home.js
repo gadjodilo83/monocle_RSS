@@ -198,8 +198,6 @@ const Home = () => {
     }
   }
 
-async def main():
-    result = await other_async_function()  # This is inside an async def function
 
   function onRecord() {
     isRecording ? stopRecording() : startRecording();
@@ -210,6 +208,7 @@ async def main():
     await replRawMode(true);
     await displayRizz(rizz);
   }
+
 
 function cleanText(inputText) {
   let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
@@ -251,6 +250,13 @@ async function displayRizz(rizz) {
     await new Promise(r => setTimeout(r, 500)); // Wait for 500ms before sending the next segment
   }
 }
+
+
+  async function clearDisplay() {
+    let replCmd = "import display\n";
+    replCmd += "display.clear()\n";
+    await replSend(replCmd);
+  }
 
 function splitIntoSegments(str, segmentSize) {
   const segments = [];
