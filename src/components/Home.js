@@ -220,23 +220,42 @@ async function displayRizz(rizz) {
   const splitText = wrapText(rizz);
   let replCmd = "import display\n";
   let textObjects = [];
+  const lineHeight = 50; // Zeilenabstand
   for (let i = 0; i < splitText.length; i++) {
     const textObjectName = `t${i}`;
-    const text = splitText[i].replace(/"/g, "");
-	const xCoordinate = 0; // Beispielwert für die x-Koordinate
-	const yCoordinate = i * 50;
-	// const yCoordinate = 0; // Beispielwert für die y-Koordinate
+    const text = splitText[i].replace(/'/g, "\\'");
+    const xCoordinate = 0; // Beispielwert für die x-Koordinate
+    const yCoordinate = i * lineHeight; // Vertikaler Abstand zwischen den Textzeilen
     const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
     replCmd += textCmd;
     textObjects.push(textObjectName);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   const showCmd = `display.show(${textObjects.join(", ")})\n`;
   replCmd += showCmd;
+  replCmd += "while True:\n";
+  replCmd += "    for i in range(len(" + textObjects[0] + ".get()) - 15):\n";
+  replCmd += "        for j in range(len(" + textObjects[0] + ".get()) - 15):\n";
+  replCmd += "            for textObj in [" + textObjects.join(", ") + "]:\n";
+  replCmd += "                textObj.scroll(j, i)\n";
+  replCmd += "            display.show(" + textObjects.join(", ") + ")\n";
+  replCmd += "            await asyncio.sleep(0.1)\n"; // Verwende asyncio.sleep statt time.sleep
   console.log("**** replCmd ****", replCmd);
-  await replSend(replCmd);
+  
+  // Split the command into segments and send each segment separately with a delay
+  const cmdSegments = splitIntoSegments(replCmd, 255);
+  for (const cmdSegment of cmdSegments) {
+    await replSend(cmdSegment);
+    await new Promise(r => setTimeout(r, 500)); // Wait for 500ms before sending the next segment
+  }
 }
 
+function splitIntoSegments(str, segmentSize) {
+  const segments = [];
+  for (let i = 0; i < str.length; i += segmentSize) {
+    segments.push(str.substring(i, i + segmentSize));
+  }
+  return segments;
+}
 
 
 
