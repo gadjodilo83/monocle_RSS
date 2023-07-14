@@ -152,7 +152,13 @@ const Home = () => {
               onChange={(e) => setSystemPrompt(e.target.value)}
               autoSize={{ minRows: 2, maxRows: 10 }}
             />
-
+            <Input.TextArea
+              className="mb-2"
+              style={{ height: "600px" }}
+              readOnly
+              value={displayedResponse}
+              autoSize={{ minRows: 3, maxRows: 10 }}
+            />
             <Button
               className="mb-2"
               type="primary"
@@ -214,25 +220,19 @@ async function displayRizz(rizz) {
   const splitText = wrapText(rizz);
   let replCmd = "import display\n";
   let textObjects = [];
-  const lineHeight = 50; // Zeilenabstand
   for (let i = 0; i < splitText.length; i++) {
     const textObjectName = `t${i}`;
-    const text = splitText[i].replace(/'/g, "\\'");
-    const xCoordinate = 0; // Beispielwert für die x-Koordinate
-    const yCoordinate = i * lineHeight; // Vertikaler Abstand zwischen den Textzeilen
+    const text = splitText[i].replace(/"/g, "");
+	const xCoordinate = 0; // Beispielwert für die x-Koordinate
+	const yCoordinate = i * 50;
+	// const yCoordinate = 0; // Beispielwert für die y-Koordinate
     const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
     replCmd += textCmd;
     textObjects.push(textObjectName);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   const showCmd = `display.show(${textObjects.join(", ")})\n`;
   replCmd += showCmd;
-  replCmd += "while True:\n";
-  replCmd += "    for i in range(len(" + textObjects[0] + ".get()) - 15):\n";
-  replCmd += "        for j in range(len(" + textObjects[0] + ".get()) - 15):\n";
-  replCmd += "            for textObj in [" + textObjects.join(", ") + "]:\n";
-  replCmd += "                textObj.scroll(j, i)\n";
-  replCmd += "            display.show(" + textObjects.join(", ") + ")\n";
-  replCmd += "            time.sleep(0.1)\n";
   console.log("**** replCmd ****", replCmd);
   await replSend(replCmd);
 }
