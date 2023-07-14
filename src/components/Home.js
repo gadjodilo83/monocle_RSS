@@ -228,7 +228,8 @@ async function displayRizz(rizz) {
     const text = splitText[i].replace(/'/g, "\\'");
     const xCoordinate = 0; // Beispielwert für die x-Koordinate
     const yCoordinate = i * lineHeight; // Vertikaler Abstand zwischen den Textzeilen
-    const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
+    const textCmd = `${textObjectName} = display.Text('${text}', 320, 200, 0xffffff, justify=display.MIDDLE_CENTER)\n`;
+
     replCmd += textCmd;
     textObjects.push(textObjectName);
   }
