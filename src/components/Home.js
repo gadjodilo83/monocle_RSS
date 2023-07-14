@@ -31,7 +31,7 @@ const Home = () => {
     },
   });
 
-  const [temperature, setTemperature] = useState(0.3);
+  const [temperature, setTemperature] = useState(0.1);
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState("");
