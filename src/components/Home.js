@@ -201,39 +201,44 @@ const Home = () => {
     await displayRizz(rizz);
   }
 
-function cleanText(inputText) {
-  let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
-  cleanedText = cleanedText.replace(/""/g, '"'); // replace double quotes with single quotes
-  return cleanedText;
-}
-
-async function displayRizz(rizz) {
+ async function displayRizz(rizz) {
   if (!rizz) return;
   await clearDisplay(); // Display löschen
   const splitText = wrapText(rizz);
   let replCmd = "import display\n";
-  let textObjects = [];
   for (let i = 0; i < splitText.length; i++) {
-    const textObjectName = `t${i}`;
+    const textObjectName = `t${i % 5}`; // Verwendung des Modulo-Operators
     const text = splitText[i].replace(/"/g, "");
-	const xCoordinate = 0; // Beispielwert für die x-Koordinate
-	const yCoordinate = i * 50;
-	// const yCoordinate = 0; // Beispielwert für die y-Koordinate
+    const xCoordinate = 0; // Beispielwert für die x-Koordinate
+    const yCoordinate = (i % 5) * 50; // Verwendung des Modulo-Operators
     const textCmd = `${textObjectName} = display.Text('${text}', ${xCoordinate}, ${yCoordinate}, 0xffffff)\n`;
     replCmd += textCmd;
-    textObjects.push(textObjectName);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
-  const showCmd = `display.show(${textObjects.join(", ")})\n`;
-  replCmd += showCmd;
-  console.log("**** replCmd ****", replCmd);
   await replSend(replCmd);
-}
 
+    for (let i = 0; i < splitText.length; i += 6) {
+      const startIndex = i;
+      const endIndex = Math.min(i + 6, splitText.length);
+      const showCmd = `display.show(${getShowCommandArgs(startIndex, endIndex)})\n`;
+      await replSend(showCmd);
+      await new Promise((resolve) => setTimeout(resolve, 2500));
+    }
+  }
 
+  function getShowCommandArgs(startIndex, endIndex) {
+    const args = [];
+    for (let i = startIndex; i < endIndex; i++) {
+      const textObjectName = `t${i}`;
+      args.push(textObjectName);
+    }
+    return args.join(", ");
+  }
 
-
-
+  async function clearDisplay() {
+    let replCmd = "import display\n";
+    replCmd += "display.clear()\n";
+    await replSend(replCmd);
+  }
 
   async function logger(msg) {
     if (msg === "Connected") {
@@ -250,11 +255,5 @@ async function displayRizz(rizz) {
     return text;
   }
 };
-
-async function clearDisplay() {
-  let replCmd = "import display\n";
-  replCmd += "display.clear()\n";
-  await replSend(replCmd);
-}
 
 export default Home;
