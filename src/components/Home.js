@@ -209,11 +209,12 @@ async function displayRizz(rizz) {
 
   for (let i = 0; i < splitText.length; i += groupSize) {
     const group = splitText.slice(i, i + groupSize);
-    const textCmds = group.map((text, index) => {
-      const xCoordinate = 0; // Beispielwert für die x-Koordinate
-      const yCoordinate = index * 50; // Zeilen t1 bis t4
-      return `display.Text('${cleanText(text.replace(/"/g, ""))}', ${xCoordinate}, ${yCoordinate}, 0xffffff)`;
-    });
+const textCmds = group.map((text, index) => {
+  const xCoordinate = 0; // Beispielwert für die x-Koordinate
+  const yCoordinate = index * 50; // Zeilen t1 bis t4
+  const encodedText = encodeURIComponent(cleanText(text.replace(/"/g, "")));
+  return `display.Text(decodeURIComponent('${encodedText}'), ${xCoordinate}, ${yCoordinate}, 0xffffff)`;
+});
 
     const textCmd = `display.show([${textCmds.join(", ")}])`;
     const clearCmd = "display.clear()";
