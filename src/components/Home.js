@@ -71,7 +71,7 @@ const Home = () => {
         model: "gpt-3.5-turbo",
         messages: messages,
         temperature: temperature,
-        max_tokens: 250,
+        max_tokens: 500,
       }),
       headers: {
         Authorization: `Bearer ${apiKey}`,
