@@ -30,20 +30,43 @@ const Home = () => {
   const { startRecording: whisperStartRecording, stopRecording: whisperStopRecording, transcript } = useWhisper({
     apiKey: apiKey,
     streaming: true,
-    timeSlice: 500,
+    timeSlice: 8000,
     whisperConfig: {
       language: inputLanguage,
     },
   });
 
-  const startMyRecording = async () => {
-    const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
-    const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
-    const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-    await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
-    whisperStartRecording();
-    setIsRecording(true);
-  }
+const startMyRecording = async () => {
+  const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+  const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
+  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
+  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
+  whisperStartRecording();
+  setIsRecording(true);
+  setTimeout(async () => {
+	await stopMyRecording(true); 
+	await showAutomaticStop();
+  }, 8000);  // 8000 milliseconds = 8 seconds
+}
+
+const showAutomaticStop = async () => {
+  const textCmd = `display.Text('Automatic stop', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
+  const lineCmd = `display.Line(175, 230, 465, 230, display.GREEN)`;
+  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
+  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
+  setTimeout(async () => {
+    await clearDisplay();
+  }, 3000);
+}
+
+const clearDisplay = async () => {
+  const clearCmd = "display.clear()";
+  await replSend(`${clearCmd}\n`);
+}
+
+
+
+
 
 	const stopMyRecording = async () => {
 	  const textCmd = `display.Text('Stop Record', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
@@ -83,7 +106,7 @@ const Home = () => {
     }
   }
 
-  const [temperature, setTemperature] = useState(0.3);
+  const [temperature, setTemperature] = useState(0.5);
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState("");
