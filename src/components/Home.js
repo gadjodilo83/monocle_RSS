@@ -83,7 +83,7 @@ const clearDisplay = async () => {
 		} else {
 		  console.log('No transcript available');
 		}
-	  }, 2000); // Wartezeit in Millisekunden
+	  }, 500); // Wartezeit in Millisekunden
 	}
 
   const relayCallback = (msg) => {
@@ -106,7 +106,7 @@ const clearDisplay = async () => {
     }
   }
 
-  const [temperature, setTemperature] = useState(0.5);
+  const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
   const [systemPrompt, setSystemPrompt] = useState("");
@@ -156,7 +156,7 @@ const clearDisplay = async () => {
           model: "gpt-3.5-turbo",
           messages: messages,
           temperature: temperature,
-          max_tokens: 250,
+          max_tokens: 200,
         }),
         headers: {
           Authorization: `Bearer ${apiKey}`,
