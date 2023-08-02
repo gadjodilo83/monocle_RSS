@@ -69,8 +69,8 @@ const clearDisplay = async () => {
 
 
 	const stopMyRecording = async () => {
-	  const textCmd = `display.Text('Stop Record', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
-	  const lineCmd = `display.Line(175, 230, 465, 230, display.GREEN)`;
+	  const textCmd = `display.Text('Stop Record', 320, 200, display.BLUE, justify=display.MIDDLE_CENTER)`;
+	  const lineCmd = `display.Line(175, 230, 465, 230, display.BLUE)`;
 	  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
 	  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
 	  whisperStopRecording();
