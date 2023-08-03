@@ -98,25 +98,24 @@ const Home = () => {
       await delay(6000); // 2.5 Sekunden warten
 
 }, []);
-}
 
   const displayRawRizz = useCallback(async (rizz) => {
     await replRawMode(true);
     await displayRizz(rizz);
   }, [displayRizz]);
 
-  const startMyRecording = async () => {
-    const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
-    const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
-    const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-    await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
-    whisperStartRecording();
-    setIsRecording(true);
-    setTimeout(async () => {
-        await stopMyRecording(true); 
-        await showAutomaticStop();
-    }, 8000);  // 8000 milliseconds = 8 seconds
-  }
+const startMyRecording = async () => {
+  const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+  const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
+  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
+  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
+  whisperStartRecording();
+  setIsRecording(true);
+  setTimeout(async () => {
+    await stopMyRecording(); // Hier wurde die Änderung vorgenommen
+    await showAutomaticStop();
+  }, 8000);  // 8000 milliseconds = 8 seconds
+}
 
   const showAutomaticStop = async () => {
     const textCmd = `display.Text('Automatic stop', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
