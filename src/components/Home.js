@@ -8,6 +8,7 @@ import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
+import { useCallback } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -137,53 +138,54 @@ const clearDisplay = async () => {
 
   const [fetching, setFetching] = useState(false);
 
-  const fetchGpt = async () => {
-    if (fetching) {
-      console.log("Fetch already in progress");
-      return;
+const fetchGpt = useCallback(async () => {
+  if (fetching) {
+    console.log("Fetch already in progress");
+    return;
+  }
+  setFetching(true);
+  console.log("fetchGpt called");
+
+  try {
+    const messages = [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: transcript.text },
+    ];
+
+    const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: messages,
+        temperature: temperature,
+        max_tokens: 200,
+      }),
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      const message = await response.text();
+      console.error("API request error:", response.status, message);
+      throw new Error(`API request failed: ${message}`);
     }
-    setFetching(true);
-    console.log("fetchGpt called");
 
-    try {
-      const messages = [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: transcript.text },
-      ];
+    const resJson = await response.json();
+    const res = resJson?.choices?.[0]?.message?.content;
+    if (!res) return;
 
-      const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: messages,
-          temperature: temperature,
-          max_tokens: 200,
-        }),
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      });
+    setDisplayedResponse(res);
+    setResponse(res);
+    await displayRawRizz(res);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setFetching(false);
+  }
+}, [fetching, systemPrompt, transcript.text, temperature, apiKey]);  // Stellen Sie sicher, dass alle Abhängigkeiten hier aufgeführt sind
 
-      if (!response.ok) {
-        const message = await response.text();
-        console.error("API request error:", response.status, message);
-        throw new Error(`API request failed: ${message}`);
-      }
-
-      const resJson = await response.json();
-      const res = resJson?.choices?.[0]?.message?.content;
-      if (!res) return;
-
-      setDisplayedResponse(res);
-      setResponse(res);
-      await displayRawRizz(res);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setFetching(false);
-    }
-  };
 
 useEffect(() => {
   if (!isRecording.current && transcript.text) {
