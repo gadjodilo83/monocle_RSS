@@ -104,9 +104,11 @@ const clearDisplay = async () => {
   }
 
 
+	
+
 const displayRawRizz = useCallback(async (rizz) => {
-    await replRawMode(true);
-    await displayRizz(rizz);
+  await replRawMode(true);
+  await displayRizz(rizz);
 }, [displayRizz]);
 
 
@@ -277,28 +279,28 @@ useEffect(() => {
 
 
 
-  async function displayRizz(rizz) {
-    if (!rizz) return;
+const displayRizz = useCallback(async (rizz) => {
+  if (!rizz) return;
 
-    const splitText = wrapText(rizz);
-    const groupSize = 4;
+  const splitText = wrapText(rizz);
+  const groupSize = 4;
 
-    for (let i = 0; i < splitText.length; i += groupSize) {
-      const group = splitText.slice(i, i + groupSize);
-      const textCmds = group.map((text, index) => {
-        const xCoordinate = 0; // Beispielwert für die x-Koordinate
-        const yCoordinate = index * 50; // Zeilen t1 bis t4
-        return `display.Text('${cleanText(text.replace(/"/g, ""))}', ${xCoordinate}, ${yCoordinate}, display.WHITE)`;
-      });
+  for (let i = 0; i < splitText.length; i += groupSize) {
+    const group = splitText.slice(i, i + groupSize);
+    const textCmds = group.map((text, index) => {
+      const xCoordinate = 0; // Beispielwert für die x-Koordinate
+      const yCoordinate = index * 50; // Zeilen t1 bis t4
+      return `display.Text('${cleanText(text.replace(/"/g, ""))}', ${xCoordinate}, ${yCoordinate}, display.WHITE)`;
+    });
 
-      const textCmd = `display.show([${textCmds.join(", ")}])`;
-      const clearCmd = "display.clear()";
+    const textCmd = `display.show([${textCmds.join(", ")}])`;
+    const clearCmd = "display.clear()";
 
-      await delay(100); // 2.5 Sekunden warten
-      await replSend(`${clearCmd}\n${textCmd}\n`); // clear() und display.show senden
-      await delay(6000); // 2.5 Sekunden warten
-    }
+    await delay(100); // 2.5 Sekunden warten
+    await replSend(`${clearCmd}\n${textCmd}\n`); // clear() und display.show senden
+    await delay(6000); // 2.5 Sekunden warten
   }
+}, []); 
 
   function chunkArray(array, size) {
     const result = [];
