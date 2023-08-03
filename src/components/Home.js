@@ -46,7 +46,7 @@ const startMyRecording = async () => {
   setTimeout(async () => {
 	await stopMyRecording(true); 
 	await showAutomaticStop();
-  }, 5000);  // 5000 milliseconds = 8 seconds
+  }, 1000);  // 5000 milliseconds = 8 seconds
 }
 
 const showAutomaticStop = async () => {
@@ -56,7 +56,7 @@ const showAutomaticStop = async () => {
   await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
   setTimeout(async () => {
     await clearDisplay();
-  }, 6000);
+  }, 1000);
 }
 
 const clearDisplay = async () => {
@@ -82,7 +82,7 @@ const clearDisplay = async () => {
 		} else {
 		  console.log('No transcript available');
 		}
-	  }, 2000); // Wartezeit in Millisekunden
+	  }, 1000); // Wartezeit in Millisekunden
 	}
 
   const relayCallback = (msg) => {
@@ -294,9 +294,9 @@ async function displayRizz(rizz) {
 
       await delay(10); // 2.5 Sekunden warten
       await replSend(`${clearCmd}\n`);
-	  await delay(10); // Warten Sie 100 Millisekunden
+	  await delay(6000); // Warten Sie 100 Millisekunden
 	  await replSend(`${textCmd}\n`);
-      await delay(5000); // 2.5 Sekunden warten
+      await delay(10); // 2.5 Sekunden warten
       // await replSend(`${clearCmd}\n`);
 
 	}
