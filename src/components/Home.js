@@ -106,13 +106,6 @@ const clearDisplay = async () => {
 
 	
 
-const displayRawRizz = useCallback(async (rizz) => {
-  await replRawMode(true);
-  await displayRizz(rizz);
-}, [displayRizz]);
-
-
-	
   const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
@@ -300,7 +293,13 @@ const displayRizz = useCallback(async (rizz) => {
     await replSend(`${clearCmd}\n${textCmd}\n`); // clear() und display.show senden
     await delay(6000); // 2.5 Sekunden warten
   }
-}, []); 
+}, [wrapText, cleanText, delay, replSend]);
+
+const displayRawRizz = useCallback(async (rizz) => {
+  await replRawMode(true);
+  await displayRizz(rizz);
+}, [displayRizz]);
+
 
   function chunkArray(array, size) {
     const result = [];
