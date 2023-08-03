@@ -8,6 +8,7 @@ import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
+import { battery } from "@/utils/mpython-common/battery.js";  // Fügen Sie diese Zeile am Anfang der Datei hinzu
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -86,25 +87,27 @@ const clearDisplay = async () => {
 	  }, 500); // Wartezeit in Millisekunden
 	}
 
-  const relayCallback = (msg) => {
-    if (!msg) {
-      return;
-    }
-    if (msg.trim() === "trigger b") {
-      // Left btn
-      console.log("Button B pressed");
-      fetchGpt();
-    }
-
-    if (msg.trim() === "trigger a") {
-      // Right btn
-      if(isRecording.current) {
-          stopMyRecording();
-      } else {
-          startMyRecording();
-      }
-    }
+const relayCallback = (msg) => {
+  if (!msg) {
+    return;
   }
+  if (msg.trim() === "trigger b") {
+    // Left btn
+    console.log("Button B pressed");
+    fetchGpt();
+  }
+
+  if (msg.trim() === "trigger a") {
+    // Right btn
+    if(isRecording.current) {
+        stopMyRecording();
+    } else {
+        startMyRecording();
+    }
+    const batteryStatus = battery();  // Rufen Sie die battery-Funktion auf
+    replSend(batteryStatus);  // Senden Sie das Ergebnis an das Monocle
+  }
+}
 
   const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
