@@ -66,9 +66,15 @@ const clearDisplay = async () => {
 
 
 const showReadyMessage = async () => {
+  console.log("showReadyMessage called");  // Debugging-Nachricht
   const textCmd = `display.Text('Monocle Ready', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
   const showCmd = `display.show([${textCmd}])`;
-  await replSend(`${textCmd}\n${showCmd}\n`);
+  try {
+    await replSend(`${textCmd}\n${showCmd}\n`);
+    console.log("showReadyMessage command sent");  // Debugging-Nachricht
+  } catch (error) {
+    console.log("Error in showReadyMessage:", error);  // Debugging-Nachricht
+  }
 }
 
 
@@ -339,8 +345,8 @@ async function displayRizz(rizz) {
 
 
 
-
 async function logger(msg) {
+  console.log("logger called with message:", msg);  // Debugging-Nachricht
   if (msg === "Connected") {
     setConnected(true);
     await showReadyMessage();
