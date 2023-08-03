@@ -56,7 +56,7 @@ const showAutomaticStop = async () => {
   await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
   setTimeout(async () => {
     await clearDisplay();
-  }, 1000);
+  }, 5000);
 }
 
 const clearDisplay = async () => {
