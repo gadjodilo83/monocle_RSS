@@ -365,7 +365,8 @@ async function displayRizz(rizz) {
       currentIndex = endIndex;
     }
 
-  return text;
-}
+    return text;
+  }
+};
 
 export default Home;
