@@ -98,6 +98,7 @@ const Home = () => {
       await delay(6000); // 2.5 Sekunden warten
 
 }, []);
+}
 
   const displayRawRizz = useCallback(async (rizz) => {
     await replRawMode(true);
