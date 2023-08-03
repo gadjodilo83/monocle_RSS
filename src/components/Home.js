@@ -56,7 +56,7 @@ const showAutomaticStop = async () => {
   await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
   setTimeout(async () => {
     await clearDisplay();
-  }, 8000);
+  }, 6000);
 }
 
 const clearDisplay = async () => {
@@ -331,11 +331,24 @@ async function displayRizz(rizz) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async function logger(msg) {
-    if (msg === "Connected") {
-      setConnected(true);
-    }
+
+const showReadyMessage = async () => {
+  const textCmd = `display.Text('Ready - Touch the Button', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
+  const showCmd = `display.show([${textCmd}])`;
+  await replSend(`${textCmd}\n${showCmd}\n`);
+}
+
+
+async function logger(msg) {
+  if (msg === "Connected") {
+    setConnected(true);
+    await showReadyMessage();
   }
+}
+
+
+
+
 
   function wrapText(inputText) {
     const block = 25;
