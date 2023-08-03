@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
@@ -11,45 +11,6 @@ import { execMonocle } from "@/utils/comms";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// Helper functions
-function chunkArray(array, size) {
-  const result = [];
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
-  }
-  return result;
-}
-
-function cleanText(inputText) {
-  let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
-  cleanedText = cleanedText.replace(/""/g, '"'); // replace double quotes with single quotes
-  cleanedText = cleanedText.replace(/\n/g, ""); // remove line breaks
-  return cleanedText;
-}
-
-async function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function wrapText(inputText) {
-  const block = 25;
-  const regex = /0xffffff\)(?!$)/g; // Negative Lookahead regex to match "0xffffff)" not at the end of the string
-  let text = [];
-  let currentIndex = 0;
-
-  while (currentIndex < inputText.length) {
-    const substring = inputText.substring(currentIndex, currentIndex + block);
-    const match = substring.match(regex);
-    const endIndex = match ? currentIndex + match.index + 25 : currentIndex + block;
-    const wrappedSubstring = inputText.substring(currentIndex, endIndex);
-    text.push(wrappedSubstring);
-    currentIndex = endIndex;
-  }
-
-  return text;
-}
-
-// Home component
 const Home = () => {
   const handleLanguageChange = (value) => {
     setLanguage(value);
@@ -66,44 +27,14 @@ const Home = () => {
     isRecording.current = value;
     setIsRecordingState(value);
   };
-
   const { startRecording: whisperStartRecording, stopRecording: whisperStopRecording, transcript } = useWhisper({
     apiKey: apiKey,
     streaming: true,
-    timeSlice: 8000,
+    timeSlice: 5000,
     whisperConfig: {
       language: inputLanguage,
     },
   });
-
-const displayRizz = useCallback(async (rizz) => {
-  if (!rizz) return;
-
-  const splitText = wrapText(rizz);
-  const groupSize = 4;
-
-  for (let i = 0; i < splitText.length; i += groupSize) {
-    const group = splitText.slice(i, i + groupSize);
-    const textCmds = group.map((text, index) => {
-      const xCoordinate = 0; // Beispielwert für die x-Koordinate
-      const yCoordinate = index * 50; // Zeilen t1 bis t4
-      return `display.Text('${cleanText(text.replace(/"/g, ""))}', ${xCoordinate}, ${yCoordinate}, display.WHITE)`;
-    });
-
-    const textCmd = `display.show([${textCmds.join(", ")}])`;
-    const clearCmd = "display.clear()";
-
-    await delay(100); // 2.5 Sekunden warten
-    await replSend(`${clearCmd}\n${textCmd}\n`); // clear() und display.show senden
-    await delay(6000); // 2.5 Sekunden warten
-
-  }
-}, []);
-
-  const displayRawRizz = useCallback(async (rizz) => {
-    await replRawMode(true);
-    await displayRizz(rizz);
-  }, [displayRizz]);
 
 const startMyRecording = async () => {
   const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
@@ -113,43 +44,47 @@ const startMyRecording = async () => {
   whisperStartRecording();
   setIsRecording(true);
   setTimeout(async () => {
-    await stopMyRecording(); // Hier wurde die Änderung vorgenommen
-    await showAutomaticStop();
-  }, 8000);  // 8000 milliseconds = 8 seconds
+	await stopMyRecording(true); 
+	await showAutomaticStop();
+  }, 5000);  // 8000 milliseconds = 8 seconds
 }
 
-  const showAutomaticStop = async () => {
-    const textCmd = `display.Text('Automatic stop', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
-    const lineCmd = `display.Line(175, 230, 465, 230, display.GREEN)`;
-    const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-    await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
-    setTimeout(async () => {
-      await clearDisplay();
-    }, 3000);
-  }
+const showAutomaticStop = async () => {
+  const textCmd = `display.Text('Automatic stop', 320, 200, display.BLUE, justify=display.MIDDLE_CENTER)`;
+  const lineCmd = `display.Line(175, 230, 465, 230, display.BLUE)`;
+  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
+  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
+  setTimeout(async () => {
+    await clearDisplay();
+  }, 5000);
+}
 
-  const clearDisplay = async () => {
-    const clearCmd = "display.clear()";
-    await replSend(`${clearCmd}\n`);
-  }
+const clearDisplay = async () => {
+  const clearCmd = "display.clear()";
+  await replSend(`${clearCmd}\n`);
+}
 
-  const stopMyRecording = async () => {
-    const textCmd = `display.Text('Stop Record', 320, 200, display.BLUE, justify=display.MIDDLE_CENTER)`;
-    const lineCmd = `display.Line(175, 230, 465, 230, display.BLUE)`;
-    const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-    await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
-    whisperStopRecording();
-    setIsRecording(false);
 
-    // Füge einen kleinen Verzögerung hinzu, um sicherzustellen, dass das transkribierte Text bereit ist
-    setTimeout(async () => {
-      if (transcript.text) {
-        await fetchGpt();
-      } else {
-        console.log('No transcript available');
-      }
-    }, 500); // Wartezeit in Millisekunden
-  }
+
+
+
+	const stopMyRecording = async () => {
+	  const textCmd = `display.Text('Stop Record', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
+	  const lineCmd = `display.Line(175, 230, 465, 230, display.GREEN)`;
+	  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
+	  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
+	  whisperStopRecording();
+	  setIsRecording(false);
+
+	  // Füge einen kleinen Verzögerung hinzu, um sicherzustellen, dass das transkribierte Text bereit ist
+	  setTimeout(async () => {
+		if (transcript.text) {
+		  await fetchGpt();
+		} else {
+		  console.log('No transcript available');
+		}
+	  }, 500); // Wartezeit in Millisekunden
+	}
 
   const relayCallback = (msg) => {
     if (!msg) {
@@ -202,7 +137,7 @@ const startMyRecording = async () => {
 
   const [fetching, setFetching] = useState(false);
 
-  const fetchGpt = useCallback(async () => {
+  const fetchGpt = async () => {
     if (fetching) {
       console.log("Fetch already in progress");
       return;
@@ -248,13 +183,13 @@ const startMyRecording = async () => {
     } finally {
       setFetching(false);
     }
-  }, [fetching, systemPrompt, transcript.text, temperature, apiKey, displayRawRizz]);
+  };
 
   useEffect(() => {
-    if (!isRecording.current && transcript.text) {
-        fetchGpt();
-    }
-  }, [transcript.text, fetchGpt]);
+      if (!isRecording.current && transcript.text) {
+          fetchGpt();
+      }
+  }, [transcript.text]);
 
   useEffect(() => {
     window.transcript = transcript.text;
@@ -317,7 +252,7 @@ const startMyRecording = async () => {
               className="mb-2"
               type="primary"
               onClick={async () => {
-                await ensureConnected(() => {}, relayCallback);
+                await ensureConnected(logger, relayCallback);
                 app.run(execMonocle);
                 await displayRawRizz();
               }}
@@ -333,6 +268,81 @@ const startMyRecording = async () => {
       </main>
     </>
   );
+
+  async function displayRawRizz(rizz) {
+    await replRawMode(true);
+    await displayRizz(rizz);
+  }
+
+  async function displayRizz(rizz) {
+    if (!rizz) return;
+
+    const splitText = wrapText(rizz);
+    const groupSize = 4;
+
+    for (let i = 0; i < splitText.length; i += groupSize) {
+      const group = splitText.slice(i, i + groupSize);
+      const textCmds = group.map((text, index) => {
+        const xCoordinate = 0; // Beispielwert für die x-Koordinate
+        const yCoordinate = index * 50; // Zeilen t1 bis t4
+        return `display.Text('${cleanText(text.replace(/"/g, ""))}', ${xCoordinate}, ${yCoordinate}, display.WHITE)`;
+      });
+
+      const textCmd = `display.show([${textCmds.join(", ")}])`;
+      const clearCmd = "display.clear()";
+
+      await delay(100); // 2.5 Sekunden warten
+      await replSend(`${clearCmd}\n`);
+	  await delay(100); // Warten Sie 100 Millisekunden
+	  await replSend(`${textCmd}\n`);
+      await delay(6000); // 2.5 Sekunden warten
+    }
+  }
+
+  function chunkArray(array, size) {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  }
+
+  function cleanText(inputText) {
+    let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
+    cleanedText = cleanedText.replace(/""/g, '"'); // replace double quotes with single quotes
+    cleanedText = cleanedText.replace(/\n/g, ""); // remove line breaks
+    return cleanedText;
+  }
+
+  async function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function logger(msg) {
+    if (msg === "Connected") {
+      setConnected(true);
+    }
+  }
+
+  function wrapText(inputText) {
+    const block = 25;
+    const regex = /0xffffff\)(?!$)/g; // Negative Lookahead regex to match "0xffffff)" not at the end of the string
+    let text = [];
+    let currentIndex = 0;
+
+    while (currentIndex < inputText.length) {
+      const substring = inputText.substring(currentIndex, currentIndex + block);
+      const match = substring.match(regex);
+      const endIndex = match ? currentIndex + match.index + 25 : currentIndex + block;
+      const wrappedSubstring = inputText.substring(currentIndex, endIndex);
+      text.push(wrappedSubstring);
+      currentIndex = endIndex;
+    }
+
+    return text;
+  }
 };
 
 export default Home;
+
+
