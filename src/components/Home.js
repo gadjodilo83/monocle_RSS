@@ -207,17 +207,17 @@ const Home = () => {
     setLanguagePrompt(language);
   }, [language]);
 
-  const connectToBluetooth = async () => {
-    await ensureConnected(async (msg) => {
-      console.log("logger called with message:", msg);  // Debugging-Nachricht
-      if (msg === "Connected") {
-        await showReadyMessage();
-        setConnected(true);
-      }
-    }, relayCallback);
-    app.run(execMonocle);
-    await displayRawRizz();
-  }
+const connectToBluetooth = async () => {
+  await ensureConnected(async (msg) => {
+    console.log("logger called with message:", msg);  // Debugging-Nachricht
+    if (msg === "Connected") {
+      await showReadyMessage();
+      setConnected(true);
+    }
+  }, relayCallback);
+  app.run(execMonocle);
+  await displayRawRizz();
+}
 
   return (
     <>
@@ -318,14 +318,6 @@ async function displayRizz(rizz) {
 
 	}
 	
-    // Display the "Monocle Ready" message after all the text has been shown
-    const readyText = `display.Text('Monocle Ready', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
-    const readyCmd = `display.show([${readyText}])`;
-    await delay(1000);
-    await replSend(`${clearCmd}\n`);
-    await delay(1000);
-    await replSend(`${readyCmd}\n`);
-}
 
 
 
@@ -350,18 +342,11 @@ async function displayRizz(rizz) {
 
 
 
-
-async function logger(msg) {
-  console.log("logger called with message:", msg);  // Debugging-Nachricht
-  if (msg === "trigger a" || msg === "trigger b") {
-    await showReadyMessage();
-    setConnected(true);
+  async function logger(msg) {
+    if (msg === "Connected") {
+      setConnected(true);
+    }
   }
-}
-
-
-
-
 
 
 
