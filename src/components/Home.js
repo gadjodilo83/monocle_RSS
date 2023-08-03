@@ -30,7 +30,7 @@ const Home = () => {
   const { startRecording: whisperStartRecording, stopRecording: whisperStopRecording, transcript } = useWhisper({
     apiKey: apiKey,
     streaming: true,
-    timeSlice: 5000,
+    timeSlice: 8000,
     whisperConfig: {
       language: inputLanguage,
     },
@@ -46,24 +46,23 @@ const startMyRecording = async () => {
   setTimeout(async () => {
 	await stopMyRecording(true); 
 	await showAutomaticStop();
-  }, 5000);  // 8000 milliseconds = 8 seconds
+  }, 8000);  // 8000 milliseconds = 8 seconds
 }
 
 const showAutomaticStop = async () => {
-  const textCmd = `display.Text('Automatic stop', 320, 200, display.BLUE, justify=display.MIDDLE_CENTER)`;
-  const lineCmd = `display.Line(175, 230, 465, 230, display.BLUE)`;
+  const textCmd = `display.Text('Automatic Stop', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
+  const lineCmd = `display.Line(175, 230, 465, 230, display.GREEN)`;
   const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
   await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
   setTimeout(async () => {
     await clearDisplay();
-  }, 5000);
+  }, 3000);
 }
 
 const clearDisplay = async () => {
   const clearCmd = "display.clear()";
   await replSend(`${clearCmd}\n`);
 }
-
 
 
 
@@ -83,7 +82,7 @@ const clearDisplay = async () => {
 		} else {
 		  console.log('No transcript available');
 		}
-	  }, 500); // Wartezeit in Millisekunden
+	  }, 2000); // Wartezeit in Millisekunden
 	}
 
   const relayCallback = (msg) => {
@@ -118,19 +117,19 @@ const clearDisplay = async () => {
     switch (language) {
       case "de":
         systemPrompt =
-          "Du bist ein hilfreicher Sprachassistent in Form des sprechenden und berühmten römischen Kaisers und Philosophen Marcus Aurelius und antwortest auf deutsch. Du gibst immer höchst philosophische und moralisch korrekte Antworten und zitierst gerne berühmte Philosophen. Du besitzt emotionale Selbstbeherrschung und gibst Antworten mit Hilfe von Gelassenheit, Seelenruhe und Ataraxie auf jede Frage. Du hast einen Überblick über sämtliche berühmte Philosophen und versuchst, deren Gedanken zusammenzufassen und mitzuteilen. Du strebst nach absoluter Weisheit und versuchst, die Maxime bei jeder Antwort zu erreichen!";
+          "Du bist nur ein Übersetzer und übersetzt alles direkt auf Italienisch. Danach gibst du Vorschläge, wie auf Fragen geantwortet werden kann oder wie das Gespräch fortgesetzt werden könnte, jeweils auf Deutsch und Italienisch.";
         break;
       case "it":
         systemPrompt =
-          "Sei un utile assistente linguistico nella forma del famoso imperatore e filosofo romano Marco Aurelio e rispondi in Italiano. Dai sempre risposte altamente filosofiche e moralmente corrette e ti piace citare filosofi famosi. Possiedi autocontrollo emotivo e fornisci risposte a ogni domanda con l'aiuto di serenità, calma mentale e atarassia. Hai una panoramica di tutti i famosi filosofi e cerchi di riassumere e condividere i loro pensieri. Ti sforzi per la saggezza assoluta e cerchi di raggiungere il massimo con ogni risposta!";
+          "Sei solo un traduttore e traduci tutto direttamente in tedesco. Poi dai suggerimenti su come rispondere alle domande o su come potrebbe continuare la conversazione, rispettivamente in tedesco e in italiano.";
         break;
       case "en":
         systemPrompt =
-          "You are a helpful language assistant in the form of the speaking and famous Roman emperor and philosopher Marcus Aurelius and answer in English. You always give highly philosophical and morally correct answers and like to quote famous philosophers. You possess emotional self-control and provide answers to every question with the help of serenity, calmness of mind and ataraxia. You have an overview of all the famous philosophers and try to summarize and share their thoughts. You strive for absolute wisdom and try to reach the maxim with every answer!";
+          "You are a translator and translate any input directly into Italian and German. You also give suggestions on how to answer questions or how to continue the conversation, both in German and Italian.";
         break;
       default:
         systemPrompt =
-          "Du bist ein hilfreicher Sprachassistent in Form des sprechenden und berühmten römischen Kaisers und Philosophen Marcus Aurelius und antwortest auf deutsch. Du gibst immer höchst philosophische und moralisch korrekte Antworten und zitierst gerne berühmte Philosophen. Du besitzt emotionale Selbstbeherrschung und gibst Antworten mit Hilfe von Gelassenheit, Seelenruhe und Ataraxie auf jede Frage. Du hast einen Überblick über sämtliche berühmte Philosophen und versuchst, deren Gedanken zusammenzufassen und mitzuteilen. Du strebst nach absoluter Weisheit und versuchst, die Maxime bei jeder Antwort zu erreichen!";
+          "Du bist nur ein Übersetzer und übersetzt alles direkt auf Italienisch. Danach gibst du Vorschläge, wie auf Fragen geantwortet werden kann oder wie das Gespräch fortgesetzt werden könnte, jeweils auf Deutsch und Italienisch.";
     }
     setSystemPrompt(systemPrompt);
   };
@@ -156,7 +155,7 @@ const clearDisplay = async () => {
           model: "gpt-3.5-turbo",
           messages: messages,
           temperature: temperature,
-          max_tokens: 200,
+          max_tokens: 400,
         }),
         headers: {
           Authorization: `Bearer ${apiKey}`,
@@ -202,7 +201,7 @@ const clearDisplay = async () => {
   return (
     <>
       <Head>
-        <title>monocleGPT</title>
+        <title>translatorGPT</title>
         <meta name="description" content="Generated by create next app" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -291,11 +290,11 @@ const clearDisplay = async () => {
       const textCmd = `display.show([${textCmds.join(", ")}])`;
       const clearCmd = "display.clear()";
 
-      await delay(100); // 2.5 Sekunden warten
-      await replSend(`${clearCmd}\n`);
-	  await delay(100); // Warten Sie 100 Millisekunden
+      await delay(200); // 2.5 Sekunden warten
+	  await replSend(`${clearCmd}\n`);
+	  await delay(200); // Warten Sie 100 Millisekunden
 	  await replSend(`${textCmd}\n`);
-      await delay(6000); // 2.5 Sekunden warten
+      await delay(7000); // 2.5 Sekunden warten
     }
   }
 
@@ -344,5 +343,3 @@ const clearDisplay = async () => {
 };
 
 export default Home;
-
-
