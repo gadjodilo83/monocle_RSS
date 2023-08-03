@@ -30,7 +30,7 @@ const Home = () => {
   const { startRecording: whisperStartRecording, stopRecording: whisperStopRecording, transcript } = useWhisper({
     apiKey: apiKey,
     streaming: true,
-    timeSlice: 8000,
+    timeSlice: 5000,
     whisperConfig: {
       language: inputLanguage,
     },
@@ -46,7 +46,7 @@ const startMyRecording = async () => {
   setTimeout(async () => {
 	await stopMyRecording(true); 
 	await showAutomaticStop();
-  }, 8000);  // 8000 milliseconds = 8 seconds
+  }, 5000);  // 8000 milliseconds = 8 seconds
 }
 
 const showAutomaticStop = async () => {
@@ -292,21 +292,21 @@ async function displayRizz(rizz) {
 
       const textCmd = `display.show([${textCmds.join(", ")}])`;
 
-      await delay(100); // 2.5 Sekunden warten
+      await delay(10); // 2.5 Sekunden warten
       await replSend(`${clearCmd}\n`);
-	  await delay(100); // Warten Sie 100 Millisekunden
+	  await delay(10); // Warten Sie 100 Millisekunden
 	  await replSend(`${textCmd}\n`);
-      await delay(6000); // 2.5 Sekunden warten
+      await delay(5000); // 2.5 Sekunden warten
       // await replSend(`${clearCmd}\n`);
 
 	}
 	
     // Display the "Monocle Ready" message after all the text has been shown
-    const readyText = `display.Text('Monocle Ready', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
+    const readyText = `display.Text('Press the Button', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
     const readyCmd = `display.show([${readyText}])`;
-    await delay(1000);
+    await delay(10);
     await replSend(`${clearCmd}\n`);
-    await delay(1000);
+    await delay(10);
     await replSend(`${readyCmd}\n`);
 }
 
@@ -337,23 +337,29 @@ async function displayRizz(rizz) {
     }
   }
 
-  function wrapText(inputText) {
-    const block = 25;
-    const regex = /0xffffff\)(?!$)/g; // Negative Lookahead regex to match "0xffffff)" not at the end of the string
-    let text = [];
-    let currentIndex = 0;
+function wrapText(inputText) {
+    const block = 22;
+    const words = inputText.split(' ');
+    let lines = [''];
+    let currentLineIndex = 0;
 
-    while (currentIndex < inputText.length) {
-      const substring = inputText.substring(currentIndex, currentIndex + block);
-      const match = substring.match(regex);
-      const endIndex = match ? currentIndex + match.index + 25 : currentIndex + block;
-      const wrappedSubstring = inputText.substring(currentIndex, endIndex);
-      text.push(wrappedSubstring);
-      currentIndex = endIndex;
-    }
+    words.forEach(word => {
+        const currentLine = lines[currentLineIndex];
 
-    return text;
-  }
-};
+        if ((currentLine + word).length <= block) {
+            // Wenn das Hinzufügen des Wortes zur aktuellen Zeile die Länge der Zeile nicht überschreitet, 
+            // fügen wir das Wort zur aktuellen Zeile hinzu
+            lines[currentLineIndex] += word + ' ';
+        } else {
+            // Wenn das Hinzufügen des Wortes zur aktuellen Zeile die Länge der Zeile überschreitet, 
+            // erstellen wir eine neue Zeile mit diesem Wort
+            lines.push(word + ' ');
+            currentLineIndex += 1;
+        }
+    });
+
+    return lines;
+}
+ };
 
 export default Home;
