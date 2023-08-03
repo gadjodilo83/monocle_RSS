@@ -46,7 +46,7 @@ const startMyRecording = async () => {
   setTimeout(async () => {
 	await stopMyRecording(true); 
 	await showAutomaticStop();
-  }, 1000);  // 5000 milliseconds = 8 seconds
+  }, 5000);  // 5000 milliseconds = 8 seconds
 }
 
 const showAutomaticStop = async () => {
@@ -56,7 +56,7 @@ const showAutomaticStop = async () => {
   await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
   setTimeout(async () => {
     await clearDisplay();
-  }, 5000);
+  }, 1000);
 }
 
 const clearDisplay = async () => {
@@ -292,7 +292,7 @@ async function displayRizz(rizz) {
 
       const textCmd = `display.show([${textCmds.join(", ")}])`;
 
-      await delay(10); // 2.5 Sekunden warten
+      await delay(6000); // 2.5 Sekunden warten
       await replSend(`${clearCmd}\n`);
 	  await delay(6000); // Warten Sie 100 Millisekunden
 	  await replSend(`${textCmd}\n`);
