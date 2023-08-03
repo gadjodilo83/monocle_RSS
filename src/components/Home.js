@@ -97,7 +97,7 @@ const Home = () => {
       await replSend(`${clearCmd}\n${textCmd}\n`); // clear() und display.show senden
       await delay(6000); // 2.5 Sekunden warten
 
-}, []);
+} []);
 
   const displayRawRizz = useCallback(async (rizz) => {
     await replRawMode(true);
