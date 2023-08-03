@@ -46,7 +46,7 @@ const startMyRecording = async () => {
   setTimeout(async () => {
 	await stopMyRecording(true); 
 	await showAutomaticStop();
-  }, 5000);  // 8000 milliseconds = 8 seconds
+  }, 5000);  // 5000 milliseconds = 8 seconds
 }
 
 const showAutomaticStop = async () => {
@@ -155,7 +155,7 @@ const clearDisplay = async () => {
           model: "gpt-3.5-turbo",
           messages: messages,
           temperature: temperature,
-          max_tokens: 250,
+          max_tokens: 300,
         }),
         headers: {
           Authorization: `Bearer ${apiKey}`,
@@ -279,7 +279,7 @@ async function displayRizz(rizz) {
     if (!rizz) return;
 
     const splitText = wrapText(rizz);
-    const groupSize = 4;
+    const groupSize = 5;
     const clearCmd = "display.clear()"; // Definiere clearCmd hier
 
     for (let i = 0; i < splitText.length; i += groupSize) {
@@ -338,7 +338,7 @@ async function displayRizz(rizz) {
   }
 
 function wrapText(inputText) {
-    const block = 22;
+    const block = 23;
     const words = inputText.split(' ');
     let lines = [''];
     let currentLineIndex = 0;
