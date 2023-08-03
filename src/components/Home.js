@@ -184,7 +184,7 @@ const fetchGpt = useCallback(async () => {
   } finally {
     setFetching(false);
   }
-}, [fetching, systemPrompt, transcript.text, temperature, apiKey]);  // Stellen Sie sicher, dass alle Abhängigkeiten hier aufgeführt sind
+}, [fetching, systemPrompt, transcript.text, temperature, apiKey, displayRawRizz]);
 
 
 useEffect(() => {
