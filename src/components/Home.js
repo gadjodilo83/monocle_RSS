@@ -280,6 +280,7 @@ async function displayRizz(rizz) {
 
     const splitText = wrapText(rizz);
     const groupSize = 4;
+    const clearCmd = "display.clear()"; // Definiere clearCmd hier
 
     for (let i = 0; i < splitText.length; i += groupSize) {
       const group = splitText.slice(i, i + groupSize);
@@ -290,7 +291,6 @@ async function displayRizz(rizz) {
       });
 
       const textCmd = `display.show([${textCmds.join(", ")}])`;
-      const clearCmd = "display.clear()";
 
       await delay(100); // 2.5 Sekunden warten
       await replSend(`${clearCmd}\n`);
@@ -298,17 +298,19 @@ async function displayRizz(rizz) {
 	  await replSend(`${textCmd}\n`);
       await delay(6000); // 2.5 Sekunden warten
       await replSend(`${clearCmd}\n`);
-    }
+
+	}
 	
     // Display the "Monocle Ready" message after all the text has been shown
-    const readyText = `display.Text('Monocle Ready', x, y, display.WHITE)`;
+    const readyText = `display.Text('Monocle Ready', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
     const readyCmd = `display.show([${readyText}])`;
-    await delay(100);
+    await delay(1000);
     await replSend(`${clearCmd}\n`);
-    await delay(100);
+    await delay(1000);
     await replSend(`${readyCmd}\n`);
-	// await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
 }
+
+
 
   function chunkArray(array, size) {
     const result = [];
