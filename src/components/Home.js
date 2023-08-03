@@ -38,10 +38,12 @@ const Home = () => {
   });
 
 const startMyRecording = async () => {
+  const batteryStatus = battery();  // Rufen Sie die battery-Funktion auf
+  const batteryCmd = `display.Text('${batteryStatus}', 320, 250, display.GREEN, justify=display.MIDDLE_CENTER)`;  // Stellen Sie sicher, dass die Koordinaten und Farbe korrekt sind
   const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
   const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
-  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
+  const showCmd = `display.show([${textCmd}, ${lineCmd}, ${batteryCmd}])`;  // Fügen Sie batteryCmd zur Anzeigeliste hinzu
+  await replSend(`${textCmd}\n${lineCmd}\n${batteryCmd}\n${showCmd}\n`);
   whisperStartRecording();
   setIsRecording(true);
   setTimeout(async () => {
