@@ -8,7 +8,6 @@ import { Button, Select, Input, InputNumber } from "antd";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
-import { battery } from "@/utils/mpython-common/battery.js";  // Fügen Sie diese Zeile am Anfang der Datei hinzu
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,12 +37,10 @@ const Home = () => {
   });
 
 const startMyRecording = async () => {
-  const batteryStatus = battery();  // Rufen Sie die battery-Funktion auf
-  const batteryCmd = `display.Text('${batteryStatus}', 320, 250, display.GREEN, justify=display.MIDDLE_CENTER)`;  // Stellen Sie sicher, dass die Koordinaten und Farbe korrekt sind
   const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
   const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
-  const showCmd = `display.show([${textCmd}, ${lineCmd}, ${batteryCmd}])`;  // Fügen Sie batteryCmd zur Anzeigeliste hinzu
-  await replSend(`${textCmd}\n${lineCmd}\n${batteryCmd}\n${showCmd}\n`);
+  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
+  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
   whisperStartRecording();
   setIsRecording(true);
   setTimeout(async () => {
@@ -89,27 +86,25 @@ const clearDisplay = async () => {
 	  }, 500); // Wartezeit in Millisekunden
 	}
 
-const relayCallback = (msg) => {
-  if (!msg) {
-    return;
-  }
-  if (msg.trim() === "trigger b") {
-    // Left btn
-    console.log("Button B pressed");
-    fetchGpt();
-  }
-
-  if (msg.trim() === "trigger a") {
-    // Right btn
-    if(isRecording.current) {
-        stopMyRecording();
-    } else {
-        startMyRecording();
+  const relayCallback = (msg) => {
+    if (!msg) {
+      return;
     }
-    const batteryStatus = battery();  // Rufen Sie die battery-Funktion auf
-    replSend(batteryStatus);  // Senden Sie das Ergebnis an das Monocle
+    if (msg.trim() === "trigger b") {
+      // Left btn
+      console.log("Button B pressed");
+      fetchGpt();
+    }
+
+    if (msg.trim() === "trigger a") {
+      // Right btn
+      if(isRecording.current) {
+          stopMyRecording();
+      } else {
+          startMyRecording();
+      }
+    }
   }
-}
 
   const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
