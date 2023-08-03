@@ -187,7 +187,7 @@ const clearDisplay = async () => {
 
   useEffect(() => {
       if (!isRecording.current && transcript.text) {
-          fetchGpt();
+          // fetchGpt();
       }
   }, [transcript.text]);
 
