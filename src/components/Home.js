@@ -65,10 +65,6 @@ const clearDisplay = async () => {
   await replSend(`${clearCmd}\n`);
 }
 
-
-
-
-
 	const stopMyRecording = async () => {
 	  const textCmd = `display.Text('Stop Record', 320, 200, display.BLUE, justify=display.MIDDLE_CENTER)`;
 	  const lineCmd = `display.Line(175, 230, 465, 230, display.BLUE)`;
@@ -107,6 +103,14 @@ const clearDisplay = async () => {
     }
   }
 
+
+const displayRawRizz = useCallback(async (rizz) => {
+    await replRawMode(true);
+    await displayRizz(rizz);
+}, []); // fügen Sie Abhängigkeiten hinzu, falls erforderlich
+
+
+	
   const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
   const [response, setResponse] = useState("");
