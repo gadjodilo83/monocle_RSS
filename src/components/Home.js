@@ -297,12 +297,12 @@ async function displayRizz(rizz) {
 	  await delay(100); // Warten Sie 100 Millisekunden
 	  await replSend(`${textCmd}\n`);
       await delay(6000); // 2.5 Sekunden warten
-      await replSend(`${clearCmd}\n`);
+      // await replSend(`${clearCmd}\n`);
 
 	}
 	
     // Display the "Monocle Ready" message after all the text has been shown
-    const readyText = `display.Text('Monocle Ready', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
+    const readyText = `display.Text('Monocle Ready', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
     const readyCmd = `display.show([${readyText}])`;
     await delay(1000);
     await replSend(`${clearCmd}\n`);
