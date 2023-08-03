@@ -317,7 +317,7 @@ const startMyRecording = async () => {
               className="mb-2"
               type="primary"
               onClick={async () => {
-                await ensureConnected(logger, relayCallback);
+                await ensureConnected(() => {}, relayCallback);
                 app.run(execMonocle);
                 await displayRawRizz();
               }}
