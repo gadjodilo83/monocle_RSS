@@ -268,6 +268,13 @@ const clearDisplay = async () => {
     </>
   );
 
+
+  async function displayRawRizz(rizz) {
+    await replRawMode(true);
+    await displayRizz(rizz);
+  }
+
+
 async function displayRizz(rizz) {
     if (!rizz) return;
 
