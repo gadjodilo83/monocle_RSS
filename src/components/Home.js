@@ -36,63 +36,54 @@ const Home = () => {
     },
   });
 
-  const startMyRecording = async () => {
-    const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
-    const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
-    const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-    await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
-    whisperStartRecording();
-    setIsRecording(true);
-    setTimeout(async () => {
-      await stopMyRecording(true); 
-      await showAutomaticStop();
-    }, 8000);  // 8000 milliseconds = 8 seconds
-  }
+const startMyRecording = async () => {
+  const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+  const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
+  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
+  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
+  whisperStartRecording();
+  setIsRecording(true);
+  setTimeout(async () => {
+	await stopMyRecording(true); 
+	await showAutomaticStop();
+  }, 8000);  // 8000 milliseconds = 8 seconds
+}
 
-  const showAutomaticStop = async () => {
-    const textCmd = `display.Text('Automatic Stop', 320, 200, display.BLUE, justify=display.MIDDLE_CENTER)`;
-    const lineCmd = `display.Line(175, 230, 465, 230, display.BLUE)`;
-    const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-    await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
-    setTimeout(async () => {
-      await clearDisplay();
-    }, 6000);
-  }
+const showAutomaticStop = async () => {
+  const textCmd = `display.Text('Automatic Stop', 320, 200, display.BLUE, justify=display.MIDDLE_CENTER)`;
+  const lineCmd = `display.Line(175, 230, 465, 230, display.BLUE)`;
+  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
+  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
+  setTimeout(async () => {
+    await clearDisplay();
+  }, 6000);
+}
 
-  const clearDisplay = async () => {
-    const clearCmd = "display.clear()";
-    await replSend(`${clearCmd}\n`);
-  }
+const clearDisplay = async () => {
+  const clearCmd = "display.clear()";
+  await replSend(`${clearCmd}\n`);
+}
 
-  const showReadyMessage = async () => {
-    console.log("showReadyMessage called");  // Debugging-Nachricht
-    const textCmd = `display.Text('Monocle Ready', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
-    const showCmd = `display.show([${textCmd}])`;
-    try {
-      await replSend(`${textCmd}\n${showCmd}\n`);
-      console.log("showReadyMessage command sent");  // Debugging-Nachricht
-    } catch (error) {
-      console.log("Error in showReadyMessage:", error);  // Debugging-Nachricht
-    }
-  }
 
-  const stopMyRecording = async () => {
-    const textCmd = `display.Text('Stop Record', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
-    const lineCmd = `display.Line(175, 230, 465, 230, display.GREEN)`;
-    const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-    await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
-    whisperStopRecording();
-    setIsRecording(false);
 
-    // Füge einen kleinen Verzögerung hinzu, um sicherzustellen, dass das transkribierte Text bereit ist
-    setTimeout(async () => {
-      if (transcript.text) {
-        await fetchGpt();
-      } else {
-        console.log('No transcript available');
-      }
-    }, 2000); // Wartezeit in Millisekunden
-  }
+
+	const stopMyRecording = async () => {
+	  const textCmd = `display.Text('Stop Record', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
+	  const lineCmd = `display.Line(175, 230, 465, 230, display.GREEN)`;
+	  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
+	  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
+	  whisperStopRecording();
+	  setIsRecording(false);
+
+	  // Füge einen kleinen Verzögerung hinzu, um sicherzustellen, dass das transkribierte Text bereit ist
+	  setTimeout(async () => {
+		if (transcript.text) {
+		  await fetchGpt();
+		} else {
+		  console.log('No transcript available');
+		}
+	  }, 2000); // Wartezeit in Millisekunden
+	}
 
   const relayCallback = (msg) => {
     if (!msg) {
@@ -207,18 +198,6 @@ const Home = () => {
     setLanguagePrompt(language);
   }, [language]);
 
-const connectToBluetooth = async () => {
-  await ensureConnected(async (msg) => {
-    console.log("logger called with message:", msg);  // Debugging-Nachricht
-    if (msg === "Connected") {
-      await showReadyMessage();
-      setConnected(true);
-    }
-  }, relayCallback);
-  app.run(execMonocle);
-  await displayRawRizz();
-}
-
   return (
     <>
       <Head>
@@ -271,7 +250,11 @@ const connectToBluetooth = async () => {
             <Button
               className="mb-2"
               type="primary"
-              onClick={connectToBluetooth}
+              onClick={async () => {
+                await ensureConnected(logger, relayCallback);
+                app.run(execMonocle);
+                await displayRawRizz();
+              }}
             >
               Connect
             </Button>
@@ -318,6 +301,14 @@ async function displayRizz(rizz) {
 
 	}
 	
+    // Display the "Monocle Ready" message after all the text has been shown
+    const readyText = `display.Text('Monocle Ready', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
+    const readyCmd = `display.show([${readyText}])`;
+    await delay(1000);
+    await replSend(`${clearCmd}\n`);
+    await delay(1000);
+    await replSend(`${readyCmd}\n`);
+}
 
 
 
@@ -340,15 +331,11 @@ async function displayRizz(rizz) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-
-
   async function logger(msg) {
     if (msg === "Connected") {
       setConnected(true);
     }
   }
-
-
 
   function wrapText(inputText) {
     const block = 25;
