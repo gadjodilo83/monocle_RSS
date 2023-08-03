@@ -107,7 +107,7 @@ const clearDisplay = async () => {
 const displayRawRizz = useCallback(async (rizz) => {
     await replRawMode(true);
     await displayRizz(rizz);
-}, []); // fügen Sie Abhängigkeiten hinzu, falls erforderlich
+}, [displayRizz]);
 
 
 	
