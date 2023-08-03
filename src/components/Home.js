@@ -65,6 +65,11 @@ const clearDisplay = async () => {
 }
 
 
+const showReadyMessage = async () => {
+  const textCmd = `display.Text('Monocle Ready', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
+  const showCmd = `display.show([${textCmd}])`;
+  await replSend(`${textCmd}\n${showCmd}\n`);
+}
 
 
 	const stopMyRecording = async () => {
@@ -332,11 +337,7 @@ async function displayRizz(rizz) {
   }
 
 
-const showReadyMessage = async () => {
-  const textCmd = `display.Text('Monocle Ready', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
-  const showCmd = `display.show([${textCmd}])`;
-  await replSend(`${textCmd}\n${showCmd}\n`);
-}
+
 
 
 async function logger(msg) {
