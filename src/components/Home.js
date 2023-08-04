@@ -85,28 +85,25 @@ const clearDisplay = async () => {
 	  }, 1000); // Wartezeit in Millisekunden
 	}
 
-  const relayCallback = async (msg) => {
-    console.log("relayCallback function has been called with message: ", msg);
-
+  const relayCallback = (msg) => {
     if (!msg) {
       return;
     }
+    if (msg.trim() === "trigger b") {
+      // Left btn
+      console.log("Button B pressed");
+      fetchGpt();
+    }
+
     if (msg.trim() === "trigger a") {
       // Right btn
       if(isRecording.current) {
-        stopMyRecording();
+          stopMyRecording();
       } else {
-        startMyRecording();
+          startMyRecording();
       }
-    } else if (msg.trim() === "trigger b") {
-      // Left btn
-      console.log("Button B pressed");
-      const textCmd = `display.Text('Dies ist ein Test', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
-      const showCmd = `display.show([${textCmd}])`;
-      await replSend(`${textCmd}\n${showCmd}\n`);
     }
-  };
-
+  }
 
   const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
@@ -322,7 +319,6 @@ async function displayRizz(rizz) {
     }
     return result;
   }
-
 
 
 function cleanText(inputText) {
