@@ -332,6 +332,23 @@ function cleanText(inputText) {
   cleanedText = cleanedText.replace(/Ä/g, "Ae"); // replace "Ä" with "Ae"
   cleanedText = cleanedText.replace(/Ü/g, "Ue"); // replace "Ü" with "Ue"
   cleanedText = cleanedText.replace(/Ö/g, "Oe"); // replace "Ö" with "Oe"
+  cleanedText = cleanedText.replace(/ß/g, "ss"); // replace "ß" with "ss"
+  cleanedText = cleanedText.replace(/ù/g, "u"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/à/g, "a"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/À/g, "A"); // replace "ä" with "ae"
+  cleanedText = cleanedText.replace(/è/g, "e"); // replace "ü" with "ue"
+  cleanedText = cleanedText.replace(/É/g, "E"); // replace "ö" with "oe"
+  cleanedText = cleanedText.replace(/é/g, "e"); // replace "Ä" with "Ae"
+  cleanedText = cleanedText.replace(/È/g, "E"); // replace "Ü" with "Ue"
+  cleanedText = cleanedText.replace(/Ú/g, "U"); // replace "Ö" with "Oe"
+  cleanedText = cleanedText.replace(/Ù/g, "U"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/ó/g, "o"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/Ó/g, "O"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/ò/g, "o"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/Ò/g, "O"); // replace "ù" with "u"
+
+
+
   return cleanedText;
 }
 
