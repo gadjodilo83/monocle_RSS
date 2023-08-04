@@ -320,12 +320,23 @@ async function displayRizz(rizz) {
     return result;
   }
 
-  function cleanText(inputText) {
-    let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
-    cleanedText = cleanedText.replace(/""/g, '"'); // replace double quotes with single quotes
-    cleanedText = cleanedText.replace(/\n/g, ""); // remove line breaks
-    return cleanedText;
-  }
+
+
+function cleanText(inputText) {
+  let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
+  cleanedText = cleanedText.replace(/""/g, '"'); // replace double quotes with single quotes
+  cleanedText = cleanedText.replace(/\n/g, ""); // remove line breaks
+  cleanedText = cleanedText.replace(/ä/g, "ae"); // replace "ä" with "ae"
+  cleanedText = cleanedText.replace(/ü/g, "ue"); // replace "ü" with "ue"
+  cleanedText = cleanedText.replace(/ö/g, "oe"); // replace "ö" with "oe"
+  cleanedText = cleanedText.replace(/Ä/g, "Ae"); // replace "Ä" with "Ae"
+  cleanedText = cleanedText.replace(/Ü/g, "Ue"); // replace "Ü" with "Ue"
+  cleanedText = cleanedText.replace(/Ö/g, "Oe"); // replace "Ö" with "Oe"
+  return cleanedText;
+}
+
+
+
 
   async function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
