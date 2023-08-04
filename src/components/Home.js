@@ -382,6 +382,7 @@ function cleanText(inputText) {
 async function logger(msg) {
   if (msg === "Connected") {
     setConnected(true);
+    const clearCmd = "display.clear()"; // Define clearCmd here
     // Display the "Monocle Ready" message after all the text has been shown
     const readyText = `display.Text('Press the Button', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
     const readyCmd = `display.show([${readyText}])`;
