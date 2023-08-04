@@ -85,25 +85,27 @@ const clearDisplay = async () => {
 	  }, 1000); // Wartezeit in Millisekunden
 	}
 
-  const relayCallback = (msg) => {
-    if (!msg) {
-      return;
-    }
-    if (msg.trim() === "trigger b") {
-      // Left btn
-      console.log("Button B pressed");
-      fetchGpt();
-    }
+	const relayCallback = async (msg) => {
+	  if (!msg) {
+		return;
+	  }
+	  if (msg.trim() === "trigger b") {
+		// Left btn
+		console.log("Button B pressed");
+		const textCmd = `display.Text('Dies ist ein Test', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
+		const showCmd = `display.show([${textCmd}])`;
+		await replSend(`${textCmd}\n${showCmd}\n`);
+	  }
+	  if (msg.trim() === "trigger a") {
+		// Right btn
+		if(isRecording.current) {
+			stopMyRecording();
+		} else {
+			startMyRecording();
+		}
+	  }
+	};
 
-    if (msg.trim() === "trigger a") {
-      // Right btn
-      if(isRecording.current) {
-          stopMyRecording();
-      } else {
-          startMyRecording();
-      }
-    }
-  }
 
   const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
