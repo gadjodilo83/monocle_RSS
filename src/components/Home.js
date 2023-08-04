@@ -379,11 +379,18 @@ function cleanText(inputText) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async function logger(msg) {
-    if (msg === "Connected") {
-      setConnected(true);
-    }
+async function logger(msg) {
+  if (msg === "Connected") {
+    setConnected(true);
+    // Display the "Monocle Ready" message after all the text has been shown
+    const readyText = `display.Text('Press the Button', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
+    const readyCmd = `display.show([${readyText}])`;
+    await delay(10);
+    await replSend(`${clearCmd}\n`);
+    await delay(10);
+    await replSend(`${readyCmd}\n`);
   }
+}
 
 function wrapText(inputText) {
     const block = 23;
