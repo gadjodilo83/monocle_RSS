@@ -86,6 +86,7 @@ const clearDisplay = async () => {
 	}
 
 	const relayCallback = async (msg) => {
+	  console.log("relayCallback called with msg: ", msg);
 	  if (!msg) {
 		return;
 	  }
