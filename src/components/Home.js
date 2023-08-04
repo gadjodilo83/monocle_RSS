@@ -346,9 +346,29 @@ function cleanText(inputText) {
   cleanedText = cleanedText.replace(/Ó/g, "O"); // replace "ù" with "u"
   cleanedText = cleanedText.replace(/ò/g, "o"); // replace "ù" with "u"
   cleanedText = cleanedText.replace(/Ò/g, "O"); // replace "ù" with "u"
-
-
-
+  cleanedText = cleanedText.replace(/l'u/g, "l u"); // replace "Ä" with "Ae"
+  cleanedText = cleanedText.replace(/l'a/g, "l a"); // replace "Ü" with "Ue"
+  cleanedText = cleanedText.replace(/dall'/g, "dall "); // replace "Ö" with "Oe"
+  cleanedText = cleanedText.replace(/dell'/g, "dell "); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/all'/g, "all "); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/sull'/g, "sull "); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/nell'/g, "nell "); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/quell'/g, "quell "); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/un'a/g, "un a"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/un'u/g, "un u"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/un'o/g, "un o"); // replace "ù" with "u"  
+  cleanedText = cleanedText.replace(/c'è/g, "c e"); // replace "ù" with "u"  
+  cleanedText = cleanedText.replace(/c'e/g, "c e"); // replace "ù" with "u"  
+  cleanedText = cleanedText.replace(/nessun'/g, "nessun "); // replace "ù" with "u"  
+  cleanedText = cleanedText.replace(/alcun'/g, "alcun "); // replace "ù" with "u"  
+  cleanedText = cleanedText.replace(/ché/g, "che"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/dà/g, "da"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/là/g, "la"); // replace "ù" with "u"
+  cleanedText = cleanedText.replace(/né/g, "ne o"); // replace "ù" with "u"  
+  cleanedText = cleanedText.replace(/sì/g, "si"); // replace "ù" with "u"  
+  cleanedText = cleanedText.replace(/tè/g, "te"); // replace "ù" with "u"  
+  cleanedText = cleanedText.replace(/ì/g, "i"); // replace "ù" with "u"  
+  cleanedText = cleanedText.replace(/Ì/g, "I"); // replace "ù" with "u"  
   return cleanedText;
 }
 
