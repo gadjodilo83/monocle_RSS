@@ -19,6 +19,7 @@ const Home = () => {
   };
 
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
+  const [isFetchingGpt, setIsFetchingGpt] = useState(false);
   const [inputLanguage, setInputLanguage] = useState("de");
   const [connected, setConnected] = useState(false);
   const [isRecordingState, setIsRecordingState] = useState(false);
@@ -36,15 +37,7 @@ const Home = () => {
     },
   });
 
-
-const showRecordingAnimation = async () => {
-  const animationCmd = "animate_mic()";  // Call the animate_mic function from graphics.py
-  await replSend(`${animationCmd}\n`);
-}
-
-
 const startMyRecording = async () => {
-  await showRecordingAnimation();  // Show the recording animation
   const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
   const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
   const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
@@ -104,6 +97,13 @@ const clearDisplay = async () => {
     }
 
     if (msg.trim() === "trigger a") {
+  // Überprüfen, ob eine ChatGPT-Anfrage aktiv ist
+  if (isFetchingGpt) {
+    console.log("GPT request in progress, ignoring trigger.");
+    return;
+  }
+
+
       // Right btn
       if(isRecording.current) {
           stopMyRecording();
@@ -144,13 +144,23 @@ const clearDisplay = async () => {
 
   const [fetching, setFetching] = useState(false);
 
-  const fetchGpt = async () => {
-    if (fetching) {
-      console.log("Fetch already in progress");
-      return;
-    }
-    setFetching(true);
-    console.log("fetchGpt called");
+const fetchGpt = async () => {
+  if (fetching || isFetchingGpt) {
+    console.log("Fetch already in progress");
+    return;
+  }
+  setFetching(true);
+  setIsFetchingGpt(true);
+  console.log("fetchGpt called");
+
+  } finally {
+    setFetching(false);
+    setIsFetchingGpt(false);  // stellen Sie sicher, dass dies im finally-Block geschieht, um sicherzustellen, dass der Zustand unabhängig vom Ergebnis der Anfrage zurückgesetzt wird
+  }
+};
+
+
+
 
     try {
       const messages = [
