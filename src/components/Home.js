@@ -18,6 +18,9 @@ const Home = () => {
     setLanguagePrompt(value);
   };
 
+
+
+
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [isFetchingGpt, setIsFetchingGpt] = useState(false);
   const [inputLanguage, setInputLanguage] = useState("de");
@@ -86,32 +89,44 @@ const clearDisplay = async () => {
 	  }, 1000); // Wartezeit in Millisekunden
 	}
 
-  const relayCallback = (msg) => {
-    if (!msg) {
-      return;
-    }
-    if (msg.trim() === "trigger b") {
-      // Left btn
-      console.log("Button B pressed");
-      fetchGpt();
-    }
+const [lastButtonPress, setLastButtonPress] = useState(0); // Zustand für den Zeitpunkt des letzten Button-Drucks hinzufügen
 
-    if (msg.trim() === "trigger a") {
-  // Überprüfen, ob eine ChatGPT-Anfrage aktiv ist
-  if (isFetchingGpt) {
-    console.log("GPT request in progress, ignoring trigger.");
+const relayCallback = (msg) => {
+  const now = Date.now();
+  const DEBOUNCE_TIME = 1000; // Entprellzeit in Millisekunden
+
+  // Wenn der Button zu schnell nach dem letzten Drücken erneut gedrückt wird, ignoriere den neuen Druck
+  if (now - lastButtonPress < DEBOUNCE_TIME) {
     return;
   }
+  setLastButtonPress(now);
 
-
-      // Right btn
-      if(isRecording.current) {
-          stopMyRecording();
-      } else {
-          startMyRecording();
-      }
+  if (!msg) {
+    return;
+  }
+  if (msg.trim() === "trigger b") {
+    // Left btn
+    console.log("Button B pressed");
+    if (!isFetchingGpt) { // Wenn keine GPT-Anfrage läuft
+      fetchGpt();
     }
   }
+
+  if (msg.trim() === "trigger a") {
+    // Überprüfen, ob eine ChatGPT-Anfrage aktiv ist
+    if (isFetchingGpt) {
+      console.log("GPT request in progress, ignoring trigger.");
+      return;
+    }
+
+    // Right btn
+    if(isRecording.current) {
+        stopMyRecording();
+    } else {
+        startMyRecording();
+    }
+  }
+}
 
   const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
