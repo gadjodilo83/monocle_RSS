@@ -104,6 +104,13 @@ const relayCallback = (msg) => {
   if (!msg) {
     return;
   }
+
+  // Wenn gerade aufgenommen wird oder eine ChatGPT-Anfrage aktiv ist, ignoriere den Button-Druck
+  if (isRecording.current || isFetchingGpt) {
+    console.log("Recording or GPT request in progress, ignoring button press.");
+    return;
+  }
+
   if (msg.trim() === "trigger b") {
     // Left btn
     console.log("Button B pressed");
@@ -113,12 +120,6 @@ const relayCallback = (msg) => {
   }
 
   if (msg.trim() === "trigger a") {
-    // Überprüfen, ob eine ChatGPT-Anfrage aktiv ist
-    if (isFetchingGpt) {
-      console.log("GPT request in progress, ignoring trigger.");
-      return;
-    }
-
     // Right btn
     if(isRecording.current) {
         stopMyRecording();
