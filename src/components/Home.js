@@ -18,13 +18,8 @@ const Home = () => {
     setLanguagePrompt(value);
   };
 
-
-
-
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
-  const [isFetchingGpt, setIsFetchingGpt] = useState(false);
   const [inputLanguage, setInputLanguage] = useState("de");
-  const [canPressButton, setCanPressButton] = useState(true); 
   const [connected, setConnected] = useState(false);
   const [isRecordingState, setIsRecordingState] = useState(false);
   const isRecording = useRef(isRecordingState);
@@ -79,7 +74,6 @@ const clearDisplay = async () => {
 	  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
 	  whisperStopRecording();
 	  setIsRecording(false);
-      setCanPressButton(false);
 
 	  // Füge einen kleinen Verzögerung hinzu, um sicherzustellen, dass das transkribierte Text bereit ist
 	  setTimeout(async () => {
@@ -91,49 +85,25 @@ const clearDisplay = async () => {
 	  }, 1000); // Wartezeit in Millisekunden
 	}
 
-const [lastButtonPress, setLastButtonPress] = useState(0); // Zustand für den Zeitpunkt des letzten Button-Drucks hinzufügen
-
-const relayCallback = (msg) => {
-  const now = Date.now();
-  const DEBOUNCE_TIME = 1000;
-
-  if (now - lastButtonPress < DEBOUNCE_TIME) {
-    return;
-  }
-  setLastButtonPress(now);
-
-  if (!msg) {
-    return;
-  }
-
-  if (!canPressButton) {
-    console.log("Button press ignored because canPressButton is false.");
-    return;
-  }
-
-  // Wenn gerade aufgenommen wird oder eine ChatGPT-Anfrage aktiv ist, ignoriere den Button-Druck
-  if (isRecording.current || isFetchingGpt) {
-    console.log("Recording or GPT request in progress, ignoring button press.");
-    return;
-  }
-
-  if (msg.trim() === "trigger b") {
-    // Left btn
-    console.log("Button B pressed");
-    if (!isFetchingGpt) { // Wenn keine GPT-Anfrage läuft
+  const relayCallback = (msg) => {
+    if (!msg) {
+      return;
+    }
+    if (msg.trim() === "trigger b") {
+      // Left btn
+      console.log("Button B pressed");
       fetchGpt();
     }
-  }
 
-  if (msg.trim() === "trigger a") {
-    // Right btn
-    if(isRecording.current) {
-        stopMyRecording();
-    } else {
-        startMyRecording();
+    if (msg.trim() === "trigger a") {
+      // Right btn
+      if(isRecording.current) {
+          stopMyRecording();
+      } else {
+          startMyRecording();
+      }
     }
   }
-}
 
   const [temperature, setTemperature] = useState(0.3);
   const [language, setLanguage] = useState("de");
@@ -166,58 +136,53 @@ const relayCallback = (msg) => {
 
   const [fetching, setFetching] = useState(false);
 
-
-
-
-const fetchGpt = async () => {
-  if (fetching || isFetchingGpt) {
-    console.log("Fetch already in progress");
-    return;
-  }
-  setFetching(true);
-  setIsFetchingGpt(true);
-  console.log("fetchGpt called");
-
-  try {
-    const messages = [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: transcript.text },
-    ];
-
-    const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: messages,
-        temperature: temperature,
-        max_tokens: 300,
-      }),
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
-
-    if (!response.ok) {
-      const message = await response.text();
-      console.error("API request error:", response.status, message);
-      throw new Error(`API request failed: ${message}`);
+  const fetchGpt = async () => {
+    if (fetching) {
+      console.log("Fetch already in progress");
+      return;
     }
+    setFetching(true);
+    console.log("fetchGpt called");
 
-    const resJson = await response.json();
-    const res = resJson?.choices?.[0]?.message?.content;
-    if (!res) return;
+    try {
+      const messages = [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: transcript.text },
+      ];
 
-    setDisplayedResponse(res);
-    setResponse(res);
-    await displayRawRizz(res);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setFetching(false);
-    setIsFetchingGpt(false); // Ensure this is in the finally block to reset the state regardless of the outcome of the request.
-  }
-};
+      const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: messages,
+          temperature: temperature,
+          max_tokens: 300,
+        }),
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const message = await response.text();
+        console.error("API request error:", response.status, message);
+        throw new Error(`API request failed: ${message}`);
+      }
+
+      const resJson = await response.json();
+      const res = resJson?.choices?.[0]?.message?.content;
+      if (!res) return;
+
+      setDisplayedResponse(res);
+      setResponse(res);
+      await displayRawRizz(res);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setFetching(false);
+    }
+  };
 
   useEffect(() => {
       if (!isRecording.current && transcript.text) {
@@ -336,14 +301,13 @@ async function displayRizz(rizz) {
 
 	}
 	
-  const readyText = `display.Text('Press the Button', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
-  const readyCmd = `display.show([${readyText}])`;
-  await delay(10);
-  await replSend(`${clearCmd}\n`);
-  await delay(10);
-  await replSend(`${readyCmd}\n`);
-  
-  setCanPressButton(true);
+    // Display the "Monocle Ready" message after all the text has been shown
+    const readyText = `display.Text('Press the Button', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
+    const readyCmd = `display.show([${readyText}])`;
+    await delay(10);
+    await replSend(`${clearCmd}\n`);
+    await delay(10);
+    await replSend(`${readyCmd}\n`);
 }
 
 
