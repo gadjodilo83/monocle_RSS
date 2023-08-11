@@ -24,6 +24,7 @@ const Home = () => {
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [isFetchingGpt, setIsFetchingGpt] = useState(false);
   const [inputLanguage, setInputLanguage] = useState("de");
+  const [canPressButton, setCanPressButton] = useState(true); 
   const [connected, setConnected] = useState(false);
   const [isRecordingState, setIsRecordingState] = useState(false);
   const isRecording = useRef(isRecordingState);
@@ -78,6 +79,7 @@ const clearDisplay = async () => {
 	  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
 	  whisperStopRecording();
 	  setIsRecording(false);
+      setCanPressButton(false);
 
 	  // Füge einen kleinen Verzögerung hinzu, um sicherzustellen, dass das transkribierte Text bereit ist
 	  setTimeout(async () => {
@@ -93,15 +95,19 @@ const [lastButtonPress, setLastButtonPress] = useState(0); // Zustand für den Z
 
 const relayCallback = (msg) => {
   const now = Date.now();
-  const DEBOUNCE_TIME = 1000; // Entprellzeit in Millisekunden
+  const DEBOUNCE_TIME = 1000;
 
-  // Wenn der Button zu schnell nach dem letzten Drücken erneut gedrückt wird, ignoriere den neuen Druck
   if (now - lastButtonPress < DEBOUNCE_TIME) {
     return;
   }
   setLastButtonPress(now);
 
   if (!msg) {
+    return;
+  }
+
+  if (!canPressButton) {
+    console.log("Button press ignored because canPressButton is false.");
     return;
   }
 
@@ -330,13 +336,14 @@ async function displayRizz(rizz) {
 
 	}
 	
-    // Display the "Monocle Ready" message after all the text has been shown
-    const readyText = `display.Text('Press the Button', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
-    const readyCmd = `display.show([${readyText}])`;
-    await delay(10);
-    await replSend(`${clearCmd}\n`);
-    await delay(10);
-    await replSend(`${readyCmd}\n`);
+  const readyText = `display.Text('Press the Button', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
+  const readyCmd = `display.show([${readyText}])`;
+  await delay(10);
+  await replSend(`${clearCmd}\n`);
+  await delay(10);
+  await replSend(`${readyCmd}\n`);
+  
+  setCanPressButton(true);
 }
 
 
