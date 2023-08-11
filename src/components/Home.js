@@ -36,7 +36,15 @@ const Home = () => {
     },
   });
 
+
+const showRecordingAnimation = async () => {
+  const animationCmd = "animate_mic()";  // Call the animate_mic function from graphics.py
+  await replSend(`${animationCmd}\n`);
+}
+
+
 const startMyRecording = async () => {
+  await showRecordingAnimation();  // Show the recording animation
   const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
   const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
   const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
