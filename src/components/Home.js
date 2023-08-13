@@ -164,7 +164,7 @@ const startMyRecording = async () => {
           model: "gpt-3.5-turbo",
           messages: messages,
           temperature: temperature,
-          max_tokens: 300,
+          max_tokens: 350,
         }),
         headers: {
           Authorization: `Bearer ${apiKey}`,
@@ -279,9 +279,10 @@ const startMyRecording = async () => {
 
 
 async function displayWelcomeMessage() {
-    const welcomeText = `display.Text('Welcome to monocle GPT', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
-    const showWelcomeCmd = `display.show([${welcomeText}])`;
-    await replSend(`${showWelcomeCmd}\n`);
+    const welcomeText = `display.Text('monocleGPT', 320, 150, display.WHITE, justify=display.MIDDLE_CENTER)`;  // Position angepasst
+    const readyText = `display.Text('Press the Button', 320, 250, display.WHITE, justify=display.MIDDLE_CENTER)`;  // Position angepasst
+    const showCmd = `display.show([${welcomeText}, ${readyText}])`;
+    await replSend(`${showCmd}\n`);
 }
 
 
