@@ -22,7 +22,6 @@ const Home = () => {
   const [inputLanguage, setInputLanguage] = useState("de");
   const [connected, setConnected] = useState(false);
   const [isRecordingState, setIsRecordingState] = useState(false);
-  const [interactionDisabled, setInteractionDisabled] = useState(false);
   const isRecording = useRef(isRecordingState);
   const setIsRecording = (value) => {
     isRecording.current = value;
@@ -38,7 +37,6 @@ const Home = () => {
   });
 
 const startMyRecording = async () => {
-  setInteractionDisabled(true);  // Deaktivieren Sie Interaktionen, wenn die Aufnahme beginnt
   const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
   const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
   const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
@@ -89,12 +87,12 @@ const startMyRecording = async () => {
 	  }, 1000); // Wartezeit in Millisekunden
 	}
 
-const relayCallback = (msg) => {
-    if (!msg || interactionDisabled) {  // Prüfen Sie, ob interactionDisabled true ist
+  const relayCallback = (msg) => {
+    if (!msg) {
       return;
     }
-
-    if (msg.trim() === "trigger b" && !fetching) {
+    if (msg.trim() === "trigger b") {
+      // Left btn
       console.log("Button B pressed");
       fetchGpt();
     }
@@ -145,7 +143,7 @@ const relayCallback = (msg) => {
       console.log("Fetch already in progress");
       return;
     }
-    setFetching(false);
+    setFetching(true);
     console.log("fetchGpt called");
 
     try {
@@ -303,7 +301,6 @@ async function displayRizz(rizz) {
       await delay(5000); // 2.5 Sekunden warten
       // await replSend(`${clearCmd}\n`);
 
-
 	}
 	
     // Display the "Monocle Ready" message after all the text has been shown
@@ -313,7 +310,6 @@ async function displayRizz(rizz) {
     await replSend(`${clearCmd}\n`);
     await delay(10);
     await replSend(`${readyCmd}\n`);
-    setInteractionDisabled(false);
 }
 
 
