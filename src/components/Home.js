@@ -39,7 +39,7 @@ const Home = () => {
 
 const startMyRecording = async () => {
   const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
-  const lineCmd = `display.Line(125, 230, 515, 230, display.RED)`;
+  const lineCmd = `display.Line(105, 230, 535, 230, display.RED)`;
   const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
   await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
   whisperStartRecording();
@@ -52,22 +52,30 @@ const startMyRecording = async () => {
     let animationText;
     switch(animationCounter) {
  	  case 1:
-        animationText = `display.Text('Listening [   ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        animationText = `display.Text('Listening [=     ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
         break;
 	  case 2:
-        animationText = `display.Text('Listening [=  ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        animationText = `display.Text('Listening [==    ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
         break;
       case 3:
-        animationText = `display.Text('Listening [== ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        animationText = `display.Text('Listening [===   ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
         break;
       case 4:
-        animationText = `display.Text('Listening [===]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        animationText = `display.Text('Listening [====  ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        break;
+      case 5:
+        animationText = `display.Text('Listening [===== ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        break;
+      case 6:
+        animationText = `display.Text('Listening [======]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
         clearInterval(animationInterval);  // Stoppt die Animation nach 3 Iterationen
         break;
+
+
     }
     const showAnimationCmd = `display.show([${animationText}, ${lineCmd}])`;
     await replSend(`${animationText}\n${showAnimationCmd}\n`);
-  }, 1500);  // Alle 1500ms (2 Sekunden) aktualisieren
+  }, 1000);  // Alle 1000ms (2 Sekunden) aktualisieren
 
   setTimeout(async () => {
     clearInterval(animationInterval);  // Stoppt die Animation, falls sie noch läuft
