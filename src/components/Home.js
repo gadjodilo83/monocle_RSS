@@ -93,10 +93,10 @@ const startMyRecording = async () => {
     if (!msg) {
       return;
     }
-  if (msg.trim() === "trigger b" && !interactionDisabled) {
+  if (msg.trim() === "trigger b" && !fetching) {
     console.log("Button B pressed");
     fetchGpt();
-    }
+  }
 
     if (msg.trim() === "trigger a") {
       // Right btn
@@ -144,7 +144,7 @@ const startMyRecording = async () => {
       console.log("Fetch already in progress");
       return;
     }
-    setFetching(true);
+    setFetching(false);
     console.log("fetchGpt called");
 
     try {
