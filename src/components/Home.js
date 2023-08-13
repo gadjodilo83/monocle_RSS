@@ -283,8 +283,9 @@ async function displayWelcomeAnimation() {
         const textCmd = `display.Text('${msg}', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
         const showCmd = `display.show(${textCmd})`;
         await replSend(`${clearCmd}\n${textCmd}\n${showCmd}\n`);
-        await delay(1000); // Warte 1 Sekunde zwischen den Nachrichten
-    }
+        await delay(500); // Warte 1 Sekunde zwischen den Nachrichten
+		await replSend(`${clearCmd}\n`);
+	}
 }
 
 
@@ -409,7 +410,7 @@ function cleanText(inputText) {
   }
 
 function wrapText(inputText) {
-    const block = 23;
+    const block = 22;
     const words = inputText.split(' ');
     let lines = [''];
     let currentLineIndex = 0;
