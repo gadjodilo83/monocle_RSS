@@ -229,15 +229,20 @@ return (
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="API Key"
             />
-            <InputNumber
-              className="mb-2"
-              style={{ width: "100%", height: "40px", background: 'rgba(0, 0, 0, 0.5)', color: 'white', border: 'none' }}
-              min={0}
-              max={2}
-              step={0.1}
-              value={temperature}
-              onChange={(value) => setTemperature(value)}
-            />
+			<InputNumber
+			  className="mb-2 custom-input"
+			  style={{ 
+				width: "100%", 
+				height: "40px", 
+				background: 'rgba(0, 0, 0, 0.5)', 
+				border: 'none' 
+			  }}
+			  min={0}
+			  max={2}
+			  step={0.1}
+			  value={temperature}
+			  onChange={(value) => setTemperature(value)}
+			/>
             <Select
               className="mb-2 futuristic-select"
               style={{ width: "100%", height: "40px", background: 'rgba(0, 0, 0, 0.5)', color: 'white', border: 'none' }}
