@@ -89,14 +89,15 @@ const startMyRecording = async () => {
 	  }, 1000); // Wartezeit in Millisekunden
 	}
 
-  const relayCallback = (msg) => {
-    if (!msg) {
+const relayCallback = (msg) => {
+    if (!msg || interactionDisabled) {  // Prüfen Sie, ob interactionDisabled true ist
       return;
     }
-  if (msg.trim() === "trigger b" && !fetching) {
-    console.log("Button B pressed");
-    fetchGpt();
-  }
+
+    if (msg.trim() === "trigger b" && !fetching) {
+      console.log("Button B pressed");
+      fetchGpt();
+    }
 
     if (msg.trim() === "trigger a") {
       // Right btn
