@@ -20,6 +20,7 @@ const Home = () => {
 
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_TOKEN);
   const [inputLanguage, setInputLanguage] = useState("de");
+  const [isFirstStart, setIsFirstStart] = useState(true);
   const [connected, setConnected] = useState(false);
   const [isRecordingState, setIsRecordingState] = useState(false);
   const isRecording = useRef(isRecordingState);
@@ -50,20 +51,23 @@ const startMyRecording = async () => {
     animationCounter++;
     let animationText;
     switch(animationCounter) {
-      case 1:
+ 	  case 1:
+        animationText = `display.Text('Listening [   ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        break;
+	  case 2:
         animationText = `display.Text('Listening [=  ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
         break;
-      case 2:
+      case 3:
         animationText = `display.Text('Listening [== ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
         break;
-      case 3:
+      case 4:
         animationText = `display.Text('Listening [===]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
         clearInterval(animationInterval);  // Stoppt die Animation nach 3 Iterationen
         break;
     }
     const showAnimationCmd = `display.show([${animationText}, ${lineCmd}])`;
     await replSend(`${animationText}\n${showAnimationCmd}\n`);
-  }, 2000);  // Alle 2000ms (2 Sekunden) aktualisieren
+  }, 1500);  // Alle 1500ms (2 Sekunden) aktualisieren
 
   setTimeout(async () => {
     clearInterval(animationInterval);  // Stoppt die Animation, falls sie noch läuft
@@ -271,10 +275,28 @@ const startMyRecording = async () => {
   );
 
 
-  async function displayRawRizz(rizz) {
+async function displayWelcomeAnimation() {
+    const messages = ['Welcome', 'to', 'monocleGPT'];
+    const clearCmd = "display.clear()";
+    
+    for (let msg of messages) {
+        const textCmd = `display.Text('${msg}', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
+        const showCmd = `display.show(${textCmd})`;
+        await replSend(`${clearCmd}\n${textCmd}\n${showCmd}\n`);
+        await delay(1000); // Warte 1 Sekunde zwischen den Nachrichten
+    }
+}
+
+
+
+async function displayRawRizz(rizz) {
     await replRawMode(true);
+    if (isFirstStart) {
+        await displayWelcomeAnimation(); // Zeige die Willkommensanimation nur beim ersten Start
+        setIsFirstStart(false); // Setzen Sie den Zustand auf false, da es nicht mehr das erste Mal ist
+    }
     await displayRizz(rizz);
-  }
+}
 
 
 async function displayRizz(rizz) {
