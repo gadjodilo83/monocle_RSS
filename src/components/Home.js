@@ -207,7 +207,7 @@ const startMyRecording = async () => {
     setLanguagePrompt(language);
   }, [language]);
 
-  return (
+return (
     <>
       <Head>
         <title>monocleGPT</title>
@@ -215,23 +215,23 @@ const startMyRecording = async () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${inter.className} ${styles.main}`}>
-        <div className="flex w-screen h-screen flex-col items-center justify-start">
-          <h1 className="text-3xl">monocleGPT</h1>
-          <p className="text-3xl mb-4">
-            {connected ? "Monocle Connected" : "Monocle Disconnected"}
+      <main className={`${inter.className} ${styles.main}`} style={{ background: 'linear-gradient(160deg, #1a1a1a 60%, #0d0d0d 100%)' }}>
+        <div className="flex w-screen h-screen flex-col items-center justify-center"> {/* Changed justify-start to justify-center */}
+          <h1 className="text-3xl text-gradient mb-4" style={{ background: 'linear-gradient(90deg, #3f87a6, #ebf8e1, #f69d3c)', backgroundClip: 'text', WebkitBackgroundClip: 'text', color: 'transparent' }}>monocleGPT</h1>
+          <p className="text-3xl mb-4 text-white">
+            {connected ? "Connected" : "Disconnected"}
           </p>
-          <div style={{ width: "90%" }}>
+          <div className="flex flex-col" style={{ width: "90%", background: 'rgba(255, 255, 255, 0.1)', padding: '20px', borderRadius: '10px' }}>
             <Input
-              className="mb-2"
-              style={{ height: "40px" }}
+              className="mb-2 futuristic-input"
+              style={{ height: "40px", background: 'rgba(0, 0, 0, 0.5)', color: 'white', border: 'none' }}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="API Key"
             />
             <InputNumber
               className="mb-2"
-              style={{ width: "100%", height: "40px" }}
+              style={{ width: "100%", height: "40px", background: 'rgba(0, 0, 0, 0.5)', color: 'white', border: 'none' }}
               min={0}
               max={2}
               step={0.1}
@@ -239,8 +239,8 @@ const startMyRecording = async () => {
               onChange={(value) => setTemperature(value)}
             />
             <Select
-              className="mb-2"
-              style={{ width: "100%", height: "40px" }}
+              className="mb-2 futuristic-select"
+              style={{ width: "100%", height: "40px", background: 'rgba(0, 0, 0, 0.5)', color: 'white', border: 'none' }}
               value={language}
               onChange={handleLanguageChange}
             >
@@ -250,32 +250,42 @@ const startMyRecording = async () => {
             </Select>
             <Input.TextArea
               className="mb-2"
-              style={{ height: "100px" }}
+              style={{ height: "100px", background: 'rgba(0, 0, 0, 0.5)', color: 'white', border: 'none' }}
               value={systemPrompt}
               placeholder="Define the role of GPT-3"
               onChange={(e) => setSystemPrompt(e.target.value)}
               autoSize={{ minRows: 2, maxRows: 10 }}
             />
-            <Button
-              className="mb-2"
-              type="primary"
-              onClick={async () => {
-                await ensureConnected(logger, relayCallback);
-                app.run(execMonocle);
-                await displayRawRizz();
-              }}
-            >
-              Connect
-            </Button>
-            <Button className="mb-2" onClick={fetchGpt}>
-              Get response
-            </Button>
+			<Button
+				className="mb-2 futuristic-button"
+				type="primary"
+				style={{ 
+					background: 'linear-gradient(90deg, #3f87a6, #f69d3c)', 
+					border: 'none', 
+					color: 'white', 
+					width: '40%', 
+					fontSize: '1.5rem', 
+					height: '80px',
+					margin: '0 auto',
+					display: 'flex',           // Verwenden Sie Flexbox
+					alignItems: 'center',      // Zentriert den Inhalt vertikal
+					justifyContent: 'center'  // Zentriert den Inhalt horizontal
+				}} 
+				onClick={async () => {
+					await ensureConnected(logger, relayCallback);
+					app.run(execMonocle);
+					await displayRawRizz();
+				}}
+			>
+				Connect the monocle
+			</Button>
           </div>
-          {transcript.text}
+          <p className="mt-4 text-white">{transcript.text}</p>
         </div>
       </main>
     </>
-  );
+);
+
 
 
 async function displayWelcomeMessage() {
