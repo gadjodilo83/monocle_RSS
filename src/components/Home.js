@@ -67,19 +67,11 @@ const startMyRecording = async () => {
 
   setTimeout(async () => {
     clearInterval(animationInterval);  // Stoppt die Animation, falls sie noch läuft
-    await stopMyRecording(true); 
   }, 6000);  // 6000 milliseconds = 6 seconds
 }
 
 
 
-	const stopMyRecording = async () => {
-	  const textCmd = `display.Text('Stop Record', 320, 200, display.GREEN, justify=display.MIDDLE_CENTER)`;
-	  const lineCmd = `display.Line(175, 230, 465, 230, display.GREEN)`;
-	  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-	  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
-	  whisperStopRecording();
-	  setIsRecording(false);
 
 	  // Füge einen kleinen Verzögerung hinzu, um sicherzustellen, dass das transkribierte Text bereit ist
 	  setTimeout(async () => {
