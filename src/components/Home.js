@@ -221,7 +221,7 @@ return (
           <p className="text-3xl mb-4 text-white">
             {connected ? "Connected" : "Disconnected"}
           </p>
-          <div className="flex flex-col" style={{ width: "90%", background: 'rgba(255, 255, 255, 0.1)', padding: '20px', borderRadius: '10px' }}>
+          <div className="flex flex-col" style={{ width: "90%", background: 'rgba(255, 255, 255, 0.1)', padding: '10px', borderRadius: '10px' }}>
             <Input
               className="mb-2 futuristic-input"
               style={{ height: "40px", background: 'rgba(0, 0, 0, 0.5)', color: 'white', border: 'none' }}
@@ -263,7 +263,7 @@ return (
 					background: 'linear-gradient(90deg, #3f87a6, #f69d3c)', 
 					border: 'none', 
 					color: 'white', 
-					width: '40%', 
+					width: '100%', 
 					fontSize: '1.5rem', 
 					height: '80px',
 					margin: '0 auto',
@@ -277,7 +277,7 @@ return (
 					await displayRawRizz();
 				}}
 			>
-				Connect the monocle
+				Connect
 			</Button>
           </div>
           <p className="mt-4 text-white">{transcript.text}</p>
