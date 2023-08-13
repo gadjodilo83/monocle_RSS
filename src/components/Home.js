@@ -31,7 +31,7 @@ const Home = () => {
   const { startRecording: whisperStartRecording, stopRecording: whisperStopRecording, transcript } = useWhisper({
     apiKey: apiKey,
     streaming: true,
-    timeSlice: 5000,
+    timeSlice: 6000,
     whisperConfig: {
       language: inputLanguage,
     },
@@ -39,7 +39,7 @@ const Home = () => {
 
 const startMyRecording = async () => {
   const textCmd = `display.Text('Start Record', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
-  const lineCmd = `display.Line(175, 230, 465, 230, display.RED)`;
+  const lineCmd = `display.Line(125, 230, 515, 230, display.RED)`;
   const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
   await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
   whisperStartRecording();
@@ -85,10 +85,8 @@ const startMyRecording = async () => {
 	  setTimeout(async () => {
 		if (transcript.text) {
 		  await fetchGpt();
-		} else {
-		  console.log('No transcript available');
-		}
-	  }, 1000); // Wartezeit in Millisekunden
+		} 
+	  }, 100); // Wartezeit in Millisekunden
 	}
 
   const relayCallback = (msg) => {
@@ -97,7 +95,6 @@ const startMyRecording = async () => {
     }
     if (msg.trim() === "trigger b") {
       // Left btn
-      console.log("Button B pressed");
       fetchGpt();
     }
 
@@ -144,11 +141,9 @@ const startMyRecording = async () => {
 
   const fetchGpt = async () => {
     if (fetching) {
-      console.log("Fetch already in progress");
       return;
     }
     setFetching(true);
-    console.log("fetchGpt called");
 
     try {
       const messages = [
@@ -275,25 +270,18 @@ const startMyRecording = async () => {
   );
 
 
-async function displayWelcomeAnimation() {
-    const messages = ['Welcome', 'to', 'monocleGPT'];
-    const clearCmd = "display.clear()";
-    
-    for (let msg of messages) {
-        const textCmd = `display.Text('${msg}', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
-        const showCmd = `display.show(${textCmd})`;
-        await replSend(`${clearCmd}\n${textCmd}\n${showCmd}\n`);
-        await delay(500); // Warte 1 Sekunde zwischen den Nachrichten
-		await replSend(`${clearCmd}\n`);
-	}
+async function displayWelcomeMessage() {
+    const welcomeText = `display.Text('Welcome to monocle GPT', 320, 200, display.WHITE, justify=display.MIDDLE_CENTER)`;
+    const showWelcomeCmd = `display.show([${welcomeText}])`;
+    await replSend(`${showWelcomeCmd}\n`);
 }
 
 
 
 async function displayRawRizz(rizz) {
-    await replRawMode(true);
+    // await replRawMode(true);
     if (isFirstStart) {
-        await displayWelcomeAnimation(); // Zeige die Willkommensanimation nur beim ersten Start
+        await displayWelcomeMessage(); // Zeige den Begrüßungstext nur beim ersten Start
         setIsFirstStart(false); // Setzen Sie den Zustand auf false, da es nicht mehr das erste Mal ist
     }
     await displayRizz(rizz);
@@ -317,9 +305,7 @@ async function displayRizz(rizz) {
 
       const textCmd = `display.show([${textCmds.join(", ")}])`;
 
-      await delay(10); // 2.5 Sekunden warten
-      await replSend(`${clearCmd}\n`);
-	  await delay(10); // Warten Sie 100 Millisekunden
+      // await replSend(`${clearCmd}\n`);
 	  await replSend(`${textCmd}\n`);
       await delay(5000); // 2.5 Sekunden warten
       // await replSend(`${clearCmd}\n`);
@@ -347,53 +333,63 @@ async function displayRizz(rizz) {
 
 
 function cleanText(inputText) {
-  let cleanedText = inputText.replace(/\\/g, ""); // remove backslashes
-  cleanedText = cleanedText.replace(/""/g, '"'); // replace double quotes with single quotes
-  cleanedText = cleanedText.replace(/\n/g, ""); // remove line breaks
-  cleanedText = cleanedText.replace(/ä/g, "ae"); // replace "ä" with "ae"
-  cleanedText = cleanedText.replace(/ü/g, "ue"); // replace "ü" with "ue"
-  cleanedText = cleanedText.replace(/ö/g, "oe"); // replace "ö" with "oe"
-  cleanedText = cleanedText.replace(/Ä/g, "Ae"); // replace "Ä" with "Ae"
-  cleanedText = cleanedText.replace(/Ü/g, "Ue"); // replace "Ü" with "Ue"
-  cleanedText = cleanedText.replace(/Ö/g, "Oe"); // replace "Ö" with "Oe"
-  cleanedText = cleanedText.replace(/ß/g, "ss"); // replace "ß" with "ss"
-  cleanedText = cleanedText.replace(/ù/g, "u"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/à/g, "a"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/À/g, "A"); // replace "ä" with "ae"
-  cleanedText = cleanedText.replace(/è/g, "e"); // replace "ü" with "ue"
-  cleanedText = cleanedText.replace(/É/g, "E"); // replace "ö" with "oe"
-  cleanedText = cleanedText.replace(/é/g, "e"); // replace "Ä" with "Ae"
-  cleanedText = cleanedText.replace(/È/g, "E"); // replace "Ü" with "Ue"
-  cleanedText = cleanedText.replace(/Ú/g, "U"); // replace "Ö" with "Oe"
-  cleanedText = cleanedText.replace(/Ù/g, "U"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/ó/g, "o"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/Ó/g, "O"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/ò/g, "o"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/Ò/g, "O"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/l'u/g, "l u"); // replace "Ä" with "Ae"
-  cleanedText = cleanedText.replace(/l'a/g, "l a"); // replace "Ü" with "Ue"
-  cleanedText = cleanedText.replace(/dall'/g, "dall "); // replace "Ö" with "Oe"
-  cleanedText = cleanedText.replace(/dell'/g, "dell "); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/all'/g, "all "); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/sull'/g, "sull "); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/nell'/g, "nell "); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/quell'/g, "quell "); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/un'a/g, "un a"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/un'u/g, "un u"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/un'o/g, "un o"); // replace "ù" with "u"  
-  cleanedText = cleanedText.replace(/c'è/g, "c e"); // replace "ù" with "u"  
-  cleanedText = cleanedText.replace(/c'e/g, "c e"); // replace "ù" with "u"  
-  cleanedText = cleanedText.replace(/nessun'/g, "nessun "); // replace "ù" with "u"  
-  cleanedText = cleanedText.replace(/alcun'/g, "alcun "); // replace "ù" with "u"  
-  cleanedText = cleanedText.replace(/ché/g, "che"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/dà/g, "da"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/là/g, "la"); // replace "ù" with "u"
-  cleanedText = cleanedText.replace(/né/g, "ne o"); // replace "ù" with "u"  
-  cleanedText = cleanedText.replace(/sì/g, "si"); // replace "ù" with "u"  
-  cleanedText = cleanedText.replace(/tè/g, "te"); // replace "ù" with "u"  
-  cleanedText = cleanedText.replace(/ì/g, "i"); // replace "ù" with "u"  
-  cleanedText = cleanedText.replace(/Ì/g, "I"); // replace "ù" with "u"  
-  return cleanedText;
+    const replacements = {
+        "\\\\": "",  // Hinweis: "\\" wird zu "\\\\" in einem String, um den Backslash zu maskieren
+        '""': '"',
+        "\\n": "",
+        "!": ".",
+        "ä": "ae",
+        "ü": "ue",
+        "ö": "oe",
+        "Ä": "Ae",
+        "Ü": "Ue",
+        "Ö": "Oe",
+        "ß": "ss",
+        "ù": "u",
+        "à": "a",
+        "À": "A",
+        "è": "e",
+        "É": "E",
+        "é": "e",
+        "È": "E",
+        "Ú": "U",
+        "Ù": "U",
+        "ó": "o",
+        "Ó": "O",
+        "ò": "o",
+        "Ò": "O",
+        "l'u": "l u",
+        "l'a": "l a",
+        "dall'": "dall ",
+        "dell'": "dell ",
+        "all'": "all ",
+        "sull'": "sull ",
+        "nell'": "nell ",
+        "quell'": "quell ",
+        "un'a": "un a",
+        "un'u": "un u",
+        "un'o": "un o",
+        "c'è": "c e",
+        "c'e": "c e",
+        "nessun'": "nessun ",
+        "alcun'": "alcun ",
+        "ché": "che",
+        "dà": "da",
+        "là": "la",
+        "né": "ne o",
+        "sì": "si",
+        "tè": "te",
+        "ì": "i",
+        "Ì": "I"
+   };
+
+    let cleanedText = inputText;
+
+    for (let pattern in replacements) {
+        cleanedText = cleanedText.split(pattern).join(replacements[pattern]);
+    }
+
+    return cleanedText;
 }
 
 
@@ -410,7 +406,7 @@ function cleanText(inputText) {
   }
 
 function wrapText(inputText) {
-    const block = 22;
+    const block = 24;
     const words = inputText.split(' ');
     let lines = [''];
     let currentLineIndex = 0;
