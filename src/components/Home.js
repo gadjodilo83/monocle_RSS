@@ -68,7 +68,6 @@ const startMyRecording = async () => {
   setTimeout(async () => {
     clearInterval(animationInterval);  // Stoppt die Animation, falls sie noch läuft
     await stopMyRecording(true); 
-    await showAutomaticStop();
   }, 6000);  // 6000 milliseconds = 6 seconds
 }
 
