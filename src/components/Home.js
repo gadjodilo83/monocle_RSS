@@ -72,6 +72,9 @@ const startMyRecording = async () => {
 
 
 
+	const stopMyRecording = async () => {
+	  whisperStopRecording();
+	  setIsRecording(false);
 
 	  // Füge einen kleinen Verzögerung hinzu, um sicherzustellen, dass das transkribierte Text bereit ist
 	  setTimeout(async () => {
