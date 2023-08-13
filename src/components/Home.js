@@ -43,27 +43,34 @@ const startMyRecording = async () => {
   await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
   whisperStartRecording();
   setIsRecording(true);
+  
+  // Neue Animation
+  let animationCounter = 0;
+  const animationInterval = setInterval(async () => {
+    animationCounter++;
+    let animationText;
+    switch(animationCounter) {
+      case 1:
+        animationText = `display.Text('Listening [=  ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        break;
+      case 2:
+        animationText = `display.Text('Listening [== ]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        break;
+      case 3:
+        animationText = `display.Text('Listening [===]', 320, 200, display.RED, justify=display.MIDDLE_CENTER)`;
+        clearInterval(animationInterval);  // Stoppt die Animation nach 3 Iterationen
+        break;
+    }
+    const showAnimationCmd = `display.show([${animationText}, ${lineCmd}])`;
+    await replSend(`${animationText}\n${showAnimationCmd}\n`);
+  }, 2000);  // Alle 2000ms (2 Sekunden) aktualisieren
+
   setTimeout(async () => {
-	await stopMyRecording(true); 
-	await showAutomaticStop();
-  }, 5000);  // 5000 milliseconds = 8 seconds
+    clearInterval(animationInterval);  // Stoppt die Animation, falls sie noch läuft
+    await stopMyRecording(true); 
+    await showAutomaticStop();
+  }, 6000);  // 6000 milliseconds = 6 seconds
 }
-
-const showAutomaticStop = async () => {
-  const textCmd = `display.Text('Automatic Stop', 320, 200, display.BLUE, justify=display.MIDDLE_CENTER)`;
-  const lineCmd = `display.Line(175, 230, 465, 230, display.BLUE)`;
-  const showCmd = `display.show([${textCmd}, ${lineCmd}])`;
-  await replSend(`${textCmd}\n${lineCmd}\n${showCmd}\n`);
-  setTimeout(async () => {
-    await clearDisplay();
-  }, 1000);
-}
-
-const clearDisplay = async () => {
-  const clearCmd = "display.clear()";
-  await replSend(`${clearCmd}\n`);
-}
-
 
 
 
