@@ -317,7 +317,9 @@ async function displayRizz(rizz) {
 
     const splitText = wrapText(rizz);
     const groupSize = 5;
-    const clearCmd = "display.clear()"; // Definiere clearCmd hier
+    const clearCmd = "display.clear()";
+
+    await replSend(`${clearCmd}\n`);  // Hier wurde display.clear() hinzugefügt
 
     for (let i = 0; i < splitText.length; i += groupSize) {
       const group = splitText.slice(i, i + groupSize);
