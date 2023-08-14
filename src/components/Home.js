@@ -96,41 +96,58 @@ const displayTextOnMonocle = async (text) => {
 };
 
 
-  const cyberpunkStyle = {
-    container: {
-      backgroundColor: '#121212',
-      color: '#08f',
-      fontFamily: "'Orbitron', sans-serif",
-      padding: '20px',
-      border: '3px solid #ff2079',
-      borderRadius: '5px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: '100%',
-      margin: 'auto',
-      marginTop: '50px'
-    },
-    button: {
-      backgroundColor: '#ff2079',
-      color: '#121212',
-      border: 'none',
-      padding: '10px 20px',
-      margin: '10px 0',
-      fontSize: '16px',
-      cursor: 'pointer',
-      transition: 'transform 0.2s, background-color 0.3s'
-    },
-    text: {
-      color: '#1fe3a1',
-      fontSize: '18px',
-      border: '1px solid #08f',
-      padding: '10px',
-      width: '80%',
-      textAlign: 'center',
-      marginTop: '20px'
-    }
+useEffect(() => {
+  // Setzen Sie den Hintergrund des gesamten Dokuments auf eine dunkle Farbe, wenn die Komponente gemountet wird
+  document.body.style.backgroundColor = "#121212";
+
+  // Setzen Sie den Hintergrund zurück, wenn die Komponente ungemounted wird
+  return () => {
+    document.body.style.backgroundColor = "";
   };
+}, []);
+
+
+const cyberpunkStyle = {
+  background: {
+    width: '100%',
+    height: '100vh',
+    background: 'linear-gradient(127deg, #012E40, #159d82)',
+    fontFamily: "'Orbitron', sans-serif",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  button: {
+    background: 'transparent',
+    border: '2px solid #0ff',
+    borderRadius: '5px',
+    padding: '10px 20px',
+    color: '#0ff',
+    fontSize: '16px',
+    cursor: 'pointer',
+    transition: 'background 0.3s',
+    marginTop: '10px',
+    fontFamily: "'Orbitron', sans-serif",
+    '&:hover': {
+      background: '#0ff',
+      color: '#012E40'
+    }
+  },
+  text: {
+    color: '#0ff',
+    fontSize: '18px',
+    border: '2px solid #0ff',
+    padding: '10px',
+    minHeight: '200px',  // Erhöht die minimale Höhe des Textfeldes
+    width: '80%',        // Setzt die Breite des Textfeldes auf 80% des übergeordneten Elements
+    maxWidth: '800px',   // Setzt eine maximale Breite, um zu verhindern, dass es zu breit wird
+    background: '#222',
+    overflowY: 'auto',
+    margin: '0 auto'     // Zentriert das Textfeld horizontal
+  }
+}
+
 
   return (
     <div style={cyberpunkStyle.container}>
