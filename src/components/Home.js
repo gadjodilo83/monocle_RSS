@@ -96,15 +96,51 @@ const displayTextOnMonocle = async (text) => {
 };
 
 
-return (
-  <div>
-    <button onClick={connectToMonocle}>Mit Monocle verbinden</button>
-    {isRecording ? (
-      <button onClick={stopRecording}>Stoppen</button>
-    ) : (
-      <button onClick={startRecording}>Starten</button>
-    )}
-    <p>{transcript}</p>
-  </div>
-);
+  const cyberpunkStyle = {
+    container: {
+      backgroundColor: '#121212',
+      color: '#08f',
+      fontFamily: "'Orbitron', sans-serif",
+      padding: '20px',
+      border: '3px solid #ff2079',
+      borderRadius: '5px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: '100%',
+      margin: 'auto',
+      marginTop: '50px'
+    },
+    button: {
+      backgroundColor: '#ff2079',
+      color: '#121212',
+      border: 'none',
+      padding: '10px 20px',
+      margin: '10px 0',
+      fontSize: '16px',
+      cursor: 'pointer',
+      transition: 'transform 0.2s, background-color 0.3s'
+    },
+    text: {
+      color: '#1fe3a1',
+      fontSize: '18px',
+      border: '1px solid #08f',
+      padding: '10px',
+      width: '80%',
+      textAlign: 'center',
+      marginTop: '20px'
+    }
+  };
+
+  return (
+    <div style={cyberpunkStyle.container}>
+      <button style={cyberpunkStyle.button} onClick={connectToMonocle}>CONNECT</button>
+      {isRecording ? (
+        <button style={cyberpunkStyle.button} onClick={stopRecording}>STOP</button>
+      ) : (
+        <button style={cyberpunkStyle.button} onClick={startRecording}>START</button>
+      )}
+      <p style={cyberpunkStyle.text}>{transcript}</p>
+    </div>
+  );
 }
