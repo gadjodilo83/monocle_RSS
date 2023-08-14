@@ -9,7 +9,6 @@ import { useWhisper } from "@chengsokdara/use-whisper";
 import { app } from "@/utils/app";
 import { execMonocle } from "@/utils/comms";
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
