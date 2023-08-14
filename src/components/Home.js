@@ -60,12 +60,15 @@ const startRecording = () => {
 
   const newRecognition = new window.webkitSpeechRecognition();
   newRecognition.lang = 'de-DE';
+  newRecognition.continuous = true;
 
   newRecognition.onresult = async (event) => {
-    const text = event.results[0][0].transcript;
-    setTranscript(text);
-    sendTextToMonocle(text);
-    await displayTextOnMonocle(text);
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      const text = event.results[i][0].transcript;
+      setTranscript(prevTranscript => prevTranscript + " " + text);
+      sendTextToMonocle(text);
+      await displayTextOnMonocle(text);
+    }
   };
 
   newRecognition.start();
