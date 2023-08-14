@@ -60,15 +60,13 @@ const startRecording = () => {
 
   const newRecognition = new window.webkitSpeechRecognition();
   newRecognition.lang = 'de-DE';
-  newRecognition.continuous = true;
+  newRecognition.continuous = true;  // Hinzugefügt für kontinuierliche Aufnahme
 
   newRecognition.onresult = async (event) => {
-    for (let i = event.resultIndex; i < event.results.length; ++i) {
-      const text = event.results[i][0].transcript;
-      setTranscript(prevTranscript => prevTranscript + " " + text);
-      sendTextToMonocle(text);
-      await displayTextOnMonocle(text);
-    }
+    const text = event.results[0][0].transcript;
+    setTranscript(text);
+    sendTextToMonocle(text);
+    await displayTextOnMonocle(text);
   };
 
   newRecognition.start();
@@ -90,9 +88,27 @@ const stopRecording = () => {
 };
 
 const displayTextOnMonocle = async (text) => {
-    const command = `display.Text('${text}', 0, 0, display.WHITE)`;
-    const showCmd = `display.show([${command}])`;
-    await replSend(`${showCmd}\n`);
+  const splitText = wrapText(text);
+  const groupSize = 5;
+  const clearCmd = "display.clear()";
+  
+  await replSend(`${clearCmd}\n`);
+  
+  for (let i = 0; i < splitText.length; i += groupSize) {
+    const group = splitText.slice(i, i + groupSize);
+    const textCmds = group.map((chunk, index) => {
+      const xCoordinate = 0;
+      const yCoordinate = index * 50;
+      const cleanedChunk = cleanText(chunk.replace(/"/g, ""));
+      return `display.Text('${cleanedChunk}', ${xCoordinate}, ${yCoordinate}, display.WHITE)`;
+    });
+
+    const textCmd = `display.show([${textCmds.join(", ")}])`;
+
+    await replSend(`${textCmd}\n`);
+    await delay(5000);
+  }
+
 };
 
 
