@@ -11,6 +11,7 @@ export default function Home() {
   const [connected, setConnected] = useState(false);
   const [recognition, setRecognition] = useState(null);
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const [selectedLanguage, setSelectedLanguage] = useState('de-DE'); // Standardmäßig auf Deutsch
 
   const relayCallback = (msg) => {
     if (!msg) {
@@ -18,6 +19,7 @@ export default function Home() {
     }
     // Hier können Sie weitere Aktionen basierend auf der empfangenen Nachricht hinzufügen
   }
+
 
 const connectToMonocle = async () => {
   try {
@@ -51,26 +53,67 @@ const connectToMonocle = async () => {
     }
   };
 
-  const startRecording = () => {
+
+
+  const handleLanguageChange = (event) => {
+    setSelectedLanguage(event.target.value);
+  };
+
+  const startRecognition = () => {
     if (typeof window.webkitSpeechRecognition === 'undefined') {
       console.error('Web Speech API is not supported in this browser.');
       return;
     }
 
-    const newRecognition = new window.webkitSpeechRecognition();
-    newRecognition.lang = 'de-DE';
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.lang = selectedLanguage; // Hier die ausgewählte Sprache verwenden
+    recognition.continuous = true;
+    recognition.interimResults = true;
 
-    newRecognition.onresult = async (event) => {
-      const text = event.results[0][0].transcript;
-      setTranscript(text);
-      sendTextToMonocle(text);
-      await displayRizz(text);  // Hier verwenden wir displayRizz, um den Text auf dem Monocle-Display anzuzeigen
+	recognition.onresult = (event) => {
+	  let recognizedText = '';
+	  
+	  for (let i = event.resultIndex; i < event.results.length; i++) {
+		if (event.results[i].isFinal) {
+		  recognizedText += event.results[i][0].transcript + ' ';
+		}
+	  }
+	  
+	  console.log('Recognized text:', recognizedText);
+	  setTranscript(prevTranscript => prevTranscript + ' ' + recognizedText.trim());
+	  sendTextToMonocle(recognizedText.trim());
+	  displayRizz(recognizedText.trim());
+	};
+
+    recognition.onerror = (error) => {
+      console.error('Recognition error:', error);
     };
 
-    newRecognition.start();
-    setIsRecording(true);
-    setRecognition(newRecognition);
+    recognition.start();
+    setRecognition(recognition);
   };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      if (recognition) {
+        recognition.stop();
+        setRecognition(null);
+      }
+      setIsRecording(false);
+    } else {
+      startRecognition();
+      setIsRecording(true);
+    }
+  };
+
+
+
+  useEffect(() => {
+    if (isRecording) {
+      startRecognition(); // Starte die Erkennung, wenn die Aufzeichnung gestartet ist
+    }
+  }, [isRecording]);
+
 
   useEffect(() => {
     console.log("Transcript updated:", transcript);
@@ -124,6 +167,7 @@ const displayRizz = async (rizz) => {
   const clearCmd = "display.clear()";
 
   await replSend(`${clearCmd}\n`);
+  await delay(500); // Wartezeit nach dem Löschen
 
   for (let i = 0; i < splitText.length; i += groupSize) {
     const group = splitText.slice(i, i + groupSize);
@@ -137,7 +181,7 @@ const displayRizz = async (rizz) => {
     const textCmd = `display.show([${textCmds.join(", ")}])`;
 
     await replSend(`${textCmd}\n`);
-    await delay(5000);
+    await delay(5000); // Wartezeit nach dem Anzeigen
   }
 };
 
@@ -250,13 +294,14 @@ const cleanText = (inputText) => {
   return (
     <div style={cyberpunkStyle.background}>
       <button style={cyberpunkStyle.button} onClick={connectToMonocle}>CONNECT</button>
-
-
-      {isRecording ? (
-        <button style={cyberpunkStyle.button} onClick={stopRecording}>STOP</button>
-      ) : (
-        <button style={cyberpunkStyle.button} onClick={startRecording}>START</button>
-      )}
+      <select value={selectedLanguage} onChange={handleLanguageChange}>
+        <option value="de-DE">Deutsch</option>
+        <option value="it-IT">Italiano</option>
+        <option value="en-US">English</option>
+      </select>
+      <button style={cyberpunkStyle.button} onClick={toggleRecording}>
+        {isRecording ? "STOP" : "START"}
+      </button>
       <p style={cyberpunkStyle.text}>{transcript}</p>
     </div>
   );
