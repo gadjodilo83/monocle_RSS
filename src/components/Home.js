@@ -37,21 +37,19 @@ const connectToMonocle = async () => {
       setConnected(true); // Hier setzen wir auch den Zustand auf "verbunden"
     }
   }
-
-  const sendTextToMonocle = async (text) => {
+const sendTextToMonocle = async (text) => {
     if (!device) {
-      console.error('Device not connected');
       return;
     }
 
     try {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(text);
-      await device.writeValue(data);
+      const encoder = new TextEncoder("utf-8");
+      const message = "res:" + text; // Zum Beispiel, wenn Sie das Präfix "res:" hinzufügen müssen.
+	  const data = encoder.encode(message);	  await device.writeValue(data);
     } catch (error) {
       console.error('Error sending data to Monocle:', error);
     }
-  };
+};
 
 
 
@@ -80,13 +78,19 @@ const connectToMonocle = async () => {
 	  }
 	  
 	  console.log('Recognized text:', recognizedText);
-	  setTranscript(prevTranscript => prevTranscript + ' ' + recognizedText.trim());
+	  setTranscript(recognizedText.trim());
 	  sendTextToMonocle(recognizedText.trim());
 	  displayRizz(recognizedText.trim());
 	};
 
     recognition.onerror = (error) => {
       console.error('Recognition error:', error);
+    };
+
+    recognition.onend = () => {
+      if (isRecording) {
+        startRecognition();
+      }
     };
 
     recognition.start();
@@ -167,7 +171,7 @@ const displayRizz = async (rizz) => {
   const clearCmd = "display.clear()";
 
   await replSend(`${clearCmd}\n`);
-  await delay(500); // Wartezeit nach dem Löschen
+  await delay(10); // Wartezeit nach dem Löschen
 
   for (let i = 0; i < splitText.length; i += groupSize) {
     const group = splitText.slice(i, i + groupSize);
@@ -234,7 +238,8 @@ const cleanText = (inputText) => {
         "sì": "si",
         "tè": "te",
         "ì": "i",
-        "Ì": "I"
+        "Ì": "I",
+        "e'": "e"
    };
 
   let cleanedText = inputText;
