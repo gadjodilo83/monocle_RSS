@@ -173,7 +173,7 @@ const displayRizz = async (rizz) => {
 
   const splitText = wrapText(rizz);
   const groupSize = 5;
-  const clearCmd = "display.clear()";
+  // const clearCmd = "display.clear()";
 
   await replSend(`${clearCmd}\n`);
   await delay(10); // Wartezeit nach dem Löschen
