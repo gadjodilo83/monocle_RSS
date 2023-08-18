@@ -13,7 +13,7 @@ export default function Home() {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedLanguage, setSelectedLanguage] = useState('de-DE'); // Standardmäßig auf Deutsch
   const supportedLanguages = ['de-DE', 'it-IT', 'en-US'];
-  const [lastUpdate, setLastUpdate] = useState(initialValue);
+  const [lastUpdate, setLastUpdate] = useState(Date.now()); // Initializing with the current timestamp
 
 
 const relayCallback = (msg) => {
