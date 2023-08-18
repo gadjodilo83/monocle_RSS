@@ -14,6 +14,7 @@ export default function Home() {
   const [selectedLanguage, setSelectedLanguage] = useState('de-DE'); // Standardmäßig auf Deutsch
   const supportedLanguages = ['de-DE', 'it-IT', 'en-US'];
   const [lastUpdate, setLastUpdate] = useState(Date.now()); // Initializing with the current timestamp
+  const [wasStoppedManually, setWasStoppedManually] = useState(false);
 
 
 const relayCallback = (msg) => {
@@ -125,29 +126,31 @@ recognition.onresult = async (event) => {
       console.error('Recognition error:', error);
     };
 
-    recognition.onend = () => {
-      if (isRecording) {
-        startRecognition();
-      }
-    };
+	recognition.onend = () => {
+	  if (isRecording && !wasStoppedManually) {
+		startRecognition();
+	  }
+	};
 
     recognition.start();
     setRecognition(recognition);
 };
 
 
-  const toggleRecording = () => {
-    if (isRecording) {
-      if (recognition) {
-        recognition.stop();
-        setRecognition(null);
-      }
-      setIsRecording(false);
-    } else {
-      startRecognition();
-      setIsRecording(true);
+const toggleRecording = () => {
+  if (isRecording) {
+    setWasStoppedManually(true); // Hinzugefügt
+    if (recognition) {
+      recognition.stop();
+      setRecognition(null);
     }
-  };
+    setIsRecording(false);
+  } else {
+    setWasStoppedManually(false); // Hinzugefügt
+    startRecognition();
+    setIsRecording(true);
+  }
+};
 
 
 useEffect(() => {
