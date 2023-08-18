@@ -78,12 +78,14 @@ const startRecognition = () => {
       }
 
       // Senden Sie den Text zuerst zum Display
-      await sendTextToMonocle(recognizedText.trim());
-      await displayRizz(recognizedText.trim());
+      await Promise.all([
+          sendTextToMonocle(recognizedText.trim()),
+          displayRizz(recognizedText.trim())
+      ]);
 
       // Dann aktualisieren Sie den Zustand in React, um den Text im Browser anzuzeigen
       setTranscript(recognizedText.trim());
-    };
+};
 
     recognition.onerror = (error) => {
       console.error('Recognition error:', error);
@@ -123,7 +125,7 @@ const startRecognition = () => {
 
 
   useEffect(() => {
-    console.log("Transcript updated:", transcript);
+    // console.log("Transcript updated:", transcript);
   }, [transcript]);
 
   const stopRecording = () => {
