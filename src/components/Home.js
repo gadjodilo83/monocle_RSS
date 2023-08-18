@@ -321,13 +321,6 @@ const cleanText = (inputText) => {
 
 
   const cyberpunkStyle = {
-	title: {
-	  color: '#0ff',
-	  fontSize: '24px', // oder eine andere Größe, die Sie bevorzugen
-	  marginBottom: '20px', // Abstand zum nächsten Element
-	  fontWeight: 'bold', // Wenn Sie möchten, dass der Titel fett dargestellt wird
-	},
-
     background: {
       width: '100%',
       height: '100vh',
@@ -372,9 +365,8 @@ const cleanText = (inputText) => {
 
 
 
-return (
+  return (
     <div style={cyberpunkStyle.background}>
-      <h1 style={cyberpunkStyle.title}>Monocle-Transcript</h1>
       <button style={cyberpunkStyle.button} onClick={connectToMonocle}>CONNECT</button>
       <select value={selectedLanguage} onChange={handleLanguageChange}>
         <option value="de-DE">Deutsch</option>
