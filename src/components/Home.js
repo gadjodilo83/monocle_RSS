@@ -33,19 +33,17 @@ const relayCallback = (msg) => {
       return nextLanguage;
     });
   }
+
+  // Prüfen, ob die Nachricht "trigger b" ist
+  if (msg.trim() === "trigger b") {
+    if (isRecording) {
+      displayRizz("STOP");
+    } else {
+      displayRizz("START");
+    }
+    toggleRecording();
+  }
 }
-
-const confirmLanguageChange = (language) => {
-  const languageMap = {
-    'de-DE': 'Deutsch',
-    'it-IT': 'Italiano',
-    'en-US': 'English'
-  };
-  const confirmationMessage = `Aktuelle Sprache: ${languageMap[language]}`;
-  displayRizz(confirmationMessage);
-};
-
-
 
 
 
