@@ -48,12 +48,7 @@ const confirmLanguageChange = (language) => {
 
 
 
-useEffect(() => {
-  if (isRecording) {
-    stopRecording();
-    startRecognition();
-  }
-}, [selectedLanguage]);
+
 
 
 
@@ -155,11 +150,13 @@ recognition.onresult = async (event) => {
 
 
 
-  useEffect(() => {
-    if (isRecording) {
-      startRecognition(); // Starte die Erkennung, wenn die Aufzeichnung gestartet ist
-    }
-  }, [isRecording]);
+useEffect(() => {
+  if (isRecording) {
+    stopRecording();
+    startRecognition();
+  }
+}, [selectedLanguage]);
+
 
 
   useEffect(() => {
