@@ -21,6 +21,31 @@ export default function Home() {
   }
 
 
+const supportedLanguages = ['de-DE', 'it-IT', 'en-US'];
+
+    if (msg.trim() === "trigger a") {
+        setSelectedLanguage(prevLanguage => {
+            const currentIndex = supportedLanguages.indexOf(prevLanguage);
+            const nextIndex = (currentIndex + 1) % supportedLanguages.length;
+            const nextLanguage = supportedLanguages[nextIndex];
+            displayRizz(`Output Language: ${nextLanguage}`);
+            // setLastUpdate(Date.now());  // Sie haben keine setLastUpdate Funktion definiert
+            return nextLanguage;
+        });
+    }
+}
+
+useEffect(() => {
+  if (isRecording) {
+    stopRecording();
+    startRecognition();
+  }
+}, [selectedLanguage]);
+
+
+
+
+
 const connectToMonocle = async () => {
   try {
     await ensureConnected(logger, relayCallback);
@@ -175,8 +200,8 @@ const displayRizz = async (rizz) => {
   const groupSize = 5;
   // const clearCmd = "display.clear()";
 
-  //await replSend(`${clearCmd}\n`);
-  //await delay(10); // Wartezeit nach dem Löschen
+  // await replSend(`${clearCmd}\n`);
+  // await delay(10); // Wartezeit nach dem Löschen
 
   for (let i = 0; i < splitText.length; i += groupSize) {
     const group = splitText.slice(i, i + groupSize);
