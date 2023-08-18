@@ -12,6 +12,8 @@ export default function Home() {
   const [recognition, setRecognition] = useState(null);
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedLanguage, setSelectedLanguage] = useState('de-DE'); // Standardmäßig auf Deutsch
+  const supportedLanguages = ['de-DE', 'it-IT', 'en-US'];
+
 
 const relayCallback = (msg) => {
   if (!msg) {
@@ -30,6 +32,21 @@ const relayCallback = (msg) => {
     });
   }
 }
+
+const confirmLanguageChange = (language) => {
+  const languageMap = {
+    'de-DE': 'Deutsch',
+    'it-IT': 'Italiano',
+    'en-US': 'English'
+  };
+  const confirmationMessage = `Aktuelle Sprache: ${languageMap[language]}`;
+  displayRizz(confirmationMessage);
+};
+
+
+
+
+
 
 useEffect(() => {
   if (isRecording) {
