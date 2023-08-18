@@ -20,7 +20,7 @@ const relayCallback = (msg) => {
   
   // Prüfen, ob die Nachricht "trigger a" ist
   if (msg.trim() === "trigger a") {
-    setTargetLanguage(prevLanguage => {
+    setSelectedLanguage(prevLanguage => {
       const currentIndex = supportedLanguages.indexOf(prevLanguage);
       const nextIndex = (currentIndex + 1) % supportedLanguages.length;
       const nextLanguage = supportedLanguages[nextIndex];
