@@ -150,6 +150,18 @@ recognition.onresult = async (event) => {
   };
 
 
+useEffect(() => {
+  const timeoutId = setTimeout(() => {
+    if (Date.now() - lastUpdate < 500) { // Prüfen, ob weniger als 1 Sekunde vergangen ist
+      displayRizz('');
+      setTranscript(''); // Optional, wenn Sie auch den transkribierten Text in der UI löschen möchten
+    }
+  }, 500);
+  
+  // Rückgabe einer Cleanup-Funktion, um den Timeout zu löschen, falls die Komponente unerwartet unmountet
+  return () => clearTimeout(timeoutId);
+}, [lastUpdate]);
+
 
 useEffect(() => {
   if (isRecording) {
