@@ -175,8 +175,8 @@ const displayRizz = async (rizz) => {
   const groupSize = 5;
   // const clearCmd = "display.clear()";
 
-  await replSend(`${clearCmd}\n`);
-  await delay(10); // Wartezeit nach dem Löschen
+  //await replSend(`${clearCmd}\n`);
+  //await delay(10); // Wartezeit nach dem Löschen
 
   for (let i = 0; i < splitText.length; i += groupSize) {
     const group = splitText.slice(i, i + groupSize);
