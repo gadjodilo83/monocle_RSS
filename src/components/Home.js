@@ -23,16 +23,17 @@ const relayCallback = (msg) => {
   }
   
   // Prüfen, ob die Nachricht "trigger a" ist
-  if (msg.trim() === "trigger a") {
-    setSelectedLanguage(prevLanguage => {
-      const currentIndex = supportedLanguages.indexOf(prevLanguage);
-      const nextIndex = (currentIndex + 1) % supportedLanguages.length;
-      const nextLanguage = supportedLanguages[nextIndex];
-      displayRizz(`Output Language: ${nextLanguage}`);
-      setLastUpdate(Date.now());
-      return nextLanguage;
-    });
-  }
+	if (msg.trim() === "trigger a") {
+	  setSelectedLanguage(prevLanguage => {
+		const currentIndex = supportedLanguages.indexOf(prevLanguage);
+		const nextIndex = (currentIndex + 1) % supportedLanguages.length;
+		const nextLanguage = supportedLanguages[nextIndex];
+		displayRizz(`Output Language: ${nextLanguage}`);
+		setLastUpdate(Date.now());
+		setTranscript(''); // Setzen Sie das Transkript zurück, wenn die Sprache geändert wird
+		return nextLanguage;
+	  });
+	}
 
   // Prüfen, ob die Nachricht "trigger b" ist
   if (msg.trim() === "trigger b") {
@@ -143,8 +144,8 @@ const toggleRecording = () => {
       setRecognition(null);
     }
     setIsRecording(false);
-  } else {
-    setWasStoppedManually(false); // Hinzugefügt
+  }   else {
+    setTranscript(''); // Setzen Sie das Transkript zurück, bevor Sie mit der Aufnahme beginnen
     startRecognition();
     setIsRecording(true);
   }
