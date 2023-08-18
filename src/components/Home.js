@@ -13,26 +13,22 @@ export default function Home() {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedLanguage, setSelectedLanguage] = useState('de-DE'); // Standardmäßig auf Deutsch
 
-  const relayCallback = (msg) => {
-    if (!msg) {
-      return;
-    }
-    // Hier können Sie weitere Aktionen basierend auf der empfangenen Nachricht hinzufügen
+const relayCallback = (msg) => {
+  if (!msg) {
+    return;
   }
-
-
-const supportedLanguages = ['de-DE', 'it-IT', 'en-US'];
-
-    if (msg.trim() === "trigger a") {
-        setSelectedLanguage(prevLanguage => {
-            const currentIndex = supportedLanguages.indexOf(prevLanguage);
-            const nextIndex = (currentIndex + 1) % supportedLanguages.length;
-            const nextLanguage = supportedLanguages[nextIndex];
-            displayRizz(`Output Language: ${nextLanguage}`);
-            // setLastUpdate(Date.now());  // Sie haben keine setLastUpdate Funktion definiert
-            return nextLanguage;
-        });
-    }
+  
+  // Prüfen, ob die Nachricht "trigger a" ist
+  if (msg.trim() === "trigger a") {
+    setTargetLanguage(prevLanguage => {
+      const currentIndex = supportedLanguages.indexOf(prevLanguage);
+      const nextIndex = (currentIndex + 1) % supportedLanguages.length;
+      const nextLanguage = supportedLanguages[nextIndex];
+      displayRizz(`Output Language: ${nextLanguage}`);
+      setLastUpdate(Date.now());
+      return nextLanguage;
+    });
+  }
 }
 
 useEffect(() => {
