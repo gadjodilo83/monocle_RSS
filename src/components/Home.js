@@ -57,49 +57,33 @@ const sendTextToMonocle = async (text) => {
     setSelectedLanguage(event.target.value);
   };
 
-  const startRecognition = () => {
+const startRecognition = () => {
     if (typeof window.webkitSpeechRecognition === 'undefined') {
       console.error('Web Speech API is not supported in this browser.');
       return;
     }
 
     const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = selectedLanguage; // Hier die ausgewählte Sprache verwenden
+    recognition.lang = selectedLanguage;
     recognition.continuous = true;
     recognition.interimResults = true;
 
-recognition.onresult = async (event) => {
-    let recognizedText = '';
+    recognition.onresult = async (event) => {
+      let recognizedText = '';
 
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-            recognizedText += event.results[i][0].transcript + ' ';
-        }
-    }
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+              recognizedText += event.results[i][0].transcript + ' ';
+          }
+      }
 
-    // Senden Sie den Text zuerst zum Display
-    await sendTextToMonocle(recognizedText.trim());
-    await displayRizz(recognizedText.trim());
+      // Senden Sie den Text zuerst zum Display
+      await sendTextToMonocle(recognizedText.trim());
+      await displayRizz(recognizedText.trim());
 
-    // Dann aktualisieren Sie den Zustand in React, um den Text im Browser anzuzeigen
-    setTranscript(recognizedText.trim());
-};
-
-
-
-
-    // Senden Sie den Text zuerst zum Display
-    await sendTextToMonocle(recognizedText.trim());
-    await displayRizz(recognizedText.trim());
-
-    // Dann aktualisieren Sie den Zustand in React, um den Text im Browser anzuzeigen
-    setTranscript(recognizedText.trim());
-};
-
-
-
-
-
+      // Dann aktualisieren Sie den Zustand in React, um den Text im Browser anzuzeigen
+      setTranscript(recognizedText.trim());
+    };
 
     recognition.onerror = (error) => {
       console.error('Recognition error:', error);
@@ -113,7 +97,8 @@ recognition.onresult = async (event) => {
 
     recognition.start();
     setRecognition(recognition);
-  };
+};
+
 
   const toggleRecording = () => {
     if (isRecording) {
