@@ -294,7 +294,10 @@ const cleanText = (inputText) => {
         "tè": "te",
         "ì": "i",
         "Ì": "I",
-        "e'": "e"
+        "e'": "e",
+        "'s": " s"
+
+
    };
 
   let cleanedText = inputText;
