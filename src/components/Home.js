@@ -168,11 +168,11 @@ useEffect(() => {
 
 useEffect(() => {
   const timeoutId = setTimeout(() => {
-    if (Date.now() - lastUpdate < 500) { // Prüfen, ob weniger als 1 Sekunde vergangen ist
+    if (Date.now() - lastUpdate < 10) { // Prüfen, ob weniger als 1 Sekunde vergangen ist
       displayRizz('');
       setTranscript(''); // Optional, wenn Sie auch den transkribierten Text in der UI löschen möchten
     }
-  }, 500);
+  }, 10);
   
   // Rückgabe einer Cleanup-Funktion, um den Timeout zu löschen, falls die Komponente unerwartet unmountet
   return () => clearTimeout(timeoutId);
@@ -254,7 +254,7 @@ const displayRizz = async (rizz) => {
     const textCmd = `display.show([${textCmds.join(", ")}])`;
 
     await replSend(`${textCmd}\n`);
-    await delay(5000); // Wartezeit nach dem Anzeigen
+    await delay(2000); // Wartezeit nach dem Anzeigen
   }
 };
 
