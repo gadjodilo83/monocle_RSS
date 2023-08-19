@@ -179,12 +179,6 @@ useEffect(() => {
 }, [lastUpdate]);
 
 
-useEffect(() => {
-  if (isRecording) {
-    stopRecording();
-    startRecognition();
-  }
-}, [selectedLanguage]);
 
 
 
