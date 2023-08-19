@@ -126,13 +126,17 @@ recognition.onresult = async (event) => {
 
     recognition.onerror = (error) => {
       console.error('Recognition error:', error);
+      // setRecognition(recognition);
+	  console.log("onerror");
     };
 
 	recognition.onend = () => {
-	  if (isRecording && !wasStoppedManually) {
-		startRecognition();
-	  }
+    recognition.start();
+    setRecognition(recognition);
+
+	    console.log("onend");	  
 	};
+
 
     recognition.start();
     setRecognition(recognition);
@@ -164,11 +168,11 @@ useEffect(() => {
 
 useEffect(() => {
   const timeoutId = setTimeout(() => {
-    if (Date.now() - lastUpdate < 50) { // Prüfen, ob weniger als 1 Sekunde vergangen ist
+    if (Date.now() - lastUpdate < 500) { // Prüfen, ob weniger als 1 Sekunde vergangen ist
       displayRizz('');
       setTranscript(''); // Optional, wenn Sie auch den transkribierten Text in der UI löschen möchten
     }
-  }, 50);
+  }, 500);
   
   // Rückgabe einer Cleanup-Funktion, um den Timeout zu löschen, falls die Komponente unerwartet unmountet
   return () => clearTimeout(timeoutId);
@@ -321,13 +325,6 @@ const cleanText = (inputText) => {
 
 
   const cyberpunkStyle = {
-	title: {
-	  color: '#0ff',
-	  fontSize: '24px', // oder eine andere Größe, die Sie bevorzugen
-	  marginBottom: '20px', // Abstand zum nächsten Element
-	  fontWeight: 'bold', // Wenn Sie möchten, dass der Titel fett dargestellt wird
-	},
-
     background: {
       width: '100%',
       height: '100vh',
@@ -372,9 +369,8 @@ const cleanText = (inputText) => {
 
 
 
-return (
+  return (
     <div style={cyberpunkStyle.background}>
-      <h1 style={cyberpunkStyle.title}>Monocle-Transcript</h1>
       <button style={cyberpunkStyle.button} onClick={connectToMonocle}>CONNECT</button>
       <select value={selectedLanguage} onChange={handleLanguageChange}>
         <option value="de-DE">Deutsch</option>
