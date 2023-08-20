@@ -15,7 +15,6 @@ export default function Home() {
   const supportedLanguages = ['de-DE', 'it-IT', 'en-US'];
   const [lastUpdate, setLastUpdate] = useState(Date.now()); // Initializing with the current timestamp
   const [wasStoppedManually, setWasStoppedManually] = useState(false);
-  const [languageChanged, setLanguageChanged] = useState(false);
 
 
 const relayCallback = (msg) => {
@@ -35,7 +34,6 @@ const relayCallback = (msg) => {
 		return nextLanguage;
 	  });
 	}
-
 
   // Prüfen, ob die Nachricht "trigger b" ist
   if (msg.trim() === "trigger b") {
@@ -92,30 +90,23 @@ const sendTextToMonocle = async (text) => {
 
 
 
-const handleLanguageChange = (event) => {
-  setLanguageChanged(true);
-  setSelectedLanguage(event.target.value);
-};
+  const handleLanguageChange = (event) => {
+    setSelectedLanguage(event.target.value);
+  };
 
 const startRecognition = () => {
     if (typeof window.webkitSpeechRecognition === 'undefined') {
-        console.error('Web Speech API is not supported in this browser.');
-        return;
+      console.error('Web Speech API is not supported in this browser.');
+      return;
     }
 
-    const newRecognition = new window.webkitSpeechRecognition();
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.lang = selectedLanguage;
+    recognition.continuous = true;
+    recognition.interimResults = true;
 
-    if (recognition) {
-        recognition.stop();
-    }
-
-    setRecognition(newRecognition);
-    newRecognition.lang = selectedLanguage;
-    newRecognition.continuous = true;
-    newRecognition.interimResults = true;
-
-    newRecognition.onresult = async (event) => {
-	let recognizedText = '';
+recognition.onresult = async (event) => {
+  let recognizedText = '';
 
   for (let i = event.resultIndex; i < event.results.length; i++) {
       if (event.results[i].isFinal) {
@@ -133,14 +124,13 @@ const startRecognition = () => {
   ]);
 };
 
-    newRecognition.onerror = (error) => {
-        console.error('Recognition error:', error);
-        console.log("onerror");
+    recognition.onerror = (error) => {
+      console.error('Recognition error:', error);
+      // setRecognition(recognition);
+	  console.log("onerror");
     };
 
-
-
-    recognition.onend = () => {
+	recognition.onend = () => {
     recognition.start();
     setRecognition(recognition);
 
@@ -148,23 +138,21 @@ const startRecognition = () => {
 	};
 
 
-
-    newRecognition.start();
+    recognition.start();
     setRecognition(recognition);
 };
 
 
 const toggleRecording = () => {
-  setLanguageChanged(false);
   if (isRecording) {
-    setWasStoppedManually(true);
+    setWasStoppedManually(true); // Hinzugefügt
     if (recognition) {
       recognition.stop();
       setRecognition(null);
     }
     setIsRecording(false);
-  } else {
-    setTranscript('');
+  }   else {
+    setTranscript(''); // Setzen Sie das Transkript zurück, bevor Sie mit der Aufnahme beginnen
     startRecognition();
     setIsRecording(true);
   }
@@ -180,11 +168,11 @@ useEffect(() => {
 
 useEffect(() => {
   const timeoutId = setTimeout(() => {
-    if (Date.now() - lastUpdate < 50) { // Prüfen, ob weniger als 1 Sekunde vergangen ist
+    if (Date.now() - lastUpdate < 10) { // Prüfen, ob weniger als 1 Sekunde vergangen ist
       displayRizz('');
       setTranscript(''); // Optional, wenn Sie auch den transkribierten Text in der UI löschen möchten
     }
-  }, 50);
+  }, 10);
   
   // Rückgabe einer Cleanup-Funktion, um den Timeout zu löschen, falls die Komponente unerwartet unmountet
   return () => clearTimeout(timeoutId);
@@ -192,12 +180,10 @@ useEffect(() => {
 
 
 useEffect(() => {
-	if (isRecording) {
-		setWasStoppedManually(true);
-		stopRecording();
-		startRecognition();
-		setLanguageChanged(false);  // Hier verschoben
-	}
+  if (isRecording) {
+    stopRecording();
+    startRecognition();
+  }
 }, [selectedLanguage]);
 
 
