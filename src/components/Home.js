@@ -140,13 +140,12 @@ const startRecognition = () => {
 
 
 
+    recognition.onend = () => {
+    recognition.start();
+    setRecognition(recognition);
 
-newRecognition.onend = () => {
-  if (!wasStoppedManually && !languageChanged) {
-	setRecognition(null);
-  }
-  console.log("onend");
-};
+	    console.log("onend");	  
+	};
 
 
 
