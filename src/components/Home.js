@@ -14,7 +14,7 @@ export default function Home() {
   const [selectedLanguage, setSelectedLanguage] = useState('de-DE'); // Standardmäßig auf Deutsch
   // const supportedLanguages = ['de-DE', 'it-IT', 'en-US'];
   const [lastUpdate, setLastUpdate] = useState(Date.now()); // Initializing with the current timestamp
-  // const [wasStoppedManually, setWasStoppedManually] = useState(false);
+  const [wasStoppedManually, setWasStoppedManually] = useState(false);
 
 
 const relayCallback = (msg) => {
@@ -115,12 +115,16 @@ recognition.onresult = async (event) => {
 	  console.log("onerror");
     };
 
-	recognition.onend = () => {
-    recognition.start();
-    setRecognition(recognition);
+recognition.onend = () => {
+    if (!wasStoppedManually) {
+        recognition.start();
+        setRecognition(recognition);
+    } else {
+        setWasStoppedManually(false);  // Setzen Sie es zurück, nachdem es überprüft wurde
+    }
 
-	    console.log("onend");	  
-	};
+    console.log("onend");	  
+};
 
 
     recognition.start();
