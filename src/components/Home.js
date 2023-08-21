@@ -75,10 +75,19 @@ const sendTextToMonocle = async (text) => {
 };
 
 
-  const handleLanguageChange = (event) => {
+const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
-  };
 
+    if (recognition) {
+        setWasStoppedManually(true);
+        recognition.onend = null;  // Verhindern Sie, dass der onend-Handler ausgelöst wird
+        recognition.stop();
+        setRecognition(null);
+        setIsRecording(false);
+    }
+
+    startRecognition(); // Startet die Spracherkennung erneut mit der neuen Sprache
+};
 
 
 
@@ -124,19 +133,28 @@ const startRecognition = () => {
         console.log("onerror");
     };
 
-    recognitionInstance.onend = () => {
-        recognitionInstance.start();
-        console.log("onend");
-    };
+	recognitionInstance.onend = () => {
+		if (wasStoppedManually) {
+			setWasStoppedManually(false);  // Setzen Sie den Zustand zurück, um ihn für das nächste Mal bereit zu halten
+			return;
+		}
 
     recognitionInstance.start();
+    console.log("onend");
+};
 
+    recognitionInstance.start();
+    setIsRecording(true);  // <-- Hier hinzufügen
     setRecognition(recognitionInstance);
 };
 
 
 
 const [debouncedTranscript, setDebouncedTranscript] = useState('');
+
+
+
+
 
 useEffect(() => {
     const updateDebouncedTranscript = setTimeout(() => {
@@ -168,12 +186,6 @@ useEffect(() => {
 }, [lastUpdate]);
 
 
-useEffect(() => {
-  if (isRecording) {
-    stopRecording();
-    startRecognition();
-  }
-}, [selectedLanguage]);
 
 
 
@@ -185,12 +197,13 @@ useEffect(() => {
 
 
 const stopRecording = () => {
+    setIsRecording(false);  // <-- Hier hinzufügen
+
     if (recognition) {
         recognition.onend = null;  // Verhindern Sie, dass der onend-Handler ausgelöst wird
         recognition.stop();
         setRecognition(null);
     }
-    setIsRecording(false);
 };
 
 
@@ -322,7 +335,7 @@ const cleanText = (inputText) => {
 };
 
 
-  const cyberpunkStyle = {
+const cyberpunkStyle = {
     background: {
       width: '100%',
       height: '100vh',
@@ -335,15 +348,17 @@ const cleanText = (inputText) => {
     },
     button: {
       background: 'transparent',
-      border: '2px solid #0ff',
+      borderWidth: '2px',
+      borderStyle: 'solid',
+      borderColor: '#0ff',
       borderRadius: '5px',
       padding: '10px 20px',
       color: '#0ff',
       fontSize: '16px',
       cursor: 'pointer',
       transition: 'background 0.3s',
-      marginTop: '20px',  // von 10px auf 20px erhöhen
-      marginBottom: '20px', // hinzufügen, um den unteren Abstand zu erhöhen
+      marginTop: '20px',
+      marginBottom: '20px',
       fontFamily: "'Orbitron', sans-serif",
       '&:hover': {
         background: '#0ff',
@@ -362,8 +377,7 @@ const cleanText = (inputText) => {
       overflowY: 'auto',
       margin: '0 auto'
     }
-  };
-
+};
 
 const refreshPage = () => {
     window.location.reload();
@@ -371,10 +385,15 @@ const refreshPage = () => {
 
 const connectedButtonStyle = {
   ...cyberpunkStyle.button,
-  color: '#00ff00',  // Grün
-  borderColor: '#00ff00' // Grün
+  color: '#00ff00',
+  borderColor: '#00ff00'
 };
 
+const recordingButtonStyle = {
+    ...cyberpunkStyle.button,
+    color: '#00ff00',
+    borderColor: '#00ff00'
+};
 
 return (
     <div style={cyberpunkStyle.background}>
@@ -386,9 +405,10 @@ return (
             <option value="it-IT">Italiano</option>
             <option value="en-US">English</option>
         </select>
-        <button style={cyberpunkStyle.button} onClick={startRecognition}>START</button>
+        <button style={isRecording ? recordingButtonStyle : cyberpunkStyle.button} onClick={startRecognition}>START</button>
         <button style={cyberpunkStyle.button} onClick={refreshPage}>STOP</button>
         <p style={cyberpunkStyle.text}>{transcript}</p>
     </div>
 );
+
 }
