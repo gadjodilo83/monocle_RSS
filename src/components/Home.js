@@ -22,15 +22,15 @@ const relayCallback = (msg) => {
     return;
   }
   
-  // Prüfen, ob die Nachricht "trigger b" ist
-  if (msg.trim() === "trigger b") {
-    if (isRecording) {
-      displayRizz("START");
-    } else {
-      displayRizz("START");
-    }
-    toggleRecording();
-  }
+//  // Prüfen, ob die Nachricht "trigger b" ist
+//  if (msg.trim() === "trigger b") {
+//    if (isRecording) {
+//      displayRizz("START");
+//    } else {
+//      displayRizz("START");
+//    }
+//    toggleRecording();
+//  }
 }
 
 
