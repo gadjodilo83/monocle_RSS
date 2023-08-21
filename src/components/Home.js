@@ -95,19 +95,17 @@ recognition.onresult = async (event) => {
   let recognizedText = '';
 
   for (let i = event.resultIndex; i < event.results.length; i++) {
-      if (event.results[i].isFinal) {
-          recognizedText += event.results[i][0].transcript + ' ';
-      }
+    recognizedText += event.results[i][0].transcript + ' ';
+    if (!event.results[i].isFinal) {
+        await sendTextToMonocle(recognizedText.trim());
+        await displayRizz(recognizedText.trim());
+    }
   }
 
-  // Zuerst den Zustand in React aktualisieren, um den Text im Browser sofort anzuzeigen
-  setTranscript(recognizedText.trim());
-
-  // Dann den Text zum Monocle-Display senden
-  await Promise.all([
-      sendTextToMonocle(recognizedText.trim()),
-      displayRizz(recognizedText.trim())
-  ]);
+  // Wenn der Text final ist, aktualisieren Sie den Zustand in React, um den Text im Browser anzuzeigen
+  if (event.results[event.results.length - 1].isFinal) {
+      setTranscript(recognizedText.trim());
+  }
 };
 
     recognition.onerror = (error) => {
