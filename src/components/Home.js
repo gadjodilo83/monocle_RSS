@@ -89,14 +89,19 @@ const startRecognition = () => {
         return;
     }
 
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = selectedLanguage;
-    recognition.continuous = true;
-    recognition.interimResults = true;
+    if (recognition) {
+        console.warn("Recognition is already running.");
+        return;
+    }
 
-    let lastRecognizedText = ''; // Speichert den zuletzt erkannten Text, um unnötige Aktualisierungen zu vermeiden
+    const recognitionInstance = new window.webkitSpeechRecognition();
+    recognitionInstance.lang = selectedLanguage;
+    recognitionInstance.continuous = true;
+    recognitionInstance.interimResults = true;
 
-    recognition.onresult = async (event) => {
+    let lastRecognizedText = ''; 
+
+    recognitionInstance.onresult = async (event) => {
         let recognizedText = '';
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -114,19 +119,19 @@ const startRecognition = () => {
         }
     };
 
-    recognition.onerror = (error) => {
+    recognitionInstance.onerror = (error) => {
         console.error('Recognition error:', error);
         console.log("onerror");
     };
 
-    recognition.onend = () => {
-        recognition.start();
-        setRecognition(recognition);
+    recognitionInstance.onend = () => {
+        recognitionInstance.start();
         console.log("onend");
     };
 
-    recognition.start();
-    setRecognition(recognition);
+    recognitionInstance.start();
+
+    setRecognition(recognitionInstance);
 };
 
 
@@ -136,7 +141,7 @@ const [debouncedTranscript, setDebouncedTranscript] = useState('');
 useEffect(() => {
     const updateDebouncedTranscript = setTimeout(() => {
         setDebouncedTranscript(transcript);
-    }, 500); // 500 ms Verzögerung
+    }, 300); // 500 ms Verzögerung
 
     return () => clearTimeout(updateDebouncedTranscript);
 }, [transcript]);
@@ -176,13 +181,19 @@ useEffect(() => {
     // console.log("Transcript updated:", transcript);
   }, [transcript]);
 
-  const stopRecording = () => {
+
+
+
+const stopRecording = () => {
     if (recognition) {
-      recognition.stop();
-      setRecognition(null);
+        recognition.onend = null;  // Verhindern Sie, dass der onend-Handler ausgelöst wird
+        recognition.stop();
+        setRecognition(null);
     }
     setIsRecording(false);
-  };
+};
+
+
 
 const wrapText = (inputText) => {
   const block = 24;
