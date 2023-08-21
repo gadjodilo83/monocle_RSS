@@ -91,14 +91,15 @@ const startRecognition = () => {
     recognition.continuous = true;
     recognition.interimResults = true;
 
-recognition.onresult = async (event) => {
+recognition.onresult = (event) => {
   let recognizedText = '';
 
   for (let i = event.resultIndex; i < event.results.length; i++) {
     recognizedText += event.results[i][0].transcript + ' ';
+
     if (!event.results[i].isFinal) {
-        await sendTextToMonocle(recognizedText.trim());
-        await displayRizz(recognizedText.trim());
+        sendTextToMonocle(recognizedText.trim()); // Remove await
+        displayRizz(recognizedText.trim());       // Remove await
     }
   }
 
