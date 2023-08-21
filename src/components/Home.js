@@ -12,9 +12,9 @@ export default function Home() {
   const [recognition, setRecognition] = useState(null);
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedLanguage, setSelectedLanguage] = useState('de-DE'); // Standardmäßig auf Deutsch
-  const supportedLanguages = ['de-DE', 'it-IT', 'en-US'];
+  // const supportedLanguages = ['de-DE', 'it-IT', 'en-US'];
   const [lastUpdate, setLastUpdate] = useState(Date.now()); // Initializing with the current timestamp
-  const [wasStoppedManually, setWasStoppedManually] = useState(false);
+  // const [wasStoppedManually, setWasStoppedManually] = useState(false);
 
 
 const relayCallback = (msg) => {
@@ -91,15 +91,15 @@ const startRecognition = () => {
     recognition.continuous = true;
     recognition.interimResults = true;
 
-recognition.onresult = (event) => {
+recognition.onresult = async (event) => {
   let recognizedText = '';
 
   for (let i = event.resultIndex; i < event.results.length; i++) {
     recognizedText += event.results[i][0].transcript + ' ';
 
     if (!event.results[i].isFinal) {
-        sendTextToMonocle(recognizedText.trim()); // Remove await
-        displayRizz(recognizedText.trim());       // Remove await
+        await sendTextToMonocle(recognizedText.trim());
+        await displayRizz(recognizedText.trim());
     }
   }
 
@@ -302,13 +302,13 @@ const cleanText = (inputText) => {
 
    };
 
-  let cleanedText = inputText;
+    let cleanedText = inputText;
+    for (let pattern in replacements) {
+        const regex = new RegExp(pattern, 'g');
+        cleanedText = cleanedText.replace(regex, replacements[pattern]);
+    }
 
-  for (let pattern in replacements) {
-    cleanedText = cleanedText.split(pattern).join(replacements[pattern]);
-  }
-
-  return cleanedText;
+    return cleanedText;
 };
 
 
