@@ -22,30 +22,16 @@ const relayCallback = (msg) => {
     return;
   }
   
-  // Prüfen, ob die Nachricht "trigger a" ist
-	if (msg.trim() === "trigger a") {
-	  setSelectedLanguage(prevLanguage => {
-		const currentIndex = supportedLanguages.indexOf(prevLanguage);
-		const nextIndex = (currentIndex + 1) % supportedLanguages.length;
-		const nextLanguage = supportedLanguages[nextIndex];
-		displayRizz(`Output Language: ${nextLanguage}`);
-		setLastUpdate(Date.now());
-		setTranscript(''); // Setzen Sie das Transkript zurück, wenn die Sprache geändert wird
-		return nextLanguage;
-	  });
-	}
-
   // Prüfen, ob die Nachricht "trigger b" ist
   if (msg.trim() === "trigger b") {
     if (isRecording) {
-      displayRizz("STOP");
+      displayRizz("START");
     } else {
       displayRizz("START");
     }
     toggleRecording();
   }
 }
-
 
 
 
@@ -226,6 +212,9 @@ const wrapText = (inputText) => {
 async function displayRawRizz(rizz) {
     await replRawMode(true);
     await displayRizz(rizz);
+
+	// Zeige den Willkommenstext an
+	await displayRizz("WELCOME");
 }
 
 
