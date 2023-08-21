@@ -75,15 +75,18 @@ const sendTextToMonocle = async (text) => {
 };
 
 
-
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
   };
 
+
+
+
+
 const startRecognition = () => {
     if (typeof window.webkitSpeechRecognition === 'undefined') {
-      console.error('Web Speech API is not supported in this browser.');
-      return;
+        console.error('Web Speech API is not supported in this browser.');
+        return;
     }
 
     const recognition = new window.webkitSpeechRecognition();
@@ -91,61 +94,53 @@ const startRecognition = () => {
     recognition.continuous = true;
     recognition.interimResults = true;
 
-recognition.onresult = async (event) => {
-  let recognizedText = '';
+    let lastRecognizedText = ''; // Speichert den zuletzt erkannten Text, um unnötige Aktualisierungen zu vermeiden
 
-  for (let i = event.resultIndex; i < event.results.length; i++) {
-    recognizedText += event.results[i][0].transcript + ' ';
+    recognition.onresult = async (event) => {
+        let recognizedText = '';
 
-    if (!event.results[i].isFinal) {
-        await sendTextToMonocle(recognizedText.trim());
-        await displayRizz(recognizedText.trim());
-    }
-  }
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            recognizedText += event.results[i][0].transcript;
+            if (i < event.results.length - 1) {
+                recognizedText += ' '; // Fügt nur dann ein Leerzeichen hinzu, wenn es sich nicht um den letzten Eintrag handelt
+            }
+        }
 
-  // Wenn der Text final ist, aktualisieren Sie den Zustand in React, um den Text im Browser anzuzeigen
-  // if (event.results[event.results.length - 1].isFinal) {
-  //    setTranscript(recognizedText.trim());
- // }
-};
-
-    recognition.onerror = (error) => {
-      console.error('Recognition error:', error);
-      // setRecognition(recognition);
-	  console.log("onerror");
+        if (recognizedText !== lastRecognizedText) { // Aktualisiert nur, wenn sich der Text geändert hat
+            await sendTextToMonocle(recognizedText.trim());
+            await displayRizz(recognizedText.trim());
+            setTranscript(recognizedText.trim());
+            lastRecognizedText = recognizedText; // Aktualisiert den zuletzt erkannten Text
+        }
     };
 
-recognition.onend = () => {
-    if (!wasStoppedManually) {
+    recognition.onerror = (error) => {
+        console.error('Recognition error:', error);
+        console.log("onerror");
+    };
+
+    recognition.onend = () => {
         recognition.start();
         setRecognition(recognition);
-    } else {
-        setWasStoppedManually(false);  // Setzen Sie es zurück, nachdem es überprüft wurde
-    }
-
-    console.log("onend");	  
-};
-
+        console.log("onend");
+    };
 
     recognition.start();
     setRecognition(recognition);
 };
 
 
-const toggleRecording = () => {
-  if (isRecording) {
-    setWasStoppedManually(true); // Hinzugefügt
-    if (recognition) {
-      recognition.stop();
-      setRecognition(null);
-    }
-    setIsRecording(false);
-  }   else {
-    setTranscript(''); // Setzen Sie das Transkript zurück, bevor Sie mit der Aufnahme beginnen
-    startRecognition();
-    setIsRecording(true);
-  }
-};
+
+const [debouncedTranscript, setDebouncedTranscript] = useState('');
+
+useEffect(() => {
+    const updateDebouncedTranscript = setTimeout(() => {
+        setDebouncedTranscript(transcript);
+    }, 500); // 500 ms Verzögerung
+
+    return () => clearTimeout(updateDebouncedTranscript);
+}, [transcript]);
+
 
 
 useEffect(() => {
@@ -359,20 +354,30 @@ const cleanText = (inputText) => {
   };
 
 
+const refreshPage = () => {
+    window.location.reload();
+}
+
+const connectedButtonStyle = {
+  ...cyberpunkStyle.button,
+  color: '#00ff00',  // Grün
+  borderColor: '#00ff00' // Grün
+};
 
 
-  return (
+return (
     <div style={cyberpunkStyle.background}>
-      <button style={cyberpunkStyle.button} onClick={connectToMonocle}>CONNECT</button>
-      <select value={selectedLanguage} onChange={handleLanguageChange}>
-        <option value="de-DE">Deutsch</option>
-        <option value="it-IT">Italiano</option>
-        <option value="en-US">English</option>
-      </select>
-      <button style={cyberpunkStyle.button} onClick={toggleRecording}>
-        {isRecording ? "STOP" : "START"}
-      </button>
-      <p style={cyberpunkStyle.text}>{transcript}</p>
+        <button style={connected ? connectedButtonStyle : cyberpunkStyle.button} onClick={connectToMonocle}>
+          CONNECT
+        </button>
+        <select value={selectedLanguage} onChange={handleLanguageChange}>
+            <option value="de-DE">Deutsch</option>
+            <option value="it-IT">Italiano</option>
+            <option value="en-US">English</option>
+        </select>
+        <button style={cyberpunkStyle.button} onClick={startRecognition}>START</button>
+        <button style={cyberpunkStyle.button} onClick={refreshPage}>STOP</button>
+        <p style={cyberpunkStyle.text}>{transcript}</p>
     </div>
-  );
+);
 }
