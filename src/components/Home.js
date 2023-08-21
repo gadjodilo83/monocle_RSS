@@ -104,9 +104,9 @@ recognition.onresult = async (event) => {
   }
 
   // Wenn der Text final ist, aktualisieren Sie den Zustand in React, um den Text im Browser anzuzeigen
-  if (event.results[event.results.length - 1].isFinal) {
-      setTranscript(recognizedText.trim());
-  }
+  // if (event.results[event.results.length - 1].isFinal) {
+  //    setTranscript(recognizedText.trim());
+ // }
 };
 
     recognition.onerror = (error) => {
