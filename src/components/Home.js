@@ -160,14 +160,28 @@ const displayRizz = async (rizz) => {
 
 
 return (
-  <div>
-    <form onSubmit={updateRssFeedUrl}>
-      <input type="text" name="rssFeed" defaultValue={rssFeedUrl} />
-      <button type="submit">RSS-Feed laden</button>
+  <div style={{ margin: '20px', fontFamily: 'Arial, sans-serif' }}>
+    <form onSubmit={updateRssFeedUrl} style={{ marginBottom: '20px' }}>
+      <input
+        type="text"
+        name="rssFeed"
+        defaultValue={rssFeedUrl}
+        style={{ marginRight: '10px', padding: '10px', width: '500px', borderRadius: '5px', border: '1px solid #ccc' }}
+      />
+      <button type="submit" style={{ padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: '#007bff', color: 'white', cursor: 'pointer' }}>
+        RSS-Feed laden
+      </button>
     </form>
-      <button onClick={connectToMonocle} disabled={connected}>CONNECT</button>
-    <button onClick={displayPreviousTitle} disabled={!connected}>Previous Title</button>
-    <button onClick={displayNextTitle} disabled={!connected}>Next Title</button>
+    <button onClick={connectToMonocle} disabled={connected} style={{ marginRight: '10px', padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: connected ? '#6c757d' : '#28a745', color: 'white', cursor: 'pointer' }}>
+      {connected ? 'CONNECTED' : 'CONNECT'}
+    </button>
+    <button onClick={displayPreviousTitle} disabled={!connected} style={{ marginRight: '10px', padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: !connected ? '#6c757d' : '#17a2b8', color: 'white', cursor: 'pointer' }}>
+      Previous Title
+    </button>
+    <button onClick={displayNextTitle} disabled={!connected} style={{ padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: !connected ? '#6c757d' : '#ffc107', color: 'white', cursor: 'pointer' }}>
+      Next Title
+    </button>
   </div>
 );
+
 }
