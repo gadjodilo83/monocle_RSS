@@ -11,7 +11,7 @@ export default function Home() {
   const [connected, setConnected] = useState(false);
   const [feedTitles, setFeedTitles] = useState([]);
   const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
-  const [rssFeedUrl, setRssFeedUrl] = useState('https://www.srf.ch/news/bnf/rss/19032223'); // Standardwert für den RSS-Feed
+  const [rssFeedUrl, setRssFeedUrl] = useState('https://rss.nytimes.com/services/xml/rss/nyt/World.xml'); // Standardwert für den RSS-Feed
 
   const RSSFEEDS = 'https://www.srf.ch/news/bnf/rss/19032223';
 
