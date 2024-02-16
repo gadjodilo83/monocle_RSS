@@ -31,12 +31,6 @@ export default function Home() {
 
 
 
-const relayCallback = (msg) => {
-  if (!msg) {
-    return;
-  }
-}
-
 const connectToMonocle = async () => {
   try {
     await ensureConnected(logger, relayCallback);
@@ -57,18 +51,42 @@ async function logger(msg, deviceObj) {
 }
 
 
+const relayCallback = (msg) => {
+  if (!msg) {
+    return;
+  }
+
+  // Vorwärts spulen mit Trigger A
+  if (msg.trim() === "trigger a") {
+    displayNextTitle(); // Vorher definierte Funktion zum Anzeigen des nächsten Titels
+  }
+
+  // Rückwärts spulen mit Trigger B
+  if (msg.trim() === "trigger b") {
+    displayPreviousTitle(); // Vorher definierte Funktion zum Anzeigen des vorherigen Titels
+  }
+}
 
 
 
-  const displayNextTitle = async () => {
-    if (currentTitleIndex < feedTitles.length) {
-      const title = feedTitles[currentTitleIndex];
-      await displayRawRizz(title);
-      setCurrentTitleIndex(currentTitleIndex + 1);
-    } else {
-      console.log("No more titles to display.");
-    }
-  };
+const displayNextTitle = () => {
+  setCurrentTitleIndex(prevIndex => {
+    const nextIndex = prevIndex + 1 < feedTitles.length ? prevIndex + 1 : prevIndex;
+    displayRawRizz(feedTitles[nextIndex]);
+    return nextIndex; // Update index only if next title is available
+  });
+};
+
+const displayPreviousTitle = () => {
+  setCurrentTitleIndex(prevIndex => {
+    const nextIndex = prevIndex - 1 >= 0 ? prevIndex - 1 : prevIndex;
+    displayRawRizz(feedTitles[nextIndex]);
+    return nextIndex; // Update index only if previous title is available
+  });
+};
+
+
+
 
   async function logger(msg, deviceObj) {
     if (msg === "Connected") {
@@ -141,14 +159,15 @@ const displayRizz = async (rizz) => {
 
 
 
-  return (
-    <div>
-      <form onSubmit={updateRssFeedUrl}>
-        <input type="text" name="rssFeed" defaultValue={rssFeedUrl} />
-        <button type="submit">RSS-Feed laden</button>
-      </form>
+return (
+  <div>
+    <form onSubmit={updateRssFeedUrl}>
+      <input type="text" name="rssFeed" defaultValue={rssFeedUrl} />
+      <button type="submit">RSS-Feed laden</button>
+    </form>
       <button onClick={connectToMonocle} disabled={connected}>CONNECT</button>
-      <button onClick={displayNextTitle} disabled={!connected || currentTitleIndex >= feedTitles.length}>Display Next Title</button>
-    </div>
-  );
+    <button onClick={displayPreviousTitle} disabled={!connected}>Previous Title</button>
+    <button onClick={displayNextTitle} disabled={!connected}>Next Title</button>
+  </div>
+);
 }
