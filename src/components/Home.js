@@ -169,7 +169,7 @@ return (
         style={{ marginRight: '10px', padding: '10px', width: '500px', borderRadius: '5px', border: '1px solid #ccc' }}
       />
       <button type="submit" style={{ padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: '#007bff', color: 'white', cursor: 'pointer' }}>
-        RSS-Feed laden
+        Load RSS-Feed
       </button>
     </form>
     <button onClick={connectToMonocle} disabled={connected} style={{ marginRight: '10px', padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: connected ? '#6c757d' : '#28a745', color: 'white', cursor: 'pointer' }}>
